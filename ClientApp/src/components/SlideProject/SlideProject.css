@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
+.contentStyle1,.contentStyle2,.contentStyle3,.contentStyle4,.contentStyle5
+{
+    height: 600px;
+    text-align: center;
+}
+.contentStyle1{
+    background-image: url("../../SlideImage/Mercedes-Benz-EQE-350-Electric-Art-Line-4k.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 750px;
+}
+.contentStyle2{
+    background-image: url("../../SlideImage/mercedes_benz_eqb_350_4matic_electric_art_line_2021_4k-3840x2160.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 750px;
+}
+.contentStyle3{
+    background-image: url("../../SlideImage/vath_mercedes_amg_glb_35_4matic_2021_4k-HD.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 750px;
+}
+.contentStyle4{
+    background-image: url("../../SlideImage/GLCvsCLineup.jpeg");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+}
+.contentStyle5{
+    background-image: url("../../SlideImage/GLS.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 750px;
+}
+.titleSlide{
+    padding-top: 5%;
+}
+.titleSlide::first-line{
+    font-size: 40px;
+    font-family: 'Playfair Display', serif;
+}

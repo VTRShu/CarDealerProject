@@ -1,0 +1,32 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+.ant-layout-header{
+    background-color: black;
+  }
+.ant.form>.ant-form-horizontal{
+  text-align: center;
+}
+.logo{
+    color: white;
+    background-color:black;
+    border-bottom: 1px solid gray;
+}
+/* .ant-btn{
+  margin-right:22%;
+  margin-left: 20%;
+} */
+.ant-form-item-explain{
+  text-align: left;
+} 
+.title{
+    font-family: 'EB Garamond', serif;
+    margin-left: 5%;
+    position: relative;
+    top: 20px;
+}
+.title::first-line{
+    font-size:20px;
+}
+
+.title::second-line{
+    font-size:10px;
+}
