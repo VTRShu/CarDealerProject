@@ -12,7 +12,7 @@ namespace CarDealerProject.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class CarController : ControllerBase
-    {
+    {   
         private readonly ICarService _carService;
         public CarController(ICarService carService)
         {
@@ -64,5 +64,6 @@ namespace CarDealerProject.Controllers
             };
             return Ok(await _carService.ViewListCar(request));
         }
+        
     }
 }

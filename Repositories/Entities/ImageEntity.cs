@@ -13,8 +13,9 @@ namespace CarDealerProject.Repositories.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public string ImageName { get; set; }
         [Column(TypeName = "varchar(max)")]
-        public string ImagePath { get; set; }
+        public string ImageSrc { get; set; }
         [DataType(DataType.Date)]
         public DateTime InsertedOn { get; set; }
         public List<CarEntity> Cars { get; set; }

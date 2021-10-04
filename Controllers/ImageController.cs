@@ -40,7 +40,8 @@ namespace CarDealerProject.Controllers
                             file.CopyTo(stream);
                         }
                         ImageEntity image = new ImageEntity();
-                        image.ImagePath = path;
+                        image.ImageName = fi.Name;
+                        image.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, fi.Name);
                         image.InsertedOn = DateTime.Now;
                         _carDealerDBContext.ImageEntity.Add(image);
                         _carDealerDBContext.SaveChanges();
@@ -57,6 +58,6 @@ namespace CarDealerProject.Controllers
                 return "Can't save file";
             }
         }
-
+        
     }
 }
