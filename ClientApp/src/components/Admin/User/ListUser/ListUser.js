@@ -305,85 +305,7 @@ const ListUser = () => {
                 })
             }
         }
-        // if (currentUser.role === "Master") {
-        //     GetListUserMasterService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
-        //         if (!didCancel) {
-        //             if (lastLocation !== null && location.pathname.includes('/manage/list-user/ok')) {
-        //                 if (lastLocation.pathname === '/manage/create') {
-        //                     GetUserService({ code: location.pathname.split('/')[3] }).then(function (res) {
-        //                         response.data.items = response.data.items.filter(x => x.code !== res.data.code);
-        //                         if (pageIndex === 1) {
-        //                             response.data.items.unshift(res.data);
-        //                         }
-        //                         setSearchUser(response.data);
-        //                     }).catch(function (error) {
-        //                         console.log(error);
-        //                     })
-        //                 }
-        //             } else if (lastLocation.pathname.includes('/manage/edit/')) {
-        //                 GetUserService({ code: lastLocation.pathname.substring(6, lastLocation.pathname.length) }).then(function (res) {
-        //                     // handle success
-        //                     response.data.items = response.data.items.filter(x => x.code !== res.data.code);
-        //                     if (pageIndex === 1) {
-        //                         response.data.items.unshift(res.data);
-        //                     }
-        //                     setSearchUser(response.data);
-        //                 })
-        //                     .catch(function (error) {
-        //                         // handle error
-        //                         console.log(error);
-        //                     })
-        //             }
-        //             setTotal(0);
-        //         } else {
-        //             response.data.items.sort(function (a, b) {
-        //                 return (`${a.firstName} ${a.lastName}`).localeCompare(`${b.firstName} ${b.lastName}`);
-        //             });
-        //             setSearchUser(response.data);
-        //         }
-        //     }).catch(function (error) {
-        //         console.log(error);
-        //     })
-        // } else if (currentUser.role === 'Admin') {
-        //     GetListUserAdminService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
-        //         if (!didCancel) {
-        //             if (lastLocation !== null && location.pathname.includes('/manage/list-user/ok')) {
-        //                 if (lastLocation.pathname === '/manage/create') {
-        //                     GetUserService({ code: location.pathname.split('/')[3] }).then(function (res) {
-        //                         response.data.items = response.data.items.filter(x => x.code != res.data.code);
-        //                         if (pageIndex === 1) {
-        //                             response.data.items.unshift(res.data);
-        //                         }
-        //                         setSearchUser(response.data);
-        //                     }).catch(function (error) {
-        //                         console.log(error);
-        //                     })
-        //                 }
-        //             } else if (lastLocation.pathname.includes('/manage/edit/')) {
-        //                 GetUserService({ code: lastLocation.pathname.substring(6, lastLocation.pathname.length) }).then(function (res) {
-        //                     // handle success
-        //                     response.data.items = response.data.items.filter(x => x.code !== res.data.code);
-        //                     if (pageIndex === 1) {
-        //                         response.data.items.unshift(res.data);
-        //                     }
-        //                     setSearchUser(response.data);
-        //                 })
-        //                     .catch(function (error) {
-        //                         // handle error
-        //                         console.log(error);
-        //                     })
-        //             }
-        //             setTotal(0);
-        //         } else {
-        //             response.data.items.sort(function (a, b) {
-        //                 return (`${a.firstName} ${a.lastName}`).localeCompare(`${b.firstName} ${b.lastName}`);
-        //             });
-        //             setSearchUser(response.data);
-        //         }
-        //     }).catch(function (error) {
-        //         console.log(error);
-        //     })
-        // }
+
         return () => didCancel = true
     }, [pageSizeOld, pageIndex, lastLocation, location.pathname])
     return (
@@ -405,6 +327,26 @@ const ListUser = () => {
                     </Button>
                 </Col>
             </Row>
+            <Modal title={user !== null ? "Are you sure?" : "Can not disable user"} visible={isModalDisableVisible}
+                onOk={handleDisableOk} onCancel={handleDisableCancel} centered={true} closable={user !== null ? false : true}
+                footer={null} style={{ height: '20', borderRadius: '20px', fontWeight: '30px' }} maskClosable={user !== null ? false : true}>
+                {
+                    <>
+                        <b style={{ marginLeft: '25%' }}>Do you want to disable this user?</b>
+                        <br />
+                        <br />
+                        <div className={styles.buttonGroup}>
+                            <Button className={styles.create}
+                                style={{ marginLeft: '22%' }}
+                                onClick={handleDisableOk}>Disable</Button>
+                            <Button className={styles.cancelButton}
+                                style={{ marginLeft: '20%' }}
+                                onClick={handleDisableCancel}>Cancel</Button>
+                        </div>
+                    </>
+                }
+            </Modal>
+
             <br />
             {
                 searchUser !== undefined ?

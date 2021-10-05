@@ -20,7 +20,7 @@ const UserConstant = {
     GetListUserAdminURL: `${CommonConstant.Server}/api/Admin/admin/list/user`,
     GetUserURL: `${CommonConstant.Server}/api/Admin/user/Code?code=`,
     EditUserURL: `${CommonConstant.Server}/api/Admin/user/update/`,
-    DisableUser: `${CommonConstant.Server}/api/Admin/user/Disable/`,
+    DisableUserURL: `${CommonConstant.Server}/api/Admin/user/Disable/`,
     CreateUserURL: `${CommonConstant.Server}/api/Admin/user/create`,
     GetAllUserAdminURL: `${CommonConstant.Server}/api/Admin/user/admin/listAll`,
     GetAllUserMasterURL: `${CommonConstant.Server}/api/Admin/user/master/listAll`

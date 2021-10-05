@@ -12,8 +12,7 @@ namespace CarDealerProject.DTO
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Dob { get; set; }
-        public DateTime JoinDate { get; set; }
-        public int DealerId { get; set; }
+        public string DealerName { get; set; }
         public string Gender { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }

@@ -128,8 +128,8 @@ namespace CarDealerProject.Services.AdminService
             .Where(u => u.Code == code && u.IsDisabled == true)
             .FirstOrDefault();
 
-        public DealerEntity GetDealerById(int id) => _carDealerDBContext.DealerEntity
-            .Where(x => x.Id == id)
+        public DealerEntity GetDealerByName(string name) => _carDealerDBContext.DealerEntity
+            .Where(x => x.Name == name)
             .FirstOrDefault();
         public ImageEntity GetImageByName(string name) => _carDealerDBContext.ImageEntity
             .Where(x => x.ImageName == name).FirstOrDefault();
@@ -184,7 +184,7 @@ namespace CarDealerProject.Services.AdminService
         public async Task<AppUserDTO> CreateUser(AppUserDTO user)
         {
             AppUserDTO result = null;
-            var dealer = GetDealerById(user.DealerId);
+            var dealer = GetDealerByName(user.DealerName);
             var image = GetImageByName(user.ImageName);
             using var transaction = _carDealerDBContext.Database.BeginTransaction();
             try
@@ -226,12 +226,13 @@ namespace CarDealerProject.Services.AdminService
                 {
                     user.Password = "Staff123@123";
                 };
-                var existedEmail = _carDealerDBContext.AppUsers.Where(x => string.Equals(x.Email, user.Email, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                if (existedEmail == null)
+                var existEmail = _carDealerDBContext.AppUsers.Where(x => x.Email.ToLower() == user.Email.ToLower()).FirstOrDefault();
+                if (existEmail == null)
                 {
                     var createdUser = await _userManager.CreateAsync(newUser, user.Password);
                     _carDealerDBContext.AppUsers.Add(newUser);
                     await _carDealerDBContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
                     string roleName = newUser.Type == (Role)0 ? "Master" : (newUser.Type == (Role)1 ? "Admin" : "Staff");
                     if (await _userManager.IsInRoleAsync(newUser, roleName) == false)
                     {
@@ -249,7 +250,7 @@ namespace CarDealerProject.Services.AdminService
                     LastName = newUser.LastName,
                     Dob = newUser.Dob,
                     Email = newUser.Email,
-                    DealerId = newUser.Dealer.Id,
+                    DealerName = newUser.Dealer.Name,
                     Gender = newUser.Gender,
                     UserName = newUser.UserName,
                     Type = newUser.Type,
@@ -312,7 +313,7 @@ namespace CarDealerProject.Services.AdminService
                     FirstName = existingUser.FirstName,
                     LastName = existingUser.LastName,
                     Dob = existingUser.Dob,
-                    DealerId = existingUser.Dealer.Id,
+                    DealerName = existingUser.Dealer.Name,
                     Gender = existingUser.Gender,
                     Code = existingUser.Code,
                     UserName = existingUser.UserName,

@@ -15,16 +15,17 @@ import UploadFile from './components/UploadFile/UploadFile';
 import Cookies from 'universal-cookie';
 import { CookiesProvider } from "react-cookie";
 import { LastLocationProvider } from 'react-router-last-location';
-import CurrentUserContext from "./Share/Context/CurrentUserContext"
-import Login from './components/Admin/Login/Login'
-import ListUserPage from './Pages/Admin/User/ListUserPage'
+import CurrentUserContext from "./Share/Context/CurrentUserContext";
+import Login from './components/Admin/Login/Login';
+import ListUserPage from './Pages/Admin/User/ListUserPage';
+import CreateUser from './components/Admin/User/CreateUser/CreateUser'
 const { Header, Footer, Sider } = Layout;
 const App = () => {
     const cookies = new Cookies();
     const initialValues = {
         token: cookies.get('token'),
         role: cookies.get('role'),
-        location: cookies.get('dealer'),
+        dealer: cookies.get('dealer'),
         code: cookies.get('code'),
         firstLogin: cookies.get('firstLogin'),
         user: cookies.get('userName')
@@ -45,6 +46,7 @@ const App = () => {
                                     <>
                                         <Login />
                                         <ListUserPage />
+                                        <CreateUser />
                                     </> :
                                     <SlideProject />
                                 }

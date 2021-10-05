@@ -1,12 +1,12 @@
 import axios from "axios";
 import UserConstant from '../Share/Constant/UserConstant';
 
-export function CreateUserService({ firstName, lastName, dob, gender, type, userName, dealerId, code, imageName, email }) {
+export function CreateUserService({ firstName, lastName, dob, gender, type, userName, dealerName, code, imageName, email }) {
   return axios.post(UserConstant.CreateUserURL, {
     firstName: firstName,
     lastName: lastName,
     dob: dob,
-    dealerId: dealerId,
+    dealerName: dealerName,
     code: code,
     gender: gender,
     userName: userName,
@@ -34,7 +34,7 @@ export function GetListUserAdminService({ index, size }) {
 }
 
 export function DisableUserService({ code }) {
-  return axios.put(UserConstant.DisableUserURL + code);
+  return axios.put(`${UserConstant.DisableUserURL}${code}`);
 }
 
 export function GetUserService({ code }) {

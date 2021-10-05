@@ -3,21 +3,21 @@ import "antd/dist/antd.css";
 import "./HeaderProject.css";
 import { Link, useHistory } from "react-router-dom";
 import { useState, useContext } from "react";
-import { DownOutlined, CarOutlined } from '@ant-design/icons';
+import { DownOutlined, CarOutlined, UnlockOutlined } from '@ant-design/icons';
 import React from "react";
 import { FaCar } from 'react-icons/fa'
 import CurrentUserContext from '../../Share/Context/CurrentUserContext'
 import { ChangePasswordService } from '../../Services/AuthenticationService'
 import Cookies from 'universal-cookie';
 import styles from './Header.module.css'
+
+
 const { Header } = Layout;
 
 const HeaderProject = () => {
     const history = useHistory();
     const [form] = Form.useForm();
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
-    console.log(currentUser.location);
-    console.log(currentUser.role)
     const cookies = new Cookies();
     const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
     const [isModalLogoutVisible, setIsModalLogoutVisible] = useState(false);
@@ -40,7 +40,6 @@ const HeaderProject = () => {
                 setIsModalVisible(false);
                 setIsModalSuccesVisible(true);
                 handleLogoutOk();
-                history.push('/login')
             }).catch(function (error) {
                 if (error.response.data == "Password is incorrect") {
                     setError('Old password is incorrect!');
@@ -64,7 +63,6 @@ const HeaderProject = () => {
         setIsModalLogoutVisible(true);
     };
     const handleLogoutOk = () => {
-        sessionStorage.removeItem('key');
         setCurrentUser({
             token: null,
             role: null,
@@ -73,15 +71,14 @@ const HeaderProject = () => {
             firstLogin: null,
             user: null
         });
-        history.push('/login')
         cookies.remove('token');
         cookies.remove('code');
         cookies.remove('userName');
         cookies.remove('role');
-        cookies.remove('token');
         cookies.remove('firstLogin');
         cookies.remove('dealer');
-        console.log(currentUser)
+        sessionStorage.clear();
+        window.location.replace("/manager/login");
         setIsModalLogoutVisible(false);
     }
 
@@ -91,18 +88,136 @@ const HeaderProject = () => {
     const menu = (
         <Menu>
             <Menu.Item key="0">
-                <b><Link style={{ color: 'red' }} onClick={showModalChangePassword}>Change Password</Link></b>
+                <b><Link to="#" style={{ color: 'red' }} onClick={showModalChangePassword}>Change Password</Link></b>
             </Menu.Item>
             <Menu.Item key="1">
-                <b><Link style={{ color: 'red' }} onClick={showLogOutModal}>Logout</Link></b>
+                <b><Link to="#" style={{ color: 'red' }} onClick={showLogOutModal}>Logout</Link></b>
             </Menu.Item>
         </Menu>
     );
-    console.log(window.location.href);
     var url = window.location.href;
     var check = "manager";
     return (
         <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
+            <Modal title="Change Password" visible={isModalVisible} onOk={handleOk} closable={false} onCancel={handleCancel} centered={true}
+                footer={null}>
+                <Form
+                    form={form}
+                    wrapperCol={{
+                        span: 20,
+                    }}
+                    onFinish={handleOk}
+                    onFinishFailed={handleCancel}
+                >
+                    <Form.Item
+                        style={{ textAlign: 'center', justifyContent: 'center' }}
+                        name="OldPassword"
+                        values="OldPassword"
+                        validateStatus={handleOk !== 'Password is incorrect' ? 'success' : 'Old Password is incorrect'}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please input your Old Password",
+                            },
+                        ]}
+
+                    >
+                        <Input.Password
+                            placeholder="Old Password"
+                            onChange={handleChange}
+                            prefix={<UnlockOutlined />} />
+                    </Form.Item>
+
+                    <Form.Item
+                        style={{ textAlign: 'center', justifyContent: 'center' }}
+                        name="NewPassword"
+                        values="NewPassword"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please input your New Password",
+                            },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (getFieldValue("OldPassword") !== value) {
+                                        return Promise.resolve();
+                                    } else {
+                                        return Promise.reject(
+                                            new Error(
+                                                "New Password and Old Password must not match!"
+                                            )
+                                        )
+                                    }
+                                }
+                            }),
+                            () => ({
+                                validator(_, value) {
+                                    if (strongRegex.test(value)) {
+                                        return Promise.resolve();
+                                    } else {
+                                        return Promise.reject(
+                                            new Error(
+                                                "Require lowercase , uppercase , numeric and special Character and at least 8 Characters"
+                                            )
+                                        );
+                                    }
+                                },
+                            }),
+                        ]}
+                    >
+                        <Input.Password
+                            placeholder="New Password"
+                            prefix={<UnlockOutlined />}
+                        />
+                    </Form.Item>
+                    <Button onClick={handleCancel}
+                        style={{ marginRight: '25%', marginLeft: '20%', color: "black", float: "right" }}>Cancel</Button>
+                    <Form.Item
+                        shouldUpdate
+                        className="submit"
+                        wrapperCol={{
+                            span: 16,
+                            offset: 21,
+                        }}
+                    >
+                        {() => (
+                            <Button
+                                style={{ marginRight: '40%', paddingLeft: '20px', paddingRight: '20px', backgroundColor: "red", color: "white", float: "right" }}
+                                danger
+                                type="primary"
+                                htmlType="submit"
+                                disabled={
+                                    !form.isFieldsTouched(true) ||
+                                    form.getFieldsError().filter(({ errors }) => errors.length)
+                                        .length > 0
+                                }
+                            >
+                                Save
+                            </Button>
+                        )}
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+            <Modal title="Are you sure?" visible={isModalLogoutVisible}
+                onOk={handleLogoutOk} onCancel={handleLogoutCancel} centered={true}
+                footer={null} style={{ height: '20', borderRadius: '20px', fontWeight: '30px' }}>
+                {
+                    <>
+                        <b style={{ marginLeft: '32%' }}>Do you want to log out?</b>
+                        <br />
+                        <br />
+                        <div className={styles.buttonGroup}>
+                            <Button className={styles.create}
+                                style={{ marginLeft: '25%', paddingLeft: '10px', paddingRight: '10px' }}
+                                onClick={handleLogoutOk}>Log out</Button>
+                            <Button className={styles.cancelButton}
+                                style={{ marginLeft: '20%' }}
+                                onClick={handleLogoutCancel}>Cancel</Button>
+                        </div>
+                    </>
+                }
+            </Modal>
             <div>
                 <div className="logo">
                     <div style={{ marginLeft: "4%", padding: "1%" }}>
@@ -129,9 +244,9 @@ const HeaderProject = () => {
                         url.includes(check) ?
                             <Menu theme="dark" mode="horizontal">
                                 {currentUser.role === null || currentUser.role === undefined ?
-                                    <Menu.Item style={{ marginLeft: '95%' }}><Link style={{ color: 'white' }} to='/login'>Login</Link></Menu.Item>
+                                    <Menu.Item style={{ marginLeft: '95%' }}><Link style={{ color: 'white' }} to='/manager/login'>Login</Link></Menu.Item>
                                     : <Dropdown overlay={menu}>
-                                        <Menu.Item className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                                        <Menu.Item style={{ marginLeft: '88%' }} className="ant-dropdown-link" >
                                             Welcome {currentUser.user} <DownOutlined />
                                         </Menu.Item>
                                     </Dropdown>
@@ -148,7 +263,7 @@ const HeaderProject = () => {
                     }
                 </Header >
             </div>
-        </CurrentUserContext.Provider>
+        </CurrentUserContext.Provider >
     )
 }
 

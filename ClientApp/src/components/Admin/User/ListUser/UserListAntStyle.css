@@ -45,3 +45,7 @@
 .ant-input{
   height: 32px;
 }
+.ant-pagination-item-active
+{
+  background-color: black;
+}
