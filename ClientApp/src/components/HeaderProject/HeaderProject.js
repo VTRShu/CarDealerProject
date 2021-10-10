@@ -3,7 +3,7 @@ import "antd/dist/antd.css";
 import "./HeaderProject.css";
 import { Link, useHistory } from "react-router-dom";
 import { useState, useContext } from "react";
-import { DownOutlined, CarOutlined, UnlockOutlined } from '@ant-design/icons';
+import { DownOutlined, CarOutlined, UnlockOutlined, UserOutlined, UserAddOutlined } from '@ant-design/icons';
 import React from "react";
 import { FaCar } from 'react-icons/fa'
 import CurrentUserContext from '../../Share/Context/CurrentUserContext'
@@ -13,7 +13,7 @@ import styles from './Header.module.css'
 
 
 const { Header } = Layout;
-
+const { SubMenu } = Menu;
 const HeaderProject = () => {
     const history = useHistory();
     const [form] = Form.useForm();
@@ -77,24 +77,13 @@ const HeaderProject = () => {
         cookies.remove('role');
         cookies.remove('firstLogin');
         cookies.remove('dealer');
-        sessionStorage.clear();
-        window.location.replace("/manager/login");
+        window.location.replace("/manager");
         setIsModalLogoutVisible(false);
     }
 
     const handleLogoutCancel = () => {
         setIsModalLogoutVisible(false);
     }
-    const menu = (
-        <Menu>
-            <Menu.Item key="0">
-                <b><Link to="#" style={{ color: 'red' }} onClick={showModalChangePassword}>Change Password</Link></b>
-            </Menu.Item>
-            <Menu.Item key="1">
-                <b><Link to="#" style={{ color: 'red' }} onClick={showLogOutModal}>Logout</Link></b>
-            </Menu.Item>
-        </Menu>
-    );
     var url = window.location.href;
     var check = "manager";
     return (
@@ -244,12 +233,39 @@ const HeaderProject = () => {
                         url.includes(check) ?
                             <Menu theme="dark" mode="horizontal">
                                 {currentUser.role === null || currentUser.role === undefined ?
-                                    <Menu.Item style={{ marginLeft: '95%' }}><Link style={{ color: 'white' }} to='/manager/login'>Login</Link></Menu.Item>
-                                    : <Dropdown overlay={menu}>
-                                        <Menu.Item style={{ marginLeft: '88%' }} className="ant-dropdown-link" >
-                                            Welcome {currentUser.user} <DownOutlined />
-                                        </Menu.Item>
-                                    </Dropdown>
+                                    <Menu.Item style={{ marginLeft: '95%' }}><Link style={{ color: 'white' }} to='/manager'>Login</Link></Menu.Item>
+                                    : <>
+
+                                        <SubMenu key="sub1" title="User">
+                                            <Menu.Item><Link to="/list-user">List Users</Link></Menu.Item>
+                                            <Menu.Item><Link to="/create-user">Create User</Link></Menu.Item>
+                                        </SubMenu>
+                                        <SubMenu key="sub2" title="Dealer">
+                                            <Menu.Item><Link to="/list-dealer">List Dealers</Link></Menu.Item>
+                                            {currentUser.role === 'Master' ?
+                                                <Menu.Item><Link to="/create-dealer">Create Dealer</Link></Menu.Item>
+                                                : ""}
+                                        </SubMenu>
+                                        <SubMenu key="sub3" title="Car">
+                                            {currentUser.role === 'Master' ?
+                                                <>
+                                                    <SubMenu title="Model">
+                                                        <Menu.Item key="1"><Link to="/list-model">All current models</Link></Menu.Item>
+                                                        <Menu.Item key="2"><Link to="/create-model">Create new model</Link></Menu.Item>
+                                                    </SubMenu>
+                                                </> : ""
+                                            }
+                                            <SubMenu title="Manage Car Information">
+                                                <Menu.Item key="5"><Link to="/list-car">List Cars</Link></Menu.Item>
+                                                <Menu.Item key="6"><Link to="/create-car">Create new car</Link></Menu.Item>
+                                            </SubMenu>
+                                        </SubMenu>
+                                        <Menu.Item><Link to="/list-booking">List booking</Link></Menu.Item>
+                                        <SubMenu key="sub4" style={{ marginLeft: '66%' }} icon={<UserOutlined />} title={`Welcome ${currentUser.user}`}>
+                                            <Menu.Item key="3" onClick={showModalChangePassword}>Change Password </Menu.Item>
+                                            <Menu.Item key="4" onClick={showLogOutModal}>Logout</Menu.Item>
+                                        </SubMenu>
+                                    </>
                                 }
                             </Menu>
                             :

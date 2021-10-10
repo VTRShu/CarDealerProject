@@ -222,8 +222,8 @@ const ListUser = () => {
             if (currentUser.role === 'Master') {
                 GetListUserMasterService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
                     if (!didCancel) {
-                        if (lastLocation !== null && location.pathname.includes('/manage/list-user/ok')) {
-                            if (lastLocation.pathname === '/manage/create') {
+                        if (lastLocation !== null && location.pathname.includes('/list-user/ok')) {
+                            if (lastLocation.pathname === '/create-user') {
                                 GetUserService({ code: location.pathname.split('/')[3] }).then(function (res) {
                                     // handle success
                                     response.data.items = response.data.items.filter(x => x.code !== res.data.code);
@@ -236,8 +236,8 @@ const ListUser = () => {
                                         // handle error
                                         console.log(error);
                                     })
-                            } else if (lastLocation.pathname.includes('/manage/edit/')) {
-                                GetUserService({ code: lastLocation.pathname.substring(6, lastLocation.pathname.length) }).then(function (res) {
+                            } else if (lastLocation.pathname.includes('/edit-user/')) {
+                                GetUserService({ code: lastLocation.pathname.substring(11, lastLocation.pathname.length) }).then(function (res) {
                                     // handle success
                                     response.data.items = response.data.items.filter(x => x.code !== res.data.code);
                                     if (pageIndex === 1) {
@@ -262,10 +262,12 @@ const ListUser = () => {
                     console.log(error);
                 })
             } else if (currentUser.role === 'Admin') {
+
                 GetListUserAdminService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
+
                     if (!didCancel) {
-                        if (lastLocation !== null && location.pathname.includes('/manage/list-user/ok')) {
-                            if (lastLocation.pathname === '/manage/create') {
+                        if (lastLocation !== null && location.pathname.includes('/list-user/ok')) {
+                            if (lastLocation.pathname === '/create-user') {
                                 GetUserService({ code: location.pathname.split('/')[3] }).then(function (res) {
                                     // handle success
                                     response.data.items = response.data.items.filter(x => x.code !== res.data.code);
@@ -278,8 +280,8 @@ const ListUser = () => {
                                         // handle error
                                         console.log(error);
                                     })
-                            } else if (lastLocation.pathname.includes('/manage/edit/')) {
-                                GetUserService({ code: lastLocation.pathname.substring(6, lastLocation.pathname.length) }).then(function (res) {
+                            } else if (lastLocation.pathname.includes('/edit-user/')) {
+                                GetUserService({ code: lastLocation.pathname.substring(11, lastLocation.pathname.length) }).then(function (res) {
                                     // handle success
                                     response.data.items = response.data.items.filter(x => x.code !== res.data.code);
                                     if (pageIndex === 1) {
@@ -323,7 +325,7 @@ const ListUser = () => {
                 <Col span={4}></Col>
                 <Col span={5}>
                     <Button className={styles.create}>
-                        <Link to='/manager/create'>Create new user</Link>
+                        <Link to='/create-user'>Create new user</Link>
                     </Button>
                 </Col>
             </Row>
@@ -423,7 +425,7 @@ const ListUser = () => {
                                                 <td className={styles.borderRow} onClick={showModal} id={user.code}>{user.type === 0 ? "Master" : (user.type === 1 ? "Admin" : "Staff")}</td>
                                                 <td></td>
                                                 <td>
-                                                    <Link to={`/manager/edit/${user.code}`}><i className="bi bi-pencil-fill"></i></Link>
+                                                    <Link to={`/edit-user/${user.code}`}><i className="bi bi-pencil-fill"></i></Link>
                                                     <i className="bi bi-x-circle" onClick={showModalDisable} id={user.code}></i>
                                                 </td>
                                             </tr>

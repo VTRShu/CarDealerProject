@@ -30,11 +30,26 @@ namespace CarDealerProject.Controllers
             }
             return Ok(newModel);
         }
+        [HttpPut("model/update/{name}")]
+        public async Task<ActionResult<ModelEntityDTO>> Update(ModelEntityDTO model, string name)
+        {
+            var updateModel = await _modelService.UpdateModel(model, name);
+            if (updateModel == null)
+            {
+                return BadRequest("Error !!!");
+            }
+            return Ok(updateModel);
+        }
         [HttpGet("model/list")]
         public async Task<List<ModelEntity>> GetListModel()
         {
             var modelList = await _modelService.GetModelList();
             return modelList;
+        }
+        [HttpGet("model/name")]
+        public ModelEntity GetModelById(string name)
+        {
+            return _modelService.GetModelInfor(name);
         }
     }
 }

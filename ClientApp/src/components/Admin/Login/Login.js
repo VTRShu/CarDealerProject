@@ -1,6 +1,7 @@
 import "antd/dist/antd.css";
 import React from "react";
 import { useContext } from "react"
+import { useHistory } from 'react-router-dom';
 import { UnlockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Button, Checkbox, Layout, Typography, Modal } from "antd";
 import { useState } from "react";
@@ -28,10 +29,10 @@ const Login = () => {
   console.log(currentUser);
   const handleChange = (e) => e.target.value && setError(false);
   const [form] = Form.useForm();
+  const history = useHistory();
   const onFinish = (values) => {
     LoginService({ user: values.Username, password: values.Password, remember: values.Remember }).then((response) => {
       if (response.status === 200 && response.data.token !== null) {
-        sessionStorage.setItem('key', '1');
         setCurrentUser({
           token: response.data.token,
           role: response.data.role,

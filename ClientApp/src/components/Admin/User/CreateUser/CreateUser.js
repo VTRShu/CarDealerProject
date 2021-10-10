@@ -1,14 +1,14 @@
 import "antd/dist/antd.css";
 import moment from "moment-timezone";
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { useHistory } from "react-router-dom";
 import { CreateUserService } from '../../../../Services/UserService'
-import { Layout, Form, Button, Select, Input, DatePicker, Radio, Upload, Space, Modal } from "antd";
+import { Layout, Form, Button, Select, Input, DatePicker, Radio, Upload, Space, Modal, Divider } from "antd";
+import { GetDealerListService } from '../../../../Services/DealerService'
 import { UploadOutlined } from '@ant-design/icons';
 import { Row, Col } from "antd";
 import CurrentUserContext from '../../../../Share/Context/CurrentUserContext'
 import React from "react";
-import { FaGlassMartiniAlt } from "react-icons/fa";
 const { Option } = Select;
 const { Content } = Layout;
 const CreateUser = () => {
@@ -19,7 +19,8 @@ const CreateUser = () => {
         }
         return e && e.fileList;
     };
-
+    const [visible, setVisible] = useState(false);
+    const [dealerData, setDealerData] = useState();
     const dateFormat = "DD/MM/YYYY";
     let history = useHistory();
     const [form] = Form.useForm();
@@ -44,12 +45,11 @@ const CreateUser = () => {
     }
 
     const handleCancel = () => {
-        history.push(`/manager/list-user`);
+        history.push(`/list-user`);
     };
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
     const [dob, setDob] = useState([]);
     const onFinish = (values) => {
-        console.log(values.image);
         var dobDate = moment.tz(dob, "Asia/Ho_Chi_Minh").format("MM/DD/YYYY");
         dobDate = new Date(dobDate).toDateString();
         if (currentUser.role === 'Admin') {
@@ -68,28 +68,7 @@ const CreateUser = () => {
                     imageName: values.upload[0].name,
                 }).then(function (response) {
                     console.log(response);
-                    history.push(`/manager/list-user/ok/${response.data.code}`);
-                }).catch(function (error) {
-                    form.setFields([{
-                        name: 'email',
-                        errors: [<b style={{ color: 'red' }}>Email is already existed!</b>],
-                    }])
-                });
-            } else if (currentUser.role === 'Master') {
-                CreateUserService({
-                    firstName: values.firstName.split(' ').join(''),
-                    lastName: values.lastName,
-                    dob: dobDate,
-                    gender: values.gender,
-                    type: values.type,
-                    dealerName: values.dealer,
-                    email: values.email,
-                    code: "null",
-                    userName: "null",
-                    imageName: values.upload[0].name,
-                }).then(function (response) {
-                    console.log(response);
-                    history.push(`/manager/list-user/ok/${response.data.code}`);
+                    history.push(`/list-user/ok/${response.data.code}`);
                 }).catch(function (error) {
                     form.setFields([{
                         name: 'email',
@@ -97,9 +76,40 @@ const CreateUser = () => {
                     }])
                 });
             }
+        } else if (currentUser.role === 'Master') {
+            CreateUserService({
+                firstName: values.firstName.split(' ').join(''),
+                lastName: values.lastName,
+                dob: dobDate,
+                gender: values.gender,
+                type: values.type,
+                dealerName: values.dealerName,
+                email: values.email,
+                code: "null",
+                userName: "null",
+                imageName: values.upload[0].name,
+            }).then(function (response) {
+                console.log(response);
+                history.push(`/list-user/ok/${response.data.code}`);
+            }).catch(function (error) {
+                form.setFields([{
+                    name: 'email',
+                    errors: [<b style={{ color: 'red' }}>Email is already existed!</b>],
+                }])
+            });
         }
     }
-
+    useEffect(() => {
+        (async () => {
+            GetDealerListService({
+            })
+                .then((res) => {
+                    setDealerData(res.data);
+                    setVisible(false);
+                })
+                .catch((err) => console.log(err));
+        })();
+    }, [visible]);
     return (
         <Content>
             <Form
@@ -113,7 +123,7 @@ const CreateUser = () => {
                 form={form}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}>
-                <h1>Create New User</h1>
+                <h1 style={{ color: 'black', textAlign: 'center' }}>Create New User</h1>
                 <Form.Item
                     label="First Name"
                     name="firstName"
@@ -184,21 +194,36 @@ const CreateUser = () => {
                         <Radio value="Female">Female</Radio>
                     </Radio.Group>
                 </Form.Item>
-
-                <Form.Item
-                    name="dealer"
-                    label="Dealer"
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                            message: "Please select dealer!",
-                        },
-                    ]}
-                >
-
-                </Form.Item>
-
+                {currentUser.role === 'Master' ?
+                    <Form.Item
+                        name="dealerName"
+                        label="Dealer"
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please select dealer!",
+                            }
+                        ]}>
+                        <Select
+                            style={{ width: "100%" }}
+                            placeholder="Choose dealer"
+                            dropdownRender={(menu) => (
+                                <div>
+                                    {menu}
+                                    <Divider style={{ margin: "4px 0" }} />
+                                </div>
+                            )}
+                        >
+                            {dealerData &&
+                                dealerData.length > 0 &&
+                                dealerData.map((item) => (
+                                    <Option value={item.name} key={item.name}>
+                                        {item.name}
+                                    </Option>
+                                ))}
+                        </Select>
+                    </Form.Item> : ""}
                 <Form.Item
                     label="Email"
                     name="email"
@@ -224,8 +249,17 @@ const CreateUser = () => {
                     ]}
                 >
                     <Select placeholder="Please select a Type">
-                        <Option value={1}>Admin</Option>
-                        <Option value={2}>Staff</Option>
+                        {currentUser.role === 'Admin' ?
+                            <>
+                                <Option value={1}>Admin</Option>
+                                <Option value={2}>Staff</Option>
+                            </>
+                            :
+                            <>
+                                <Option value={0}>Master</Option>
+                                <Option value={1}>Admin</Option>
+                                <Option value={2}>Staff</Option>
+                            </>}
                     </Select>
                 </Form.Item>
                 <Form.Item

@@ -11,5 +11,7 @@ namespace CarDealerProject.Services.ModelService
     {
         Task<List<ModelEntity>> GetModelList();
         Task<ModelEntityDTO> CreateModel(ModelEntityDTO model);
+        Task<ModelEntityDTO> UpdateModel(ModelEntityDTO model, string name);
+        ModelEntity GetModelInfor(string name);
     }
 }

@@ -25,16 +25,32 @@ namespace CarDealerProject.Controllers
             var newDealer = await _dealerService.CreateDealer(dealer);
             if(newDealer == null)
             {
-                return BadRequest("Can't create dealer , pls try again!");
+                return BadRequest("Error !!!");
             }
             return Ok(newDealer);
         }
-
+        [HttpPut("dealer/update/{id}")]
+        public async Task<ActionResult<DealerEntityDTO>> Update(DealerEntityDTO dealer, int id)
+        {
+            var updateModel = await _dealerService.UpdateDealer(dealer, id);
+            if (updateModel == null)
+            {
+                return BadRequest("Error !!!");
+            }
+            return Ok(updateModel);
+        }
         [HttpGet("dealer/List")]
         public async Task<List<DealerEntity>> GetDealerList()
         {
             var dealerList = await _dealerService.GetDealerList();
             return dealerList;
+        }
+
+        [HttpGet("dealer/{id}")]
+        public  DealerEntity GetDealerById(int id)
+        {
+            var dealer =  _dealerService.GetDealerInfor(id);
+            return dealer;
         }
     }
 }

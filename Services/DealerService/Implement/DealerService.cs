@@ -45,7 +45,8 @@ namespace CarDealerProject.Services.DealerService.Implement
                     await transaction.CommitAsync();
 
                     result = new DealerEntityDTO()
-                    {
+                    {  
+                        Id = newDealer.Id,
                         Name = newDealer.Name,
                         Latitude = newDealer.Latitude,
                         Longtitude = newDealer.Longtitude,
@@ -63,6 +64,84 @@ namespace CarDealerProject.Services.DealerService.Implement
             }catch(Exception)
             {
                 _logger.LogError("Can't Create Dealer! Pls try again.");
+            }
+            return result;
+        }
+        public DealerEntity GetDealerById(int id) => _carDealerDBContext.DealerEntity
+            .Where(x => x.Id == id).Include(x => x.Services)
+            .FirstOrDefault();
+        public DealerEntity GetDealerInfor(int id)
+        {
+            DealerEntity result = null;
+            try
+            {
+                var existedDealer = GetDealerById(id);
+                if(existedDealer != null)
+                {
+                    result = new DealerEntity
+                    {
+                        Id = existedDealer.Id,
+                        Name = existedDealer.Name,
+                        Longtitude = existedDealer.Longtitude,
+                        Latitude = existedDealer.Latitude,
+                        DealerEmail = existedDealer.DealerEmail,
+                        DealerPhone = existedDealer.DealerPhone,
+                        DealerWebsite = existedDealer.DealerWebsite,
+                        Description = existedDealer.Description,
+                        Services = existedDealer.Services,
+                    };
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+                return result;
+            }catch(Exception)
+            {
+                _logger.LogError("Couldn't Find Dealer");
+            }
+            return result;
+        }
+        public async Task<DealerEntityDTO> UpdateDealer(DealerEntityDTO dealer,int id)
+        {
+            using var transaction = _carDealerDBContext.Database.BeginTransaction();
+            DealerEntityDTO result = null;
+            try
+            {
+                var existedDealer = GetDealerById(id);
+                if(existedDealer == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    existedDealer.Name = dealer.Name;
+                    existedDealer.Longtitude = dealer.Longtitude;
+                    existedDealer.Latitude = dealer.Latitude;
+                    existedDealer.DealerEmail = dealer.DealerEmail;
+                    existedDealer.DealerPhone = dealer.DealerPhone;
+                    existedDealer.DealerWebsite = dealer.DealerWebsite;
+                    existedDealer.Description = dealer.Description;
+                    _carDealerDBContext.Entry(existedDealer).State = EntityState.Modified;
+                    await _carDealerDBContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    result = new DealerEntityDTO
+                    {   
+                        Id = existedDealer.Id,
+                        Name = existedDealer.Name,
+                        Longtitude = existedDealer.Longtitude,
+                        Latitude = existedDealer.Latitude,
+                        DealerEmail = existedDealer.DealerEmail,
+                        DealerPhone = existedDealer.DealerPhone,
+                        DealerWebsite = existedDealer.DealerWebsite,
+                        Description = existedDealer.Description,
+                    };
+                    return result;
+                }
+            }catch(Exception)
+            {
+                _logger.LogError("Couldn't Update Dealer");
             }
             return result;
         }

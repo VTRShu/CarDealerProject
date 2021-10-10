@@ -177,6 +177,7 @@ namespace CarDealerProject.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true, computedColumnSql: "'MB'+CAST((RIGHT('0000'+CONVERT(varchar(20),[Id]),4)) as varchar(200))"),
+                    DealerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DealerId = table.Column<int>(type: "int", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -251,6 +252,7 @@ namespace CarDealerProject.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartPrice = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TypeId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -432,11 +434,11 @@ namespace CarDealerProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "AppUser",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CountDuplicate", "DealerId", "Dob", "Email", "EmailConfirmed", "FirstName", "Gender", "ImageId", "IsDisabled", "LastName", "LastNameFirstChar", "LockoutEnabled", "LockoutEnd", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "Type" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CountDuplicate", "DealerId", "DealerName", "Dob", "Email", "EmailConfirmed", "FirstName", "Gender", "ImageId", "IsDisabled", "LastName", "LastNameFirstChar", "LockoutEnabled", "LockoutEnd", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "Type" },
                 values: new object[,]
                 {
-                    { 1, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "aaaa@gmail.com", false, "Nghia", "Male", null, true, "Le Trung", "LT", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 0 },
-                    { 2, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "bbbb@gmail.com", false, "Dai", "Male", null, true, "Pham Ngoc", "pn", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 1 }
+                    { 1, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, null, new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "aaaa@gmail.com", false, "Nghia", "Male", null, true, "Le Trung", "LT", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 0 },
+                    { 2, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, null, new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "bbbb@gmail.com", false, "Dai", "Male", null, true, "Pham Ngoc", "pn", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -457,6 +459,17 @@ namespace CarDealerProject.Migrations
                 table: "ImageEntity",
                 columns: new[] { "Id", "ImageName", "ImageSrc", "InsertedOn" },
                 values: new object[] { 1, "Capture.PNG", "https://localhost:5001/Images/Capture.PNG", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+
+            migrationBuilder.InsertData(
+                table: "TypeEntity",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "A sedan or saloon is a passenger car in a three-box configuration with separate compartments for engine, passenger, and cargo", "Sedan" },
+                    { 2, "A sport utility vehicle or SUV is a car classification that combines elements of road-going passenger cars with features from off-road vehicles, such as raised ground clearance and four-wheel drive.", "SUV" },
+                    { 3, "A coupe or coupé is a passenger car with a sloping or truncated rear roofline and two doors", "Coupe" },
+                    { 4, "MPV stands for Multi-Purpose Vehicle. They have tall, box-like bodies designed to create as much interior space as possible and often have more seats than a comparable hatchback or saloon.", "Van/MPV" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppUser_DealerId",

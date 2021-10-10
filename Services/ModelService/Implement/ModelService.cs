@@ -20,15 +20,25 @@ namespace CarDealerProject.Services.ModelService.Implement
             _carDealerDBContext = carDealerDBContext;
         }
         public TypeEntity GetTypeById(int id) => _carDealerDBContext.TypeEntity.Where(x => x.Id == id).FirstOrDefault();
-        public ImageEntity GetImageById(int id) => _carDealerDBContext.ImageEntity.Where(x => x.Id == id).FirstOrDefault();
+        public ModelEntity GetModelByName(string name) => _carDealerDBContext.ModelEntity
+            .Where(x => x.Name == name)
+            .Include(x=>x.Images)
+            .Include(x=>x.Type)
+            .FirstOrDefault();
+        public ModelEntity GetModelById(int id) => _carDealerDBContext.ModelEntity.Where(x => x.Id == id)
+            .Include(x => x.Images)
+            .Include(x => x.Type)
+            .FirstOrDefault();
+        public ImageEntity GetImageByName(string name) => _carDealerDBContext.ImageEntity.Where(x => x.ImageName == name).FirstOrDefault();
         public async Task<ModelEntityDTO> CreateModel(ModelEntityDTO model)
         {
             ModelEntityDTO result = null;
             ModelEntity newModel = null;
+            var duplicateModel = GetModelByName(model.Name);
             var type = GetTypeById(model.TypeId);
-            var image1 = GetImageById(model.ImageId1);
-            var image2 = GetImageById(model.ImageId2);
-            var image3 = GetImageById(model.ImageId3);
+            var image1 = GetImageByName(model.ImageName1);
+            var image2 = GetImageByName(model.ImageName2);
+            var image3 = GetImageByName(model.ImageName3);
             List<ImageEntity> imageList = new List<ImageEntity>();
             imageList.Add(image1);
             imageList.Add(image2);
@@ -39,23 +49,32 @@ namespace CarDealerProject.Services.ModelService.Implement
                 newModel = new ModelEntity
                 {
                     Name = model.Name,
+                    StartPrice = model.StartPrice,
                     Description = model.Description,
                     Images = imageList,
                     Type = type,
                 };
-                _carDealerDBContext.ModelEntity.Add(newModel);
-                await _carDealerDBContext.SaveChangesAsync();
-                await transaction.CommitAsync();
-                result = new ModelEntityDTO()
+                if (duplicateModel == null)
                 {
-                    Name = newModel.Name,
-                    Description = newModel.Description,
-                    TypeId = model.TypeId,
-                    ImageId1 = model.ImageId1,
-                    ImageId2 = model.ImageId2,
-                    ImageId3 = model.ImageId3,
-                };
-                return result;
+                    _carDealerDBContext.ModelEntity.Add(newModel);
+                    await _carDealerDBContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    result = new ModelEntityDTO()
+                    {
+                        Name = newModel.Name,
+                        StartPrice = newModel.StartPrice,
+                        Description = newModel.Description,
+                        TypeId = model.TypeId,
+                        ImageName1 = model.ImageName1,
+                        ImageName2 = model.ImageName2,
+                        ImageName3 = model.ImageName3,
+                    };
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -63,7 +82,94 @@ namespace CarDealerProject.Services.ModelService.Implement
             }
             return result;
         }
-
+        public async Task<ModelEntityDTO> UpdateModel(ModelEntityDTO model, string name)
+        {
+            ModelEntityDTO result = null;
+            using var transaction = _carDealerDBContext.Database.BeginTransaction();
+            try
+            {
+                var duplicateModel = GetModelByName(model.Name);
+                var existedModel = GetModelByName(name);
+                if(model.ImageName1 == null)
+                {
+                    model.ImageName1 = existedModel.Images[0].ImageName;
+                }
+                if (model.ImageName2 == null)
+                {
+                    model.ImageName2 = existedModel.Images[1].ImageName;
+                }
+                if (model.ImageName3 == null)
+                {
+                    model.ImageName3 = existedModel.Images[2].ImageName;
+                }
+                var image1 = GetImageByName(model.ImageName1);
+                var image2 = GetImageByName(model.ImageName2);
+                var image3 = GetImageByName(model.ImageName3);
+                List<ImageEntity> imageList = new List<ImageEntity>();
+                imageList.Add(image1);
+                imageList.Add(image2);
+                imageList.Add(image3);
+                
+                if (existedModel!= null)
+                {
+                    existedModel.StartPrice = model.StartPrice;
+                    existedModel.Name = model.Name;
+                    existedModel.Description = model.Description;
+                    existedModel.Images = imageList;
+                    _carDealerDBContext.Entry(existedModel).State = EntityState.Modified;
+                    await _carDealerDBContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    result = new ModelEntityDTO
+                    {
+                         Name = existedModel.Name,
+                         StartPrice = existedModel.StartPrice,
+                         Description = existedModel.Description,
+                         ImageName1 = existedModel.Images[0].ImageName,
+                         ImageName2 = existedModel.Images[1].ImageName,
+                         ImageName3 = existedModel.Images[2].ImageName,
+                    };
+                   return result;
+                }
+                else
+                {
+                    return null;
+                } 
+            }catch(Exception)
+            {
+                _logger.LogError("Couldn't update model!");
+            }
+            return result;
+        }
+        public ModelEntity GetModelInfor(string name)
+        {
+            ModelEntity result = null;
+            try
+            {
+                var model = GetModelByName(name);
+                if (model != null)
+                {
+                    result = new ModelEntity()
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        Type = model.Type,
+                        StartPrice = model.StartPrice,
+                        Images = model.Images,
+                        Description = model.Description,
+                    };
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                _logger.LogError("Couldn't find model");
+            };
+            return result;
+        }
         public async Task<List<ModelEntity>> GetModelList()
         {
             var modelList = await _carDealerDBContext.ModelEntity

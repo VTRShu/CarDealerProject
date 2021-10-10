@@ -153,6 +153,31 @@ namespace CarDealerProject.Repositories.EFContext
                     UserId = 2,
                     RoleId = 2,
                 });
+            modelBuilder.Entity<TypeEntity>().HasData(
+            new TypeEntity
+            {
+                Id = 1,
+                Name = "Sedan",
+                Description = "A sedan or saloon is a passenger car in a three-box configuration with separate compartments for engine, passenger, and cargo"
+            },
+            new TypeEntity
+            {
+                Id = 2,
+                Name = "SUV",
+                Description = "A sport utility vehicle or SUV is a car classification that combines elements of road-going passenger cars with features from off-road vehicles, such as raised ground clearance and four-wheel drive.",
+            },
+            new TypeEntity
+            {
+                Id = 3,
+                Name = "Coupe",
+                Description= "A coupe or coupé is a passenger car with a sloping or truncated rear roofline and two doors",
+            },
+            new TypeEntity
+            {
+                Id = 4,
+                Name = "Van/MPV",
+                Description = "MPV stands for Multi-Purpose Vehicle. They have tall, box-like bodies designed to create as much interior space as possible and often have more seats than a comparable hatchback or saloon.",
+            });
         }
     } 
 

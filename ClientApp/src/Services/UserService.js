@@ -42,12 +42,12 @@ export function GetUserService({ code }) {
 };
 
 
-export function EditUserService({ firstName, lastName, dob, gender, type, userName, dealerId, code, imageName, email }) {
+export function EditUserService({ firstName, lastName, dob, gender, type, userName, dealerName, code, imageName, email }) {
   return axios.put(`${UserConstant.EditUserURL}${code}`, {
     firstName: firstName,
     lastName: lastName,
     dob: dob,
-    dealerId: dealerId,
+    dealerName: dealerName,
     code: code,
     gender: gender,
     userName: userName,

@@ -93,6 +93,9 @@ namespace CarDealerProject.Migrations
                     b.Property<int?>("DealerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("DealerName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Dob")
                         .HasColumnType("datetime2");
 
@@ -452,6 +455,9 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StartPrice")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("TypeId")
                         .HasColumnType("int");
 
@@ -496,6 +502,32 @@ namespace CarDealerProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TypeEntity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "A sedan or saloon is a passenger car in a three-box configuration with separate compartments for engine, passenger, and cargo",
+                            Name = "Sedan"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "A sport utility vehicle or SUV is a car classification that combines elements of road-going passenger cars with features from off-road vehicles, such as raised ground clearance and four-wheel drive.",
+                            Name = "SUV"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "A coupe or coupé is a passenger car with a sloping or truncated rear roofline and two doors",
+                            Name = "Coupe"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "MPV stands for Multi-Purpose Vehicle. They have tall, box-like bodies designed to create as much interior space as possible and often have more seats than a comparable hatchback or saloon.",
+                            Name = "Van/MPV"
+                        });
                 });
 
             modelBuilder.Entity("CarEntityCarEquipmentEntity", b =>

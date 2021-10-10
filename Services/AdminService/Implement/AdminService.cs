@@ -273,12 +273,11 @@ namespace CarDealerProject.Services.AdminService
             try
             {
                 var existingUser = GetByCode(code);
-                if (existingUser == null || existingUser.IsFirstLogin == true)
+                if (existingUser == null )
                 {
-                    if (user.Type != existingUser.Type)
-                    {
+                    
                         return null;
-                    }
+                    
                 }
                 else
                 {
@@ -286,8 +285,9 @@ namespace CarDealerProject.Services.AdminService
                     DateTime test = time2.ToUniversalTime(user.Dob);
                     var sea = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
                     var Dob = TimeZoneInfo.ConvertTimeFromUtc(test, sea);
+                    var newDealer = GetDealerByName(user.DealerName);
                     var newImage = GetImageByName(user.ImageName);
-                    
+                    existingUser.Dealer = newDealer;
                     existingUser.Gender = user.Gender;
                     existingUser.Dob = Dob;
                     existingUser.Image = newImage;
