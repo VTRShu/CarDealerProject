@@ -3,12 +3,13 @@
   text-align: left;
 }
 .antLayoutContent{
-    padding: 40px !important;
-    background: #f0f2f5;
-    box-shadow: -20px 20px 30px #a1a2a4, 20px -20px 30px #ffffff !important;
-    margin: 0px 50px;
-    border-radius: 10px;
-  }
+  padding: 40px !important;
+  background: #ffffff;
+  box-shadow: -20px 20px 30px #a1a2a4, 20px -20px 30px #ffffff !important;
+  margin: 0px 50px; 
+  margin-top : 2%;
+  border-radius: 10px;
+}
 .create{
   background-color: black;
   color: white;

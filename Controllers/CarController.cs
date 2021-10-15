@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 namespace CarDealerProject.Controllers
 {
@@ -18,6 +19,12 @@ namespace CarDealerProject.Controllers
         {
             _carService = carService;
         }
+        protected string GetUserDealer()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            return claimsIdentity.FindFirst(ClaimTypes.Locality).Value;
+        }
+
         [HttpPost("api/car/create")]
         public async Task<ActionResult<CarEntityDTO>> Create(CarEntityDTO car)
         {
@@ -35,14 +42,14 @@ namespace CarDealerProject.Controllers
         [HttpGet("car/get/{id}")]
         public async Task<ActionResult<CarEntity>> GetById(int id)
         {
-            var result = await _carService.GetCarById(id);
+            var result = await _carService.GetCarInfoById(id);
             if(result == null)
             {
                 return BadRequest("Not found car!");
             }
             return Ok(result);
         }
-        [HttpPost("car/edit/{id}")]
+        [HttpPut("car/edit/{id}")]
         public async Task<ActionResult<CarEntity>> UpdateCar(CarEntityDTO car,int id)
         {
             var updateCar = await _carService.UpdateCar(car, id);
@@ -52,8 +59,8 @@ namespace CarDealerProject.Controllers
             }
             return Ok(updateCar);
         }
-        [HttpGet("car/list")]
-        public async Task<ActionResult<PagingResult<CarEntity>>> GetListCar(
+        [HttpGet("car/master/list")]
+        public async Task<ActionResult<PagingResult<CarEntity>>> GetListCarForMaster(
         [FromQuery(Name = "pageSize")] int pageSize,
         [FromQuery(Name = "pageIndex")] int pageIndex = 1)
         {
@@ -62,8 +69,44 @@ namespace CarDealerProject.Controllers
                 PageSize = pageSize,
                 PageIndex = pageIndex
             };
-            return Ok(await _carService.ViewListCar(request));
+            return Ok(await _carService.GetListCarForMaster(request));
         }
-        
+        [HttpGet("car/admin/list")]
+        public async Task<ActionResult<PagingResult<CarEntity>>> GetListCarForAdmin(
+         [FromQuery(Name = "pageSize")] int pageSize,
+         [FromQuery(Name = "pageIndex")] int pageIndex = 1)
+        {   
+
+            var request = new PagingRequest
+            {
+                PageSize = pageSize,
+                PageIndex = pageIndex
+            };
+            var dealer = GetUserDealer();
+            return Ok(await _carService.GetListCarForAdmin(request,dealer));
+        }
+
+        [HttpGet("car/master/listAll")]
+        public async Task<List<CarEntity>> GetAllCarMaster()
+        {
+            return await _carService.GetAllCarMaster();
+        }
+        [HttpGet("car/admin/listAll")]
+        public async Task<List<CarEntity>> GetAllCarAdmin()
+        {
+            var dealer = GetUserDealer();
+            return await _carService.GetAllCarAdmin(dealer);
+        }
+        [HttpPut("car/disable/{id}")]
+        public async Task<ActionResult> Disable(int id)
+        {
+            var result = await _carService.DisableCar(id);
+            if(result)
+            {
+                return Ok(result);
+            }
+            return BadRequest("Error!");
+        }
+
     }
 }

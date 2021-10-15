@@ -12,7 +12,9 @@ namespace CarDealerProject.Repositories.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [ForeignKey("ModelId")]
         public ModelEntity Model { get; set; }
+        [ForeignKey("DealerId")]
         public DealerEntity Dealer { get; set; }
         public DateTime Appointment { get; set; }
         public string TimePeriod { get; set; }
@@ -20,6 +22,12 @@ namespace CarDealerProject.Repositories.Entities
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        [ForeignKey("ServiceId")]
+        public int ServiceId { get; set; }
+        public ServiceEntity Service { get; set; }
+        public bool IsAccepted { get; set; }
+        public List<CustomerEntity> customers { get; set; }
         public string Note { get; set; }
+        public DateTime SendEmailDate { get; set; }
     }
 }

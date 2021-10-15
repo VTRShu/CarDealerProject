@@ -4,9 +4,10 @@
   }
   .antLayoutContent{
       padding: 40px !important;
-      background: #f0f2f5;
+      background: #ffffff;
       box-shadow: -20px 20px 30px #a1a2a4, 20px -20px 30px #ffffff !important;
-      margin: 0px 50px;
+      margin: 0px 50px; 
+      margin-top : 2%;
       border-radius: 10px;
     }
   .create{

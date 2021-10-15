@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace CarDealerProject.DTO
 {
     public class CarEntityDTO
-    {
+    {  
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Price { get; set; }
         public int TypeId { get; set; }
@@ -25,13 +26,15 @@ namespace CarDealerProject.DTO
         public string Weight { get; set; }
         public string Height { get; set; }
         public string Displacement { get; set; }
+        public string Date { get; set; }
+        public string FuelConsumption { get; set; }
         public bool IsAvailble { get; set; }
-        public int DealerId { get; set; }
-        public int ImageId1 { get; set; }
-        public int ImageId2 { get; set; }
-        public int ImageId3 { get; set; }
-        public int ImageId4 { get; set; }
-        public int ImageId5 { get; set; }
-        public int ImageId6 { get; set; }
+        public string Dealer { get; set; }
+        public string ImageName1 { get; set; }
+        public string ImageName2 { get; set; }
+        public string ImageName3 { get; set; }
+        public string ImageName4 { get; set; }
+        public string ImageName5 { get; set; }
+        public string ImageName6 { get; set; }
     }
 }

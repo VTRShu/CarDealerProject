@@ -12,10 +12,13 @@ namespace CarDealerProject.Services.CarService
     {   
         
         Task<CarEntityDTO> CreateCar(CarEntityDTO car);
-        Task<PagingResult<CarEntity>> ViewListCar(PagingRequest request);
-        Task<CarEntity> GetCarById(int id);
+        Task<PagingResult<CarEntity>> GetListCarForMaster(PagingRequest request);
+        Task<PagingResult<CarEntity>> GetListCarForAdmin(PagingRequest request, string dealer);
+        Task<CarEntity> GetCarInfoById(int id);
         Task<CarEntity> UpdateCar(CarEntityDTO car, int id);
         Task<bool> DisableCar(int id);
+        Task<List<CarEntity>> GetAllCarAdmin(string dealer);
+        Task<List<CarEntity>> GetAllCarMaster();
 
     }
 }

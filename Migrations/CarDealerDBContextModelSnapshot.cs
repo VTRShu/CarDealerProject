@@ -19,6 +19,21 @@ namespace CarDealerProject.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("BookingEntityCustomerEntity", b =>
+                {
+                    b.Property<int>("bookingsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("bookingsId", "customersId");
+
+                    b.HasIndex("customersId");
+
+                    b.ToTable("BookingEntityCustomerEntity");
+                });
+
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.AppRole", b =>
                 {
                     b.Property<int>("Id")
@@ -153,6 +168,9 @@ namespace CarDealerProject.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Profile")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -183,6 +201,7 @@ namespace CarDealerProject.Migrations
                             Code = "MB001",
                             ConcurrencyStamp = "f99461ee-4644-4148-8874-b4ab37562be3",
                             CountDuplicate = "",
+                            DealerName = "Mercedes-Benz Haxaco Lang Ha - PKD",
                             Dob = new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "aaaa@gmail.com",
                             EmailConfirmed = false,
@@ -197,6 +216,7 @@ namespace CarDealerProject.Migrations
                             NormalizedUserName = "NGHIALT",
                             PasswordHash = "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==",
                             PhoneNumberConfirmed = false,
+                            Profile = "https://localhost:5001/Images/Capture.PNG",
                             SecurityStamp = "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD",
                             TwoFactorEnabled = false,
                             Type = 0,
@@ -209,6 +229,7 @@ namespace CarDealerProject.Migrations
                             Code = "MB002",
                             ConcurrencyStamp = "f99461ee-4644-4148-8874-b4ab37562be3",
                             CountDuplicate = "",
+                            DealerName = "Mercedes-Benz Haxaco Lang Ha - PKD",
                             Dob = new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "bbbb@gmail.com",
                             EmailConfirmed = false,
@@ -223,6 +244,7 @@ namespace CarDealerProject.Migrations
                             NormalizedUserName = "DAIPN",
                             PasswordHash = "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==",
                             PhoneNumberConfirmed = false,
+                            Profile = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg",
                             SecurityStamp = "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD",
                             TwoFactorEnabled = false,
                             Type = 1,
@@ -249,6 +271,9 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("ModelId")
                         .HasColumnType("int");
 
@@ -257,6 +282,9 @@ namespace CarDealerProject.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TimePeriod")
                         .HasColumnType("nvarchar(max)");
@@ -269,6 +297,8 @@ namespace CarDealerProject.Migrations
                     b.HasIndex("DealerId");
 
                     b.HasIndex("ModelId");
+
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("BookingEntity");
                 });
@@ -295,13 +325,16 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("Displacement")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FuelConsumption")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FuelType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Height")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsAvailble")
+                    b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
                     b.Property<string>("Length")
@@ -364,6 +397,30 @@ namespace CarDealerProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CarEquipmentEntity");
+                });
+
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.CustomerEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomerEntity");
                 });
 
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.DealerEntity", b =>
@@ -439,6 +496,13 @@ namespace CarDealerProject.Migrations
                             ImageName = "Capture.PNG",
                             ImageSrc = "https://localhost:5001/Images/Capture.PNG",
                             InsertedOn = new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ImageName = "35418253_636770120013959_511352286501404672_n.jpg",
+                            ImageSrc = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg",
+                            InsertedOn = new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -466,6 +530,15 @@ namespace CarDealerProject.Migrations
                     b.HasIndex("TypeId");
 
                     b.ToTable("ModelEntity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "x",
+                            Name = "S-Class",
+                            StartPrice = "4299000000"
+                        });
                 });
 
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.ServiceEntity", b =>
@@ -484,6 +557,14 @@ namespace CarDealerProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServiceEntity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "x",
+                            Name = "Test Drive"
+                        });
                 });
 
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.TypeEntity", b =>
@@ -699,6 +780,21 @@ namespace CarDealerProject.Migrations
                     b.ToTable("AppUserTokens");
                 });
 
+            modelBuilder.Entity("BookingEntityCustomerEntity", b =>
+                {
+                    b.HasOne("CarDealerProject.Repositories.Entities.BookingEntity", null)
+                        .WithMany()
+                        .HasForeignKey("bookingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarDealerProject.Repositories.Entities.CustomerEntity", null)
+                        .WithMany()
+                        .HasForeignKey("customersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.AppUser", b =>
                 {
                     b.HasOne("CarDealerProject.Repositories.Entities.DealerEntity", "Dealer")
@@ -724,9 +820,17 @@ namespace CarDealerProject.Migrations
                         .WithMany()
                         .HasForeignKey("ModelId");
 
+                    b.HasOne("CarDealerProject.Repositories.Entities.ServiceEntity", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Dealer");
 
                     b.Navigation("Model");
+
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.CarEntity", b =>

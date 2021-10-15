@@ -30,9 +30,10 @@ namespace CarDealerProject.Repositories.Entities
         public string Weight { get; set; }
         public string Height { get; set; }
         public string Displacement { get; set; }
+        public string FuelConsumption { get; set; }
         public List<ImageEntity> Images { get; set; }
         public List<CarEquipmentEntity> Equipments { get; set; }
         public DealerEntity Dealer { get; set; }
-        public bool IsAvailble { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }

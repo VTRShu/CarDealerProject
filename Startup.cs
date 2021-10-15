@@ -7,8 +7,12 @@ using CarDealerProject.Services.BookingService;
 using CarDealerProject.Services.BookingService.Implement;
 using CarDealerProject.Services.CarService;
 using CarDealerProject.Services.CarService.Implement;
+using CarDealerProject.Services.CustomerService;
+using CarDealerProject.Services.CustomerService.Implement;
 using CarDealerProject.Services.DealerService;
 using CarDealerProject.Services.DealerService.Implement;
+using CarDealerProject.Services.EmailService;
+using CarDealerProject.Services.EmailService.Implement;
 using CarDealerProject.Services.ModelService;
 using CarDealerProject.Services.ModelService.Implement;
 using CarDealerProject.Services.TypeService;
@@ -80,6 +84,9 @@ namespace CarDealerProject
             services.AddScoped<IModelService, ModelService>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<ICarEquipmentService, CarEquipmentService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddTransient<IEmailService, EmailService>();
+
             services.AddCors(
                      options =>
                      {

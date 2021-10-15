@@ -11,6 +11,7 @@ import DealerConstant from '../../../../Share/Constant/DealerConstant'
 import { Link, useLocation } from "react-router-dom";
 import { useLastLocation } from 'react-router-last-location';
 import { Select } from 'antd';
+import CurrentUserContext from '../../../../Share/Context/CurrentUserContext';
 import GoogleMapReact from 'google-map-react';
 const AnyReactComponent = ({ text }) => <div style={{ wordWrap: 'normal' }}><img style={{ height: '22px', width: '20px' }} src="https://localhost:5001/Images/copy_492419507.png" />{text}</div>;
 const { Search } = Input;
@@ -18,7 +19,7 @@ const { Content } = Layout;
 const options = [{ label: 'Ha Noi', value: 'Ha Noi' }]
 const ListDealer = () => {
 
-
+    const { currentUser, setCurrentUser } = useContext(CurrentUserContext)
     const [value, setValue] = useState([]);
     const location = useLocation();
     const lastLocation = useLastLocation();
@@ -157,11 +158,11 @@ const ListDealer = () => {
                     <Search onSearch={handleSearch} />
                 </Col>
                 <Col span={4}></Col>
-                <Col span={5}>
+                {currentUser.role === 'Master' ? <Col span={5}>
                     <Button className={styles.create}>
                         <Link to='/create-dealer'>Create new dealer</Link>
                     </Button>
-                </Col>
+                </Col> : ""}
             </Row>
 
 
@@ -172,7 +173,7 @@ const ListDealer = () => {
                         <Modal width={700} title="Dealer Information" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
                             <div style={{ height: '50vh', width: '100%' }}>
                                 <GoogleMapReact
-                                    bootstrapURLKeys={{ key: "AIzaSyDh41T95cnWHAUGYqCrCsWlq1Vr3dDpRbo" }}
+                                    bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
                                     defaultCenter={{ lat: 16.466393028698914, lng: 107.5614913406225 }}
                                     //defaultCenter={{ lat: dealer.latitude, lng: dealer.longtitude }}
                                     defaultZoom={5}
@@ -243,7 +244,8 @@ const ListDealer = () => {
                                             <td className={styles.borderRow} onClick={showModal} id={dealer.id}>{dealer.services}</td>
                                             <td></td>
                                             <td>
-                                                <Link to={`/edit-dealer/${dealer.id}`}><i className="bi bi-pencil-fill"></i></Link>
+
+                                                {currentUser.role === "Master" ? <Link to={`/edit-dealer/${dealer.id}`}><i className="bi bi-pencil-fill"></i></Link> : ""}
                                                 {/* <i className="bi bi-x-circle" onClick={showModalDisable} id={dealer.id}></i> */}
                                             </td>
                                         </tr>

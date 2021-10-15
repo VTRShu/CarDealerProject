@@ -40,7 +40,7 @@ namespace CarDealerProject.Services.AuthenticationService.Implement
         public async Task<string[]> Authenticate(LoginRequest request)
         {
             using var transaction = _carDealerDBContext.Database.BeginTransaction();
-            var result = new string[6];
+            var result = new string[1];
             try
             {
                 var user = await _userManager.FindByNameAsync(request.UserName);
@@ -56,7 +56,7 @@ namespace CarDealerProject.Services.AuthenticationService.Implement
                 {
             new Claim(ClaimTypes.Locality, user.DealerName),
             new Claim(ClaimTypes.Role, string.Join(";", roles)),
-            new Claim(ClaimTypes.UserData, user.Code),
+            new Claim(ClaimTypes.UserData, string.Join(";",user.Code,user.IsFirstLogin,user.UserName,user.Profile)),
         };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
                 var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -68,11 +68,7 @@ namespace CarDealerProject.Services.AuthenticationService.Implement
                     signingCredentials: credentials);
 
                 result[0] = new JwtSecurityTokenHandler().WriteToken(token);
-                result[1] = string.Join(";", roles);
-                result[2] = string.Join(";", user.IsFirstLogin);
-                result[3] = string.Join(";", user.DealerName);
-                result[4] = string.Join(";", user.Code);
-                result[5] = string.Join(";", user.UserName);
+               
                 await _carDealerDBContext.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

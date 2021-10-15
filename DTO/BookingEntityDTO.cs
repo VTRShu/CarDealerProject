@@ -16,5 +16,6 @@ namespace CarDealerProject.DTO
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Note { get; set; }
+        public int ServiceId { get; set; }
     }
 }

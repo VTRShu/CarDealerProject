@@ -72,11 +72,6 @@ const HeaderProject = () => {
             user: null
         });
         cookies.remove('token');
-        cookies.remove('code');
-        cookies.remove('userName');
-        cookies.remove('role');
-        cookies.remove('firstLogin');
-        cookies.remove('dealer');
         window.location.replace("/manager");
         setIsModalLogoutVisible(false);
     }
@@ -86,6 +81,9 @@ const HeaderProject = () => {
     }
     var url = window.location.href;
     var check = "manager";
+
+
+
     return (
         <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
             <Modal title="Change Password" visible={isModalVisible} onOk={handleOk} closable={false} onCancel={handleCancel} centered={true}
@@ -247,7 +245,7 @@ const HeaderProject = () => {
                                                 : ""}
                                         </SubMenu>
                                         <SubMenu key="sub3" title="Car">
-                                            {currentUser.role === 'Master' ?
+                                            {currentUser.role === 'Master' || currentUser.role === 'Admin' ?
                                                 <>
                                                     <SubMenu title="Model">
                                                         <Menu.Item key="1"><Link to="/list-model">All current models</Link></Menu.Item>
@@ -260,21 +258,28 @@ const HeaderProject = () => {
                                                 <Menu.Item key="6"><Link to="/create-car">Create new car</Link></Menu.Item>
                                             </SubMenu>
                                         </SubMenu>
-                                        <Menu.Item><Link to="/list-booking">List booking</Link></Menu.Item>
-                                        <SubMenu key="sub4" style={{ marginLeft: '66%' }} icon={<UserOutlined />} title={`Welcome ${currentUser.user}`}>
+
+                                        <SubMenu title="Customer">
+                                            <Menu.Item><Link to="/list-booking">List booking</Link></Menu.Item>
+                                            <Menu.Item><Link to="/list-customer">List customer</Link></Menu.Item>
+                                        </SubMenu>
+                                        <SubMenu key="sub4" style={{ marginLeft: '62%' }} title={`Welcome ${currentUser.user}`}>
                                             <Menu.Item key="3" onClick={showModalChangePassword}>Change Password </Menu.Item>
+                                            <Menu.Item key="5"> <Link to={`/edit-user/${currentUser.code}`}>Edit Profile</Link></Menu.Item>
                                             <Menu.Item key="4" onClick={showLogOutModal}>Logout</Menu.Item>
                                         </SubMenu>
+                                        <Menu.Item style={{ padding: '0' }}><img src={currentUser.profile} style={{ borderRadius: '30px', width: '60px', height: '60px' }} /></Menu.Item>
+
                                     </>
                                 }
                             </Menu>
                             :
                             <Menu theme="dark" mode="horizontal">
-                                <Menu.Item> <Link to="/"><FaCar style={{ fontSize: '20px', marginBottom: '5px' }} /> ALL Models</Link></Menu.Item>
-                                <Menu.Item> <Link to="/">Buy your mercedes</Link></Menu.Item>
-                                <Menu.Item> <Link to="/">Service, Parts , Accessories</Link></Menu.Item>
-                                <Menu.Item> <Link to="/">Mercedes World</Link></Menu.Item>
-                                <Menu.Item> <Link to="/">Mercedes-Benz VietNam</Link></Menu.Item>
+                                <Menu.Item> <FaCar style={{ fontSize: '20px', marginBottom: '5px' }} /> ALL Models</Menu.Item>
+                                <Menu.Item> Buy your mercedes</Menu.Item>
+                                <Menu.Item> Service, Parts , Accessories</Menu.Item>
+                                <Menu.Item> Mercedes World</Menu.Item>
+                                <Menu.Item> Mercedes-Benz VietNam</Menu.Item>
                             </Menu>
                     }
                 </Header >

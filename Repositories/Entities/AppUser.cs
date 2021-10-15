@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using CarDealerProject.Repositories.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -11,6 +12,7 @@ namespace CarDealerProject.Repositories.Entities
   {
     public string Code { get; set; }
     public string DealerName { get; set; }
+    [AllowNull]
     public DealerEntity Dealer { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -23,5 +25,6 @@ namespace CarDealerProject.Repositories.Entities
     public string LastNameFirstChar { get; set; }
     public bool IsFirstLogin { get; set; }
     public ImageEntity Image { get; set; }
+    public string Profile { get; set; }
   }
 }

@@ -21,6 +21,7 @@ namespace CarDealerProject.Repositories.EFContext
         public DbSet<ServiceEntity> ServiceEntity { get; set; }
         public DbSet<TypeEntity> TypeEntity { get; set; }
         public DbSet<CarEquipmentEntity> CarEquipmentEntity { get; set; }
+        public DbSet<CustomerEntity> CustomerEntity { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -45,6 +46,10 @@ namespace CarDealerProject.Repositories.EFContext
 
             modelBuilder.Entity<BookingEntity>().HasOne(c => c.Model);
             modelBuilder.Entity<BookingEntity>().HasOne(c => c.Dealer);
+            modelBuilder.Entity<BookingEntity>().HasOne(c => c.Service);
+            modelBuilder.Entity<BookingEntity>().HasMany(c => c.customers);
+
+            modelBuilder.Entity<CustomerEntity>().HasMany(c => c.bookings);
 
             modelBuilder.Entity<DealerEntity>().HasMany(c => c.Services);
 
@@ -56,7 +61,14 @@ namespace CarDealerProject.Repositories.EFContext
 
             modelBuilder.Entity<ModelEntity>().HasMany(c => c.Images);
             modelBuilder.Entity<CarEquipmentEntity>().HasMany(c => c.Cars);
-
+            modelBuilder.Entity<ServiceEntity>().HasData(
+                new ServiceEntity
+                {
+                    Id = 1,
+                    Name = "Test Drive",
+                    Description = "x",
+                    Dealers = null,
+                });
             modelBuilder.Entity<AppRole>().HasData(
             new AppRole
             {
@@ -86,6 +98,11 @@ namespace CarDealerProject.Repositories.EFContext
                 ImageName = "Capture.PNG",
                 ImageSrc = "https://localhost:5001/Images/Capture.PNG",
                 InsertedOn = new DateTime(2021, 10, 05),
+            },new ImageEntity {
+                Id = 2,
+                ImageName = "35418253_636770120013959_511352286501404672_n.jpg",
+                ImageSrc = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg",
+                InsertedOn = new DateTime(2021, 10, 05),
             });
             modelBuilder.Entity<DealerEntity>().HasData(new DealerEntity
             {
@@ -102,6 +119,7 @@ namespace CarDealerProject.Repositories.EFContext
             {
                 Id = 1,
                 Code = "MB001",
+                DealerName = "Mercedes-Benz Haxaco Lang Ha - PKD",
                 Dealer = null,
                 FirstName = "Nghia",
                 LastName = "Le Trung",
@@ -119,11 +137,13 @@ namespace CarDealerProject.Repositories.EFContext
                 SecurityStamp = "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD",
                 ConcurrencyStamp = "f99461ee-4644-4148-8874-b4ab37562be3",
                 Image = null,
+                Profile = "https://localhost:5001/Images/Capture.PNG"
             },
             new AppUser
             {
                 Id = 2,
                 Code = "MB002",
+                DealerName = "Mercedes-Benz Haxaco Lang Ha - PKD",
                 Dealer = null,
                 FirstName = "Dai",
                 LastName = "Pham Ngoc",
@@ -141,7 +161,19 @@ namespace CarDealerProject.Repositories.EFContext
                 SecurityStamp = "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD",
                 ConcurrencyStamp = "f99461ee-4644-4148-8874-b4ab37562be3",
                 Image = null,
+                Profile ="https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg"
             });
+            modelBuilder.Entity<ModelEntity>().HasData(
+                new ModelEntity
+                {
+                    Id = 1,
+                    Name = "S-Class",
+                    StartPrice = "4299000000",
+                    Description = "x",
+                    Type = null,
+                   
+                }
+                ) ;
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
                 new IdentityUserRole<int>
                 {

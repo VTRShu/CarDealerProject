@@ -34,11 +34,7 @@ namespace CarDealerProject.Controllers
       return Ok(new
       {
         token = result[0],
-        role = result[1],
-        firstLogin = result[2],
-        dealer = result[3],
-        code = result[4],
-        userName = result[5],
+
       });
     }
 

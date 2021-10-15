@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { UnlockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Button, Checkbox, Layout, Typography, Modal } from "antd";
 import { useState } from "react";
+import { parseJwt } from '../../../Share/parseJwt/parseJwt'
 import { LoginService } from '../../../Services/AuthenticationService'
 import styles from './Login.module.css';
 import './LoginAntStyle.css';
@@ -13,7 +14,6 @@ import Cookies from 'universal-cookie';
 const { Content } = Layout;
 const { Text } = Typography;
 const Login = () => {
-  const [currentUser, setCurrentUser] = useState();
   const [error, setError] = useState(true);
   const [userName, setUserName] = useState();
   const [password, setPassword] = useState();
@@ -26,40 +26,32 @@ const Login = () => {
     setError(errorInfo);
     console.log("Failed:", errorInfo);
   };
-  console.log(currentUser);
   const handleChange = (e) => e.target.value && setError(false);
   const [form] = Form.useForm();
   const history = useHistory();
   const onFinish = (values) => {
     LoginService({ user: values.Username, password: values.Password, remember: values.Remember }).then((response) => {
       if (response.status === 200 && response.data.token !== null) {
-        setCurrentUser({
-          token: response.data.token,
-          role: response.data.role,
-          location: response.data.location,
-          code: response.data.code,
-          firstLogin: response.data.firstLogin,
-          username: response.data.username,
-        });
         form.resetFields();
         if (values.Remember === true) {
           //cookies 
           setCookie('token', response.data.token, { maxAge: 604800 });
-          setCookie('role', response.data.role, { maxAge: 604800 });
-          setCookie('dealer', encodeURIComponent(response.data.dealer), { maxAge: 604800 })
-          setCookie('firstLogin', response.data.firstLogin, { maxAge: 604800 });
-          setCookie('code', response.data.code, { maxAge: 604800 });
-          setCookie('userName', response.data.userName, { maxAge: 604800 });
+          // setCookie('role', response.data.role, { maxAge: 604800 });
+          // setCookie('dealer', encodeURIComponent(response.data.dealer), { maxAge: 604800 })
+          // setCookie('firstLogin', response.data.firstLogin, { maxAge: 604800 });
+          // setCookie('code', response.data.code, { maxAge: 604800 });
+          // setCookie('userName', response.data.userName, { maxAge: 604800 });
+
 
         } else {
           setCookie('token', response.data.token);
-          setCookie('role', response.data.role);
-          setCookie('dealer', encodeURIComponent(response.data.dealer))
-          setCookie('firstLogin', response.data.firstLogin);
-          setCookie('code', response.data.code);
-          setCookie('userName', response.data.userName);
+          // setCookie('role', response.data.role);
+          // setCookie('dealer', encodeURIComponent(response.data.dealer))
+          // setCookie('firstLogin', response.data.firstLogin);
+          // setCookie('code', response.data.code);
+          // setCookie('userName', response.data.userName);
         }
-        window.location.replace("/manager");
+
 
       } else if (response.data.token === null) {
         form.setFields([{

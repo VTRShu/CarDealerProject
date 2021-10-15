@@ -109,6 +109,22 @@ namespace CarDealerProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerEntity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerEntity", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DealerEntity",
                 columns: table => new
                 {
@@ -189,6 +205,7 @@ namespace CarDealerProject.Migrations
                     LastNameFirstChar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsFirstLogin = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     ImageId = table.Column<int>(type: "int", nullable: true),
+                    Profile = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true, computedColumnSql: "REPLACE( ( ( LOWER ([FirstName]) ) +( LOWER ( [LastNameFirstChar] )  ) ) ,' ','') +CAST( [CountDuplicate] as varchar(200) )"),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true, computedColumnSql: "UPPER([FirstName])+UPPER([LastNameFirstChar])+CAST( [CountDuplicate] as varchar(200) )"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -281,6 +298,8 @@ namespace CarDealerProject.Migrations
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ServiceId = table.Column<int>(type: "int", nullable: false),
+                    IsAccepted = table.Column<bool>(type: "bit", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -298,6 +317,12 @@ namespace CarDealerProject.Migrations
                         principalTable: "ModelEntity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BookingEntity_ServiceEntity_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "ServiceEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -324,8 +349,9 @@ namespace CarDealerProject.Migrations
                     Weight = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Height = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Displacement = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FuelConsumption = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DealerId = table.Column<int>(type: "int", nullable: true),
-                    IsAvailble = table.Column<bool>(type: "bit", nullable: false)
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -370,6 +396,30 @@ namespace CarDealerProject.Migrations
                         name: "FK_ImageEntityModelEntity_ModelEntity_ModelsId",
                         column: x => x.ModelsId,
                         principalTable: "ModelEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingEntityCustomerEntity",
+                columns: table => new
+                {
+                    bookingsId = table.Column<int>(type: "int", nullable: false),
+                    customersId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingEntityCustomerEntity", x => new { x.bookingsId, x.customersId });
+                    table.ForeignKey(
+                        name: "FK_BookingEntityCustomerEntity_BookingEntity_bookingsId",
+                        column: x => x.bookingsId,
+                        principalTable: "BookingEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookingEntityCustomerEntity_CustomerEntity_customersId",
+                        column: x => x.customersId,
+                        principalTable: "CustomerEntity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -434,11 +484,11 @@ namespace CarDealerProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "AppUser",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CountDuplicate", "DealerId", "DealerName", "Dob", "Email", "EmailConfirmed", "FirstName", "Gender", "ImageId", "IsDisabled", "LastName", "LastNameFirstChar", "LockoutEnabled", "LockoutEnd", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "Type" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CountDuplicate", "DealerId", "DealerName", "Dob", "Email", "EmailConfirmed", "FirstName", "Gender", "ImageId", "IsDisabled", "LastName", "LastNameFirstChar", "LockoutEnabled", "LockoutEnd", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Profile", "SecurityStamp", "TwoFactorEnabled", "Type" },
                 values: new object[,]
                 {
-                    { 1, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, null, new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "aaaa@gmail.com", false, "Nghia", "Male", null, true, "Le Trung", "LT", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 0 },
-                    { 2, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, null, new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "bbbb@gmail.com", false, "Dai", "Male", null, true, "Pham Ngoc", "pn", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 1 }
+                    { 1, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, "Mercedes-Benz Haxaco Lang Ha - PKD", new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "aaaa@gmail.com", false, "Nghia", "Male", null, true, "Le Trung", "LT", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "https://localhost:5001/Images/Capture.PNG", "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 0 },
+                    { 2, 0, "f99461ee-4644-4148-8874-b4ab37562be3", "", null, "Mercedes-Benz Haxaco Lang Ha - PKD", new DateTime(2000, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "bbbb@gmail.com", false, "Dai", "Male", null, true, "Pham Ngoc", "pn", false, null, "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==", null, false, "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg", "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD", false, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -458,7 +508,21 @@ namespace CarDealerProject.Migrations
             migrationBuilder.InsertData(
                 table: "ImageEntity",
                 columns: new[] { "Id", "ImageName", "ImageSrc", "InsertedOn" },
-                values: new object[] { 1, "Capture.PNG", "https://localhost:5001/Images/Capture.PNG", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                values: new object[,]
+                {
+                    { 1, "Capture.PNG", "https://localhost:5001/Images/Capture.PNG", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, "35418253_636770120013959_511352286501404672_n.jpg", "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ModelEntity",
+                columns: new[] { "Id", "Description", "Name", "StartPrice", "TypeId" },
+                values: new object[] { 1, "x", "S-Class", "4299000000", null });
+
+            migrationBuilder.InsertData(
+                table: "ServiceEntity",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "x", "Test Drive" });
 
             migrationBuilder.InsertData(
                 table: "TypeEntity",
@@ -490,6 +554,16 @@ namespace CarDealerProject.Migrations
                 name: "IX_BookingEntity_ModelId",
                 table: "BookingEntity",
                 column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingEntity_ServiceId",
+                table: "BookingEntity",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingEntityCustomerEntity_customersId",
+                table: "BookingEntityCustomerEntity",
+                column: "customersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CarEntity_DealerId",
@@ -556,7 +630,7 @@ namespace CarDealerProject.Migrations
                 name: "AppUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BookingEntity");
+                name: "BookingEntityCustomerEntity");
 
             migrationBuilder.DropTable(
                 name: "CarEntityCarEquipmentEntity");
@@ -571,16 +645,22 @@ namespace CarDealerProject.Migrations
                 name: "ImageEntityModelEntity");
 
             migrationBuilder.DropTable(
+                name: "BookingEntity");
+
+            migrationBuilder.DropTable(
+                name: "CustomerEntity");
+
+            migrationBuilder.DropTable(
                 name: "CarEquipmentEntity");
 
             migrationBuilder.DropTable(
                 name: "CarEntity");
 
             migrationBuilder.DropTable(
-                name: "ServiceEntity");
+                name: "ImageEntity");
 
             migrationBuilder.DropTable(
-                name: "ImageEntity");
+                name: "ServiceEntity");
 
             migrationBuilder.DropTable(
                 name: "DealerEntity");

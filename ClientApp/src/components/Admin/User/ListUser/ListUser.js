@@ -165,27 +165,27 @@ const ListUser = () => {
 
     const handleSearch = (value) => {
         if (value !== '') {
-            let filterValue = value.toUpperCase().trim();
+            let searchInput = value.toUpperCase().trim();
             if (currentUser.role === 'Master') {
                 GetAllUserMasterSerivce().then(function (response) {
-                    let data = response.data.filter(x => x.isDisabled === true && (x.code.toUpperCase().includes(value)
-                        || x.firstName.toUpperCase().includes(filterValue)
-                        || x.lastName.toUpperCase().includes(filterValue)));
+                    let data = response.data.filter(x => x.isDisabled === true && (x.code.toUpperCase().includes(searchInput)
+                        || x.firstName.toUpperCase().includes(searchInput)
+                        || x.lastName.toUpperCase().includes(searchInput)));
                     setSearchUser({ ...searchUser, items: data.slice((pageIndex - 1) * pageSizeOld, pageIndex * pageSizeOld) });
                     setTotal(data);
                     console.log(pageIndex);
-                    setsearchValue(filterValue);
+                    setsearchValue(searchInput);
                 }).catch(function (error) {
                     console.log(error);
                 })
             } else if (currentUser.role === 'Admin') {
                 GetAllUserAdminSerivce().then(function (response) {
-                    let data = response.data.filter(x => x.isDisabled === true && (x.code.toUpperCase().includes(value)
-                        || x.firstName.toUpperCase().includes(filterValue)
-                        || x.lastName.toUpperCase().includes(filterValue)));
+                    let data = response.data.filter(x => x.isDisabled === true && (x.code.toUpperCase().includes(searchInput)
+                        || x.firstName.toUpperCase().includes(searchInput)
+                        || x.lastName.toUpperCase().includes(searchInput)));
                     setSearchUser({ ...searchUser, items: data.slice((pageIndex - 1) * pageSizeOld, pageIndex * pageSizeOld) });
                     setTotal(data);
-                    setsearchValue(filterValue);
+                    setsearchValue(searchInput);
                 }).catch(function (error) {
                     console.log(error);
                 })
@@ -425,7 +425,7 @@ const ListUser = () => {
                                                 <td className={styles.borderRow} onClick={showModal} id={user.code}>{user.type === 0 ? "Master" : (user.type === 1 ? "Admin" : "Staff")}</td>
                                                 <td></td>
                                                 <td>
-                                                    <Link to={`/edit-user/${user.code}`}><i className="bi bi-pencil-fill"></i></Link>
+                                                    {/* <Link to={`/edit-user/${user.code}`}><i className="bi bi-pencil-fill"></i></Link> */}
                                                     <i className="bi bi-x-circle" onClick={showModalDisable} id={user.code}></i>
                                                 </td>
                                             </tr>

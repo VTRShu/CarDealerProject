@@ -10,33 +10,41 @@ const { Option } = Select;
 const { Content } = Layout;
 const CreateModel = () => {
     const normFile = (e) => {
-        console.log('Upload event:', e);
         if (Array.isArray(e)) {
             return e;
         }
+        const name = [];
+        e.fileList.forEach(a => {
+            name.push(a.name)
+        });
+        const unique = Array.from(new Set(name));
+        if (e.fileList.length < 3) {
+            form.setFields([{
+                name: 'upload',
+                errors: [<b style={{ color: 'red' }}>Pls select 3 picture for customer to view!</b>],
+            }])
+        } else {
+            if (name.length === unique.length) {
+                form.setFields([{
+                    name: 'upload',
+                    errors: null,
+                }])
+            } else {
+                form.setFields([{
+                    name: 'upload',
+                    errors: [<b style={{ color: 'red' }}>You selected duplicate picture!</b>],
+                }])
+            }
+        }
         return e && e.fileList;
+
     };
     let history = useHistory();
     const [form] = Form.useForm();
     const onFinishFailed = () => {
         console.log("Failed:");
     };
-    const onFileRemove = (file) => {
-        const { confirm } = Modal
-        return new Promise((resolve, reject) => {
-            confirm({
 
-                title: 'Are you sure you want to Delete ?',
-                onOk: () => {
-                    resolve(true)
-                    console.log(`${file.name}`)
-                },
-                onCancel: () => {
-                    reject(true)
-                }
-            })
-        })
-    }
 
     const handleCancel = () => {
         history.push(`/list-model`);
@@ -131,7 +139,7 @@ const CreateModel = () => {
                     getValueFromEvent={normFile}
                     extra="Upload Model Image"
                 >
-                    <Upload action="https://localhost:5001/api/Image" multiple listType="picture">
+                    <Upload action="https://localhost:5001/api/Image" maxCount={3} multiple listType="picture">
                         <Button icon={<UploadOutlined />}>Click to upload</Button>
                     </Upload>
                 </Form.Item>

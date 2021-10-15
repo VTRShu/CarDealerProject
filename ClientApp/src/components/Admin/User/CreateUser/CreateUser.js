@@ -269,7 +269,7 @@ const CreateUser = () => {
                     getValueFromEvent={normFile}
                     extra="Upload your profile"
                 >
-                    <Upload name="logo" action="https://localhost:5001/api/Image" listType="picture">
+                    <Upload name="logo" action="https://localhost:5001/api/Image" maxCount={1} listType="picture">
                         <Button icon={<UploadOutlined />}>Click to upload</Button>
                     </Upload>
                 </Form.Item>

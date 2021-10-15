@@ -1,8 +1,7 @@
 import React from "react";
 import "antd/dist/antd.css";
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Layout, Form, Button, Select, Input, DatePicker, Radio, Upload, Space, Modal, Divider } from "antd";
 import { EditModelService, GetModelService } from '../../../../Services/ModelService'
 import { UploadOutlined } from '@ant-design/icons';
@@ -11,11 +10,34 @@ const { Option } = Select;
 const { Content } = Layout;
 const EditModel = () => {
     const normFile = (e) => {
-        console.log('Upload event:', e);
         if (Array.isArray(e)) {
             return e;
         }
+        const name = [];
+        e.fileList.forEach(a => {
+            name.push(a.name)
+        });
+        const unique = Array.from(new Set(name));
+        if (e.fileList.length < 3) {
+            form.setFields([{
+                name: 'upload',
+                errors: [<b style={{ color: 'red' }}>Pls select 3 picture for customer to view!</b>],
+            }])
+        } else {
+            if (name.length === unique.length) {
+                form.setFields([{
+                    name: 'upload',
+                    errors: null,
+                }])
+            } else {
+                form.setFields([{
+                    name: 'upload',
+                    errors: [<b style={{ color: 'red' }}>You selected duplicate picture!</b>],
+                }])
+            }
+        }
         return e && e.fileList;
+
     };
     const history = useHistory();
 
@@ -81,7 +103,7 @@ const EditModel = () => {
         })();
     }, [name]);
 
-    console.log(files[0]);
+
     form.setFieldsValue(
         {
             name: model.name,
@@ -90,7 +112,7 @@ const EditModel = () => {
             type: type.id,
             upload: files
         });
-    console.log(form.getFieldValue('upload'));
+
     return (
         <Content>
             <Form
