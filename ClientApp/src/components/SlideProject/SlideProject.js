@@ -9,7 +9,7 @@ import "./SlideProject.css";
 import { FaCaretRight } from 'react-icons/fa'
 const SlideProject = () => {
     return (
-        <Carousel style={{ width: '100%', color: 'white' }} nextArrow={true} prevArrow={true} autoplay>
+        <Carousel swipeToSlide draggable style={{ width: '100%', color: 'white' }} nextArrow={true} prevArrow={true} autoplay>
             <div>
                 <a>
                     <div className="contentStyle1">

@@ -239,6 +239,44 @@ namespace CarDealerProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BookWorkshopEntity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DealerId = table.Column<int>(type: "int", nullable: true),
+                    LicensePlate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Mileage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CarIdentification = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Appointment = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TimePeriod = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ServiceId = table.Column<int>(type: "int", nullable: true),
+                    IsAccepted = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    SpecificRequest = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookWorkshopEntity", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookWorkshopEntity_DealerEntity_DealerId",
+                        column: x => x.DealerId,
+                        principalTable: "DealerEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BookWorkshopEntity_ServiceEntity_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "ServiceEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DealerEntityServiceEntity",
                 columns: table => new
                 {
@@ -285,42 +323,25 @@ namespace CarDealerProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookingEntity",
+                name: "BookWorkshopEntityCustomerEntity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ModelId = table.Column<int>(type: "int", nullable: true),
-                    DealerId = table.Column<int>(type: "int", nullable: true),
-                    Appointment = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TimePeriod = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
-                    IsAccepted = table.Column<bool>(type: "bit", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    bookWorkshopsId = table.Column<int>(type: "int", nullable: false),
+                    customerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookingEntity", x => x.Id);
+                    table.PrimaryKey("PK_BookWorkshopEntityCustomerEntity", x => new { x.bookWorkshopsId, x.customerId });
                     table.ForeignKey(
-                        name: "FK_BookingEntity_DealerEntity_DealerId",
-                        column: x => x.DealerId,
-                        principalTable: "DealerEntity",
+                        name: "FK_BookWorkshopEntityCustomerEntity_BookWorkshopEntity_bookWorkshopsId",
+                        column: x => x.bookWorkshopsId,
+                        principalTable: "BookWorkshopEntity",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookingEntity_ModelEntity_ModelId",
-                        column: x => x.ModelId,
-                        principalTable: "ModelEntity",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BookingEntity_ServiceEntity_ServiceId",
-                        column: x => x.ServiceId,
-                        principalTable: "ServiceEntity",
+                        name: "FK_BookWorkshopEntityCustomerEntity_CustomerEntity_customerId",
+                        column: x => x.customerId,
+                        principalTable: "CustomerEntity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -401,27 +422,52 @@ namespace CarDealerProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookingEntityCustomerEntity",
+                name: "BookingEntity",
                 columns: table => new
                 {
-                    bookingsId = table.Column<int>(type: "int", nullable: false),
-                    customersId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CarId = table.Column<int>(type: "int", nullable: true),
+                    ModelId = table.Column<int>(type: "int", nullable: true),
+                    DealerId = table.Column<int>(type: "int", nullable: true),
+                    Appointment = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TimePeriod = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ServiceId = table.Column<int>(type: "int", nullable: true),
+                    IsAccepted = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookingEntityCustomerEntity", x => new { x.bookingsId, x.customersId });
+                    table.PrimaryKey("PK_BookingEntity", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookingEntityCustomerEntity_BookingEntity_bookingsId",
-                        column: x => x.bookingsId,
-                        principalTable: "BookingEntity",
+                        name: "FK_BookingEntity_CarEntity_CarId",
+                        column: x => x.CarId,
+                        principalTable: "CarEntity",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_BookingEntityCustomerEntity_CustomerEntity_customersId",
-                        column: x => x.customersId,
-                        principalTable: "CustomerEntity",
+                        name: "FK_BookingEntity_DealerEntity_DealerId",
+                        column: x => x.DealerId,
+                        principalTable: "DealerEntity",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BookingEntity_ModelEntity_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "ModelEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BookingEntity_ServiceEntity_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "ServiceEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -472,6 +518,30 @@ namespace CarDealerProject.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "BookingEntityCustomerEntity",
+                columns: table => new
+                {
+                    bookingsId = table.Column<int>(type: "int", nullable: false),
+                    customersId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingEntityCustomerEntity", x => new { x.bookingsId, x.customersId });
+                    table.ForeignKey(
+                        name: "FK_BookingEntityCustomerEntity_BookingEntity_bookingsId",
+                        column: x => x.bookingsId,
+                        principalTable: "BookingEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookingEntityCustomerEntity_CustomerEntity_customersId",
+                        column: x => x.customersId,
+                        principalTable: "CustomerEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AppRole",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
@@ -510,19 +580,22 @@ namespace CarDealerProject.Migrations
                 columns: new[] { "Id", "ImageName", "ImageSrc", "InsertedOn" },
                 values: new object[,]
                 {
-                    { 1, "Capture.PNG", "https://localhost:5001/Images/Capture.PNG", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "35418253_636770120013959_511352286501404672_n.jpg", "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 2, "35418253_636770120013959_511352286501404672_n.jpg", "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, "Capture.PNG", "https://localhost:5001/Images/Capture.PNG", new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
-
-            migrationBuilder.InsertData(
-                table: "ModelEntity",
-                columns: new[] { "Id", "Description", "Name", "StartPrice", "TypeId" },
-                values: new object[] { 1, "x", "S-Class", "4299000000", null });
 
             migrationBuilder.InsertData(
                 table: "ServiceEntity",
                 columns: new[] { "Id", "Description", "Name" },
-                values: new object[] { 1, "x", "Test Drive" });
+                values: new object[,]
+                {
+                    { 1, "x", "Test Drive" },
+                    { 3, " Services Workshop", " Services Workshop" },
+                    { 4, "Used car sales", "Used car sales" },
+                    { 5, "Fix,maintain...", "Workshop" },
+                    { 6, "Quote", "RequestQuote" },
+                    { 2, "New car sales", "New car sales" }
+                });
 
             migrationBuilder.InsertData(
                 table: "TypeEntity",
@@ -546,6 +619,11 @@ namespace CarDealerProject.Migrations
                 column: "ImageId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookingEntity_CarId",
+                table: "BookingEntity",
+                column: "CarId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BookingEntity_DealerId",
                 table: "BookingEntity",
                 column: "DealerId");
@@ -564,6 +642,21 @@ namespace CarDealerProject.Migrations
                 name: "IX_BookingEntityCustomerEntity_customersId",
                 table: "BookingEntityCustomerEntity",
                 column: "customersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookWorkshopEntity_DealerId",
+                table: "BookWorkshopEntity",
+                column: "DealerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookWorkshopEntity_ServiceId",
+                table: "BookWorkshopEntity",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookWorkshopEntityCustomerEntity_customerId",
+                table: "BookWorkshopEntityCustomerEntity",
+                column: "customerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CarEntity_DealerId",
@@ -633,6 +726,9 @@ namespace CarDealerProject.Migrations
                 name: "BookingEntityCustomerEntity");
 
             migrationBuilder.DropTable(
+                name: "BookWorkshopEntityCustomerEntity");
+
+            migrationBuilder.DropTable(
                 name: "CarEntityCarEquipmentEntity");
 
             migrationBuilder.DropTable(
@@ -648,16 +744,19 @@ namespace CarDealerProject.Migrations
                 name: "BookingEntity");
 
             migrationBuilder.DropTable(
+                name: "BookWorkshopEntity");
+
+            migrationBuilder.DropTable(
                 name: "CustomerEntity");
 
             migrationBuilder.DropTable(
                 name: "CarEquipmentEntity");
 
             migrationBuilder.DropTable(
-                name: "CarEntity");
+                name: "ImageEntity");
 
             migrationBuilder.DropTable(
-                name: "ImageEntity");
+                name: "CarEntity");
 
             migrationBuilder.DropTable(
                 name: "ServiceEntity");

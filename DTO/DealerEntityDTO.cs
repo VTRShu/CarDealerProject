@@ -15,5 +15,9 @@ namespace CarDealerProject.DTO
         public string DealerPhone { get; set; }
         public string DealerWebsite { get; set; }
         public string Description { get; set; }
+        public int ServiceId1 { get; set; }
+        public int ServiceId2 { get; set; }
+        public int ServiceId3 { get; set; }
+
     }
 }

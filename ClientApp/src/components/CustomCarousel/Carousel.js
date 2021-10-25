@@ -55,7 +55,7 @@ class Carousel extends Component {
             );
 
         return (
-            <table>
+            <table style={{ width: '100%' }}>
                 <tbody>
                     <tr>
                         <td

@@ -36,23 +36,10 @@ const Login = () => {
         if (values.Remember === true) {
           //cookies 
           setCookie('token', response.data.token, { maxAge: 604800 });
-          // setCookie('role', response.data.role, { maxAge: 604800 });
-          // setCookie('dealer', encodeURIComponent(response.data.dealer), { maxAge: 604800 })
-          // setCookie('firstLogin', response.data.firstLogin, { maxAge: 604800 });
-          // setCookie('code', response.data.code, { maxAge: 604800 });
-          // setCookie('userName', response.data.userName, { maxAge: 604800 });
-
-
         } else {
           setCookie('token', response.data.token);
-          // setCookie('role', response.data.role);
-          // setCookie('dealer', encodeURIComponent(response.data.dealer))
-          // setCookie('firstLogin', response.data.firstLogin);
-          // setCookie('code', response.data.code);
-          // setCookie('userName', response.data.userName);
         }
-
-
+        window.location.replace("/manager");
       } else if (response.data.token === null) {
         form.setFields([{
           name: 'Username',

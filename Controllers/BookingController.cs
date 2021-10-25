@@ -36,6 +36,19 @@ namespace CarDealerProject.Controllers
             }
             return Ok(newBooking);
         }
+        [HttpPost("quote/create")]
+        public async Task<ActionResult<BookingEntityDTO>> CreateQuote(BookingEntityDTO book)
+        {
+            var newQuote = await _bookingService.CreateQuote(book);
+            if(newQuote == null)
+            {
+                return BadRequest("Can't create Quote request , pls try again!");
+            }
+            else
+            {
+                return Ok(newQuote);
+            }    
+        }    
         [HttpGet("booking/all")]
         public async Task<List<BookingEntity>> GetBookAll()
         {
@@ -49,7 +62,19 @@ namespace CarDealerProject.Controllers
             var result = await _bookingService.GetAllBookingInDealer(dealer);
             return result;
         }
-
+        [HttpGet("quote/all")]
+        public async Task<List<BookingEntity>> GetQuoteAll()
+        {
+            var result = await _bookingService.GetAllQuote();
+            return result;
+        }
+        [HttpGet("quote/all/dealer")]
+        public async Task<List<BookingEntity>> GetQuoteAllDealer()
+        {
+            var dealer = GetUserDealer();
+            var result = await _bookingService.GetAllQuoteInDealer(dealer);
+            return result;
+        }
         [HttpGet("respond/booking/{id}-{respond}")]
         public async Task<ActionResult<BookingEntity>> RespondBooking(int id, string respond)
         {
@@ -59,6 +84,16 @@ namespace CarDealerProject.Controllers
                  return Ok(updateBooking);
             }
            return BadRequest("Error !!!");
+        }
+        [HttpPut("complete/{id}")]
+        public async Task<ActionResult<BookingEntity>> CompleteBooking(int id)
+        {
+            var completeBook = await _bookingService.CompleteBooking(id);
+            if(completeBook)
+            {
+                return Ok(completeBook);
+            }
+            return BadRequest("Error !!!");
         }
         [HttpGet("list/dealer/")]
         public async Task<ActionResult<PagingResult<BookingEntity>>> GetListBookingInDealer(
@@ -74,6 +109,20 @@ namespace CarDealerProject.Controllers
             var dealer = GetUserDealer();
             return Ok(await _bookingService.GetListBookingInDealer(request, dealer));
         }
+        [HttpGet("quote/list/dealer/")]
+        public async Task<ActionResult<PagingResult<BookingEntity>>> GetListQuoteInDealer(
+          [FromQuery(Name = "pageSize")] int pageSize,
+          [FromQuery(Name = "pageIndex")] int pageIndex = 1)
+        {
+
+            var request = new PagingRequest
+            {
+                PageSize = pageSize,
+                PageIndex = pageIndex
+            };
+            var dealer = GetUserDealer();
+            return Ok(await _bookingService.GetListQuoteInDealer(request, dealer));
+        }
         [HttpGet("list/")]
         public async Task<ActionResult<PagingResult<BookingEntity>>> GetListBooking(
           [FromQuery(Name = "pageSize")] int pageSize,
@@ -87,6 +136,20 @@ namespace CarDealerProject.Controllers
             };
             
             return Ok(await _bookingService.GetListBooking(request));
+        }
+        [HttpGet("quote/list/")]
+        public async Task<ActionResult<PagingResult<BookingEntity>>> GetListQuote(
+         [FromQuery(Name = "pageSize")] int pageSize,
+         [FromQuery(Name = "pageIndex")] int pageIndex = 1)
+        {
+
+            var request = new PagingRequest
+            {
+                PageSize = pageSize,
+                PageIndex = pageIndex
+            };
+
+            return Ok(await _bookingService.GetListQuote(request));
         }
     }
 }

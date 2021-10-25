@@ -22,6 +22,7 @@ namespace CarDealerProject.Services.CustomerService.Implement
         public async Task<List<CustomerEntity>> GetAllCustomerMaster()
         {
             var listCustomer = await _carDealerDBContext.CustomerEntity
+                 .Include(x => x.bookWorkshops)
                 .Include(x => x.bookings).ThenInclude(c => c.Service)
                 .Include(x => x.bookings).ThenInclude(v => v.Dealer)
                 .ToListAsync();
@@ -30,6 +31,7 @@ namespace CarDealerProject.Services.CustomerService.Implement
         public async Task<CustomerEntity> GetCustomerInfoByEmailOrPhone(string input)
         {
             var customer = await _carDealerDBContext.CustomerEntity.Where(x => x.PhoneNumber == input || x.Email == input)
+                .Include(x=>x.bookWorkshops)
                 .Include(x => x.bookings).ThenInclude(c => c.Service)
                 .Include(x => x.bookings).ThenInclude(v => v.Dealer)
                 .FirstOrDefaultAsync();
@@ -38,6 +40,7 @@ namespace CarDealerProject.Services.CustomerService.Implement
         public async Task<CustomerEntity> GetCustomerInfoById(int id)
         {
             var customer = await _carDealerDBContext.CustomerEntity.Where(x => x.Id == id)
+                 .Include(x => x.bookWorkshops)
                 .Include(x => x.bookings).ThenInclude(c => c.Service)
                 .Include(x => x.bookings).ThenInclude(v => v.Dealer)
                 .FirstOrDefaultAsync();
@@ -46,6 +49,7 @@ namespace CarDealerProject.Services.CustomerService.Implement
         public async Task<PagingResult<CustomerEntity>> GetListCustomer(PagingRequest request)
         {
             var listCustomer = _carDealerDBContext.CustomerEntity
+                 .Include(x => x.bookWorkshops)
                  .Include(x => x.bookings).ThenInclude(c => c.Service)
                  .Include(x => x.bookings).ThenInclude(v => v.Dealer);
             int totalRow = await listCustomer.CountAsync();

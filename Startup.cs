@@ -86,7 +86,7 @@ namespace CarDealerProject
             services.AddScoped<ICarEquipmentService, CarEquipmentService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddTransient<IEmailService, EmailService>();
-
+            services.AddScoped<IBookWorkShopService, BookWorkshopService>();
             services.AddCors(
                      options =>
                      {

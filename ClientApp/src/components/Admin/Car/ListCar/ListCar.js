@@ -16,9 +16,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useLastLocation } from 'react-router-last-location';
 import CurrentUserContext from '../../../../Share/Context/CurrentUserContext'
 import { Select } from 'antd';
-import Slider from "react-slick";
 import GoogleMapReact from 'google-map-react';
-import { isForOfStatement } from 'typescript';
 import { FaGasPump } from 'react-icons/fa';
 import { FcEngineering } from 'react-icons/fc';
 import { GiGears } from 'react-icons/gi';
@@ -57,13 +55,7 @@ const optionsModel = [
 ]
 const AnyReactComponent = ({ text }) => <div style={{ wordWrap: 'normal' }}><img style={{ height: '22px', width: '20px' }} src="https://localhost:5001/Images/copy_492419507.png" /><b style={{ color: 'red' }}>{text}</b></div>;
 const ListCar = () => {
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-    };
+
     const [image, setImage] = useState();
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
     const [searchCars, setSearchCars] = useState();
@@ -149,7 +141,7 @@ const ListCar = () => {
                 }).catch(function (error) {
                     console.log(error);
                 })
-            } else if (currentUser.role === 'Admin') {
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
                 GetAllCarAdminService().then(function (response) {
                     let data = response.data.filter(x => x.isAvailable === true && valueType.includes(x.type.name));
                     setSearchCars({ ...searchCars, items: data.slice((pageIndex - 1) * pageSizeOld, pageIndex * pageSizeOld) });
@@ -200,7 +192,7 @@ const ListCar = () => {
                 }).catch(function (error) {
                     console.log(error);
                 })
-            } else if (currentUser.role === 'Admin') {
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
                 GetAllCarAdminService().then(function (response) {
                     let data = response.data.filter(x => x.isAvailable === true && valueModel.includes(x.model.name));
                     setSearchCars({ ...searchCars, items: data.slice((pageIndex - 1) * pageSizeOld, pageIndex * pageSizeOld) });
@@ -246,23 +238,7 @@ const ListCar = () => {
             console.log(err);
         })
     }
-    //Show modal for delete
-    // const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
-    // const showModalDelete = evt => {
-    //     GetCarService({ id: evt.currentTarget.id }).then(function (response) {
-    //         setCar(response.data);
-    //         setIsModalDeleteVisible(true);
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     })
-    // }
-    // const handleDeleteOk =()=>{
 
-    // }
-    // const handleDeleteCancel = () => {
-    //     setIsModalDisableVisible(false);
-    // };
-    //Show modal for make Not Available
     const showModalDisable = evt => {
         GetCarService({ id: evt.currentTarget.id }).then(function (response) {
             setCar(response.data);
@@ -290,7 +266,6 @@ const ListCar = () => {
 
     const handleCancel = () => {
         setIsModalVisible(false);
-        window.location.reload();
     };
 
     const handleSearch = (value) => {
@@ -307,7 +282,7 @@ const ListCar = () => {
                 }).catch(function (error) {
                     console.log(error);
                 })
-            } else if (currentUser.role === 'Admin') {
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
                 GetAllCarAdminService().then(function (response) {
                     let data = response.data.filter(x => x.isAvailable === true
                         && (x.name.toUpperCase().includes(searchInput)
@@ -373,7 +348,7 @@ const ListCar = () => {
                 }).catch(function (err) {
                     console.log(err);
                 })
-            } else if (currentUser.role === 'Admin') {
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
                 GetCarListAdminService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
                     if (!didCancel) {
                         if (lastLocation !== null && location.pathname.includes('/list-car/ok')) {
@@ -411,7 +386,7 @@ const ListCar = () => {
         return () => didCancel = true;
     }, [pageSizeOld, pageIndex, lastLocation, location.pathname])
 
-
+    console.log(car);
     return (
         <Content className={styles.antLayoutContent} >
             <Row>
@@ -430,11 +405,13 @@ const ListCar = () => {
                 <Col span={2}>
 
                 </Col>
-                <Col span={4}>
-                    <Button className={styles.create}>
-                        <Link to='/create-car'>Create new car</Link>
-                    </Button>
-                </Col>
+                {currentUser.role === 'Staff' ?
+                    <Col span={4}>
+                        <Button className={styles.create}>
+                            <Link to='/create-car'>Create new car</Link>
+                        </Button>
+                    </Col> : ""
+                }
             </Row>
             <Modal title={car !== null ? "Are you sure?" : "Can not disable car"} visible={isModalDisableVisible}
                 onOk={handleDisableOk} onCancel={handleDisableCancel} centered={true} closable={car !== null ? false : true}
@@ -460,13 +437,13 @@ const ListCar = () => {
                 searchCars !== undefined ?
                     <>{
                         car !== null ?
-                            <Modal width={'90%'} title="Car Information" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
+                            <Modal key={car.id} width={'90%'} title="Car Information" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
 
-                                <div style={{ width: '100%' }}>
+                                <div style={{ width: '100%' }} >
                                     <div style={{ display: "flex", flexDirection: 'row', flexWrap: 'wrap' }}>
                                         <div style={{ flexBasis: '100%' }}><h2>{car.name}</h2></div>
                                         <div style={{ flexBasis: '60%' }}>
-                                            <CarouselForModal id={car.id} autoplay images={image} style={{ height: '40vh', width: '100%' }}></CarouselForModal>
+                                            <CarouselForModal images={image} style={{ height: '40vh', width: '100%' }}></CarouselForModal>
                                         </div>
                                         <div style={{ flexBasis: '40%' }}>
                                             <div style={{ marginTop: '5%' }}><b style={{ borderBottom: '1px solid gray', fontSize: '30px' }}>{car.price} VND</b></div>
@@ -480,9 +457,8 @@ const ListCar = () => {
                                     <div style={{ width: '100%', height: '60vh' }}>
                                         <GoogleMapReact
                                             bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
-                                            defaultCenter={{ lat: 16.466393028698914, lng: 107.5614913406225 }}
-                                            //defaultCenter={{ lat: dealer.latitude, lng: dealer.longtitude }}
-                                            defaultZoom={5}
+                                            defaultCenter={{ lat: car.dealer.latitude, lng: car.dealer.longtitude }}
+                                            defaultZoom={10}
                                             yesIWantToUseGoogleMapApiInternals={true}
                                         >
                                             <AnyReactComponent
@@ -495,9 +471,9 @@ const ListCar = () => {
                                     </div>
                                 </div>
                                 <br />
-                                <div style={{ display: 'flex', }}>
+                                <div style={{ display: 'flex', }} >
                                     <div style={{ width: '50%' }}>
-                                        <table className={styles.tableModal}>
+                                        <table className={styles.tableModal} >
                                             <tr>
                                                 <td>Color</td>
                                                 <td>{car.color} </td>
@@ -629,9 +605,11 @@ const ListCar = () => {
                                                     <td className={styles.borderRow} onClick={showModal} id={car.id}>{car.dealer.name}</td>
                                                     <td></td>
                                                     <td>
-                                                        <Link to={`/edit-car/${car.id}`}><i className="bi bi-pencil-fill"></i></Link>
-                                                        {/* <i className="bi bi-x-circle" onClick={showModalDelete} id={car.id}></i> */}
-                                                        <i className="bi bi-eye-slash" onClick={showModalDisable} id={car.id}></i>
+                                                        {currentUser.role === 'Master' ? "" : <>
+                                                            <Link to={`/edit-car/${car.id}`}><i className="bi bi-pencil-fill"></i></Link>
+                                                            <i className="bi bi-eye-slash" onClick={showModalDisable} id={car.id}></i>
+                                                        </>
+                                                        }
                                                     </td>
                                                 </tr>
                                             )

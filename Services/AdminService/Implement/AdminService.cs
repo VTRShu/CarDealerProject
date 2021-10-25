@@ -202,6 +202,7 @@ namespace CarDealerProject.Services.AdminService
                     Type = user.Type,
                     IsDisabled = true,
                     Image = image,
+                    Profile = image.ImageSrc,
                 };
                 for (int i = 0; i < newUser.LastName.Split(' ').Length; i++)
                 {
@@ -291,6 +292,7 @@ namespace CarDealerProject.Services.AdminService
                     existingUser.Gender = user.Gender;
                     existingUser.Dob = Dob;
                     existingUser.Image = newImage;
+                    existingUser.Profile = newImage.ImageSrc;
                     _carDealerDBContext.Entry(existingUser).State = EntityState.Modified;
 
                     string oldRoleName = existingUser.Type == (Role)0 ? "Master" : (existingUser.Type == (Role)1 ? "Admin" : "Staff");

@@ -11,11 +11,13 @@ import './ListModelAntStyle.css'
 import ModelConstant from '../../../../Share/Constant/ModelConstant'
 import { Link, useLocation } from "react-router-dom";
 import { useLastLocation } from 'react-router-last-location';
+import CurrentUserContext from '../../../../Share/Context/CurrentUserContext';
 import { Select } from 'antd';
 const { Search } = Input;
 const { Content } = Layout;
 const options = [{ label: 'Sedan', value: 'Sedan' }, { label: 'SUV', value: 'SUV' }, { label: 'Coupe', value: 'Coupe' }, { label: 'Van/MPV', value: 'Van/MPV' }];
 const ListModel = () => {
+    const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
     const [value, setValue] = useState([]);
     const location = useLocation();
     const lastLocation = useLastLocation();
@@ -126,11 +128,13 @@ const ListModel = () => {
                     <Search onSearch={handleSearch} />
                 </Col>
                 <Col span={4}></Col>
-                <Col span={5}>
-                    <Button className={styles.create}>
-                        <Link to='/create-model'>Create new model</Link>
-                    </Button>
-                </Col>
+                {currentUser.role === 'Master' ?
+                    <Col span={5}>
+                        <Button className={styles.create}>
+                            <Link to='/create-model'>Create new model</Link>
+                        </Button>
+                    </Col> : ""
+                }
             </Row>
             <br />
             {

@@ -22,6 +22,7 @@ namespace CarDealerProject.Repositories.EFContext
         public DbSet<TypeEntity> TypeEntity { get; set; }
         public DbSet<CarEquipmentEntity> CarEquipmentEntity { get; set; }
         public DbSet<CustomerEntity> CustomerEntity { get; set; }
+        public DbSet<BookWorkshopEntity> BookWorkshopEntity { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -48,8 +49,14 @@ namespace CarDealerProject.Repositories.EFContext
             modelBuilder.Entity<BookingEntity>().HasOne(c => c.Dealer);
             modelBuilder.Entity<BookingEntity>().HasOne(c => c.Service);
             modelBuilder.Entity<BookingEntity>().HasMany(c => c.customers);
+            modelBuilder.Entity<BookingEntity>().HasOne(c => c.Car);
+
+            modelBuilder.Entity<BookWorkshopEntity>().HasMany(c => c.customer);
+            modelBuilder.Entity<BookWorkshopEntity>().HasOne(c => c.Dealer);
+            modelBuilder.Entity<BookWorkshopEntity>().HasOne(c => c.Service);
 
             modelBuilder.Entity<CustomerEntity>().HasMany(c => c.bookings);
+            modelBuilder.Entity<CustomerEntity>().HasMany(c => c.bookWorkshops);
 
             modelBuilder.Entity<DealerEntity>().HasMany(c => c.Services);
 
@@ -67,6 +74,36 @@ namespace CarDealerProject.Repositories.EFContext
                     Id = 1,
                     Name = "Test Drive",
                     Description = "x",
+                    Dealers = null,
+                }, new ServiceEntity
+                {
+                    Id = 2,
+                    Name = "New car sales",
+                    Description = "New car sales",
+                    Dealers = null,
+                }, new ServiceEntity
+                {
+                    Id = 3,
+                    Name = " Services Workshop",
+                    Description = " Services Workshop",
+                    Dealers = null,
+                }, new ServiceEntity
+                {
+                    Id = 4,
+                    Name = "Used car sales",
+                    Description = "Used car sales",
+                    Dealers = null,
+                }, new ServiceEntity
+                {
+                    Id = 5,
+                    Name = "Workshop",
+                    Description = "Fix,maintain...",
+                    Dealers = null,
+                }, new ServiceEntity
+                {
+                    Id = 6,
+                    Name = "RequestQuote",
+                    Description = "Quote",
                     Dealers = null,
                 });
             modelBuilder.Entity<AppRole>().HasData(
@@ -98,7 +135,8 @@ namespace CarDealerProject.Repositories.EFContext
                 ImageName = "Capture.PNG",
                 ImageSrc = "https://localhost:5001/Images/Capture.PNG",
                 InsertedOn = new DateTime(2021, 10, 05),
-            },new ImageEntity {
+            }, new ImageEntity
+            {
                 Id = 2,
                 ImageName = "35418253_636770120013959_511352286501404672_n.jpg",
                 ImageSrc = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg",
@@ -161,27 +199,16 @@ namespace CarDealerProject.Repositories.EFContext
                 SecurityStamp = "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD",
                 ConcurrencyStamp = "f99461ee-4644-4148-8874-b4ab37562be3",
                 Image = null,
-                Profile ="https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg"
+                Profile = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg"
             });
-            modelBuilder.Entity<ModelEntity>().HasData(
-                new ModelEntity
-                {
-                    Id = 1,
-                    Name = "S-Class",
-                    StartPrice = "4299000000",
-                    Description = "x",
-                    Type = null,
-                   
-                }
-                ) ;
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
                 new IdentityUserRole<int>
                 {
                     UserId = 1,
                     RoleId = 1,
                 },
-                new IdentityUserRole<int> 
-                { 
+                new IdentityUserRole<int>
+                {
                     UserId = 2,
                     RoleId = 2,
                 });
@@ -202,7 +229,7 @@ namespace CarDealerProject.Repositories.EFContext
             {
                 Id = 3,
                 Name = "Coupe",
-                Description= "A coupe or coupé is a passenger car with a sloping or truncated rear roofline and two doors",
+                Description = "A coupe or coupé is a passenger car with a sloping or truncated rear roofline and two doors",
             },
             new TypeEntity
             {
@@ -211,6 +238,6 @@ namespace CarDealerProject.Repositories.EFContext
                 Description = "MPV stands for Multi-Purpose Vehicle. They have tall, box-like bodies designed to create as much interior space as possible and often have more seats than a comparable hatchback or saloon.",
             });
         }
-    } 
+    }
 
 }

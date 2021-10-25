@@ -14,6 +14,7 @@ import CustomerConstant from '../../../../Share/Constant/CustomerConstant'
 import { Link } from "react-router-dom";
 import CurrentUserContext from '../../../../Share/Context/CurrentUserContext'
 import { Select } from 'antd';
+import { FaFileExport } from 'react-icons/fa'
 const { Search } = Input;
 const { Content } = Layout;
 function itemRender(current, type, originalElement) {
@@ -161,7 +162,7 @@ const ListCustomer = () => {
             </Row>
             <Row justify="end">
                 <Col xl={3} sm={24}>
-                    <Button className={styles.create} onClick={saveExcel}>Export</Button>
+                    <Button className={styles.create} onClick={saveExcel}><FaFileExport /></Button>
                 </Col>
             </Row>
             <br />

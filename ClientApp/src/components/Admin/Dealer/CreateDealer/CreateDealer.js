@@ -3,7 +3,7 @@ import "antd/dist/antd.css";
 import { useState, useEffect } from 'react'
 import { useHistory } from "react-router-dom";
 import { CreateDealerService } from '../../../../Services/DealerService'
-import { Layout, Form, Button, Select, Input, DatePicker, Radio, Upload, Space, Modal, Divider, InputNumber } from "antd";
+import { Layout, Form, Button, Select, Input, DatePicker, Radio, Upload, Space, Modal, Divider, InputNumber, Checkbox } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import { Row, Col } from "antd";
 const { Option } = Select;
@@ -40,6 +40,9 @@ const CreateDealer = () => {
             description: value.description,
             longtitude: value.longtitude,
             latitude: value.latitude,
+            serviceId1: value.services[0] === undefined ? 5 : value.services[0],
+            serviceId2: value.services[1] === undefined ? 5 : value.services[1],
+            serviceId3: value.services[2] === undefined ? 5 : value.services[2],
         }).then(function (response) {
             console.log(response);
             history.push(`/list-dealer/ok/${response.data.id}`);
@@ -151,6 +154,30 @@ const CreateDealer = () => {
                 >
                     <Input.TextArea />
                 </Form.Item>
+
+                <Form.Item name="services" label="Services">
+                    <Checkbox.Group>
+                        <Row>
+                            <Col span={10}>
+                                <Checkbox value={2} style={{ lineHeight: '32px' }}>
+                                    New car sales
+                                </Checkbox>
+                            </Col>
+                            <Col span={10}>
+                                <Checkbox value={3} style={{ lineHeight: '32px' }} >
+                                    Services Workshop
+                                </Checkbox>
+                            </Col>
+                            <Col span={10}>
+                                <Checkbox value={4} style={{ lineHeight: '32px' }}>
+                                    Used car sales
+                                </Checkbox>
+                            </Col>
+
+                        </Row>
+                    </Checkbox.Group>
+                </Form.Item>
+
                 <Row>
                     <Col span={18}>
                         <Form.Item

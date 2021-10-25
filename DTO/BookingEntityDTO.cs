@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 namespace CarDealerProject.DTO
 {
     public class BookingEntityDTO
-    {
+    {   
+        public int CarId { get; set; }
         public int ModelId { get; set; }
         public int DealerId { get; set; }
         public DateTime Appointment { get; set; }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarDealerProject.Migrations
 {
     [DbContext(typeof(CarDealerDBContext))]
-    [Migration("20211014192927_InitialCreate")]
+    [Migration("20211024080545_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,21 @@ namespace CarDealerProject.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("BookWorkshopEntityCustomerEntity", b =>
+                {
+                    b.Property<int>("bookWorkshopsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("bookWorkshopsId", "customerId");
+
+                    b.HasIndex("customerId");
+
+                    b.ToTable("BookWorkshopEntityCustomerEntity");
+                });
 
             modelBuilder.Entity("BookingEntityCustomerEntity", b =>
                 {
@@ -254,6 +269,64 @@ namespace CarDealerProject.Migrations
                         });
                 });
 
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.BookWorkshopEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Appointment")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CarIdentification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DealerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LicensePlate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mileage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecificRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TimePeriod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DealerId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("BookWorkshopEntity");
+                });
+
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.BookingEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -263,6 +336,9 @@ namespace CarDealerProject.Migrations
 
                     b.Property<DateTime>("Appointment")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("CarId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("DealerId")
                         .HasColumnType("int");
@@ -285,8 +361,11 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServiceId")
+                    b.Property<int?>("ServiceId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.Property<string>("TimePeriod")
                         .HasColumnType("nvarchar(max)");
@@ -295,6 +374,8 @@ namespace CarDealerProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarId");
 
                     b.HasIndex("DealerId");
 
@@ -532,15 +613,6 @@ namespace CarDealerProject.Migrations
                     b.HasIndex("TypeId");
 
                     b.ToTable("ModelEntity");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "x",
-                            Name = "S-Class",
-                            StartPrice = "4299000000"
-                        });
                 });
 
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.ServiceEntity", b =>
@@ -566,6 +638,36 @@ namespace CarDealerProject.Migrations
                             Id = 1,
                             Description = "x",
                             Name = "Test Drive"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "New car sales",
+                            Name = "New car sales"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = " Services Workshop",
+                            Name = " Services Workshop"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Used car sales",
+                            Name = "Used car sales"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Fix,maintain...",
+                            Name = "Workshop"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Quote",
+                            Name = "RequestQuote"
                         });
                 });
 
@@ -782,6 +884,21 @@ namespace CarDealerProject.Migrations
                     b.ToTable("AppUserTokens");
                 });
 
+            modelBuilder.Entity("BookWorkshopEntityCustomerEntity", b =>
+                {
+                    b.HasOne("CarDealerProject.Repositories.Entities.BookWorkshopEntity", null)
+                        .WithMany()
+                        .HasForeignKey("bookWorkshopsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarDealerProject.Repositories.Entities.CustomerEntity", null)
+                        .WithMany()
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BookingEntityCustomerEntity", b =>
                 {
                     b.HasOne("CarDealerProject.Repositories.Entities.BookingEntity", null)
@@ -812,8 +929,27 @@ namespace CarDealerProject.Migrations
                     b.Navigation("Image");
                 });
 
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.BookWorkshopEntity", b =>
+                {
+                    b.HasOne("CarDealerProject.Repositories.Entities.DealerEntity", "Dealer")
+                        .WithMany()
+                        .HasForeignKey("DealerId");
+
+                    b.HasOne("CarDealerProject.Repositories.Entities.ServiceEntity", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId");
+
+                    b.Navigation("Dealer");
+
+                    b.Navigation("Service");
+                });
+
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.BookingEntity", b =>
                 {
+                    b.HasOne("CarDealerProject.Repositories.Entities.CarEntity", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId");
+
                     b.HasOne("CarDealerProject.Repositories.Entities.DealerEntity", "Dealer")
                         .WithMany()
                         .HasForeignKey("DealerId");
@@ -824,9 +960,9 @@ namespace CarDealerProject.Migrations
 
                     b.HasOne("CarDealerProject.Repositories.Entities.ServiceEntity", "Service")
                         .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServiceId");
+
+                    b.Navigation("Car");
 
                     b.Navigation("Dealer");
 

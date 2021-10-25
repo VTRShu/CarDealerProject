@@ -208,12 +208,14 @@ const HeaderProject = () => {
             <div>
                 <div className="logo">
                     <div style={{ marginLeft: "4%", padding: "1%" }}>
-                        <img src="https://www.mercedes-benz.com.vn/vi/_jcr_content/logo.noscale.cloudsvg.imageLogo.20180312094632.svg" />
-                        <div className="title" style={{ display: "inline-block" }}>
-                            <p style={{ color: "white", fontSize: "10px" }}>Mercedes-Benz <br />
-                                The best or nothing
-                            </p>
-                        </div>
+                        <Link to="/">
+                            <img src="https://www.mercedes-benz.com.vn/vi/_jcr_content/logo.noscale.cloudsvg.imageLogo.20180312094632.svg" />
+                            <div className="title" style={{ display: "inline-block" }}>
+                                <p style={{ color: "white", fontSize: "10px" }}>Mercedes-Benz <br />
+                                    The best or nothing
+                                </p>
+                            </div>
+                        </Link>
                     </div>
                 </div>
                 <Modal title="Change Password" visible={isModalSuccessVisible} onCancel={handleClose} footer={null}>
@@ -232,45 +234,62 @@ const HeaderProject = () => {
                             <Menu theme="dark" mode="horizontal">
                                 {currentUser.role === null || currentUser.role === undefined ?
                                     <Menu.Item style={{ marginLeft: '95%' }}><Link style={{ color: 'white' }} to='/manager'>Login</Link></Menu.Item>
-                                    : <>
+                                    : (currentUser.role === 'Staff' ?
+                                        <>
 
-                                        <SubMenu key="sub1" title="User">
-                                            <Menu.Item><Link to="/list-user">List Users</Link></Menu.Item>
-                                            <Menu.Item><Link to="/create-user">Create User</Link></Menu.Item>
-                                        </SubMenu>
-                                        <SubMenu key="sub2" title="Dealer">
                                             <Menu.Item><Link to="/list-dealer">List Dealers</Link></Menu.Item>
-                                            {currentUser.role === 'Master' ?
-                                                <Menu.Item><Link to="/create-dealer">Create Dealer</Link></Menu.Item>
-                                                : ""}
-                                        </SubMenu>
-                                        <SubMenu key="sub3" title="Car">
-                                            {currentUser.role === 'Master' || currentUser.role === 'Admin' ?
-                                                <>
-                                                    <SubMenu title="Model">
-                                                        <Menu.Item key="1"><Link to="/list-model">All current models</Link></Menu.Item>
-                                                        <Menu.Item key="2"><Link to="/create-model">Create new model</Link></Menu.Item>
-                                                    </SubMenu>
-                                                </> : ""
-                                            }
                                             <SubMenu title="Manage Car Information">
                                                 <Menu.Item key="5"><Link to="/list-car">List Cars</Link></Menu.Item>
                                                 <Menu.Item key="6"><Link to="/create-car">Create new car</Link></Menu.Item>
                                             </SubMenu>
-                                        </SubMenu>
-
-                                        <SubMenu title="Customer">
                                             <Menu.Item><Link to="/list-booking">List booking</Link></Menu.Item>
-                                            <Menu.Item><Link to="/list-customer">List customer</Link></Menu.Item>
-                                        </SubMenu>
-                                        <SubMenu key="sub4" style={{ marginLeft: '62%' }} title={`Welcome ${currentUser.user}`}>
-                                            <Menu.Item key="3" onClick={showModalChangePassword}>Change Password </Menu.Item>
-                                            <Menu.Item key="5"> <Link to={`/edit-user/${currentUser.code}`}>Edit Profile</Link></Menu.Item>
-                                            <Menu.Item key="4" onClick={showLogOutModal}>Logout</Menu.Item>
-                                        </SubMenu>
-                                        <Menu.Item style={{ padding: '0' }}><img src={currentUser.profile} style={{ borderRadius: '30px', width: '60px', height: '60px' }} /></Menu.Item>
+                                            <SubMenu key="sub4" style={{ marginLeft: '55%' }} title={`Welcome ${currentUser.user}`}>
+                                                <Menu.Item key="3" onClick={showModalChangePassword}>Change Password </Menu.Item>
+                                                <Menu.Item key="4" onClick={showLogOutModal}>Logout</Menu.Item>
+                                            </SubMenu>
+                                            <Menu.Item style={{ padding: '0' }}><img src={currentUser.profile} style={{ borderRadius: '30px', width: '60px', height: '60px' }} /></Menu.Item>
+                                        </>
 
-                                    </>
+                                        : <>
+                                            <SubMenu key="sub1" title="User">
+                                                <Menu.Item><Link to="/list-user">List Users</Link></Menu.Item>
+                                                <Menu.Item><Link to="/create-user">Create User</Link></Menu.Item>
+                                            </SubMenu>
+
+                                            <SubMenu key="sub2" title="Dealer">
+                                                <Menu.Item><Link to="/list-dealer">List Dealers</Link></Menu.Item>
+                                                {currentUser.role === 'Master' ?
+                                                    <Menu.Item><Link to="/create-dealer">Create Dealer</Link></Menu.Item> : ""
+                                                }
+                                            </SubMenu>
+
+                                            <SubMenu key="sub3" title="Car">
+                                                <SubMenu title="Model">
+                                                    <Menu.Item key="1"><Link to="/list-model">All current models</Link></Menu.Item>
+                                                    {currentUser.role === 'Master' ?
+                                                        <Menu.Item key="2"><Link to="/create-model">Create new model</Link></Menu.Item> : ""
+                                                    }
+                                                </SubMenu>
+                                                <Menu.Item key="5"><Link to="/list-car">List Cars</Link></Menu.Item>
+                                            </SubMenu>
+
+                                            <SubMenu title="Customer">
+                                                {currentUser.role === 'Master' ? "" :
+                                                    <SubMenu key="sub6" title="Booking">
+                                                        <Menu.Item><Link to="/list-booking">research booking list</Link></Menu.Item>
+                                                        <Menu.Item><Link to="/list-bookws">Workshop services booking list</Link></Menu.Item>
+                                                    </SubMenu>
+                                                }
+                                                <Menu.Item><Link to="/list-customer">List customer</Link></Menu.Item>
+                                            </SubMenu>
+
+                                            <SubMenu key="sub4" style={{ marginLeft: '62%' }} title={`Welcome ${currentUser.user}`}>
+                                                <Menu.Item key="3" onClick={showModalChangePassword}>Change Password </Menu.Item>
+                                                <Menu.Item key="4" onClick={showLogOutModal}>Logout</Menu.Item>
+                                            </SubMenu>
+                                            <Menu.Item style={{ padding: '0' }}><img src={currentUser.profile} style={{ borderRadius: '30px', width: '60px', height: '60px' }} /></Menu.Item>
+
+                                        </>)
                                 }
                             </Menu>
                             :

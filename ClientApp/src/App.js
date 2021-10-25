@@ -33,6 +33,17 @@ import CreateCarPage from './Pages/Admin/Car/CreateCarPage'
 import EditCarPage from './Pages/Admin/Car/EditCarPage'
 import ListBookingPage from './Pages/BookingPage/ListBookingPage'
 import CustomerPage from './Pages/Customer/CustomerPage';
+import ListModelCustomerPage from './Pages/CustomerPage/ListModelCustomer';
+import SideBar from './components/SideBar/SideBar'
+import CreateTestDrivePage from './Pages/CustomerPage/CreateTestDrivePage'
+import CheckCustomer from './components/Customer/CreateTestDrive/CheckCustomer'
+import ListCarCustomerPage from './Pages/CustomerPage/ListCarCustomerPage'
+import CarInfor from './components/Customer/ListCarCustomer/CarInfor/CarInfor'
+import ListDealerCustomerPage from './Pages/CustomerPage/ListDealerCustomerPage'
+import CreateBookingWSPage from './Pages/CustomerPage/CreateBookingWSPage'
+import CheckCustomerWS from './components/Customer/CreateBookingWS/checkCustomerWS'
+import ListBookingWSPage from './Pages/BookingPage/ListBookingWSPage'
+import FooterProject from './components/FooterProject/FooterProject'
 const { Header, Footer, Sider } = Layout;
 const App = () => {
     const cookies = new Cookies();
@@ -51,7 +62,6 @@ const App = () => {
     console.log(currentUser);
     var url = window.location.href;
     var check = "manager";
-
     return (
         <HashRouter>
 
@@ -80,39 +90,51 @@ const App = () => {
                                                         <Route path="/create-dealer"> <CreateDealerPage /> </Route>
                                                         <Route path="/edit-dealer/:id"> <EditDealerPage /> </Route>
                                                         <Route path="/list-car"><ListCarPage /> </Route>
-                                                        <Route path="/create-car"><CreateCarPage /> </Route>
-                                                        <Route path="/edit-car/:id"><EditCarPage /> </Route>
                                                         <Route path="/list-booking"><ListBookingPage /> </Route>
                                                         <Route path="/list-customer"><CustomerPage /></Route>
+                                                        <Route exact path="/"><CustomerPage /></Route>
                                                     </> : (currentUser.role === 'Admin' ?
                                                         <>
                                                             <Route path="/list-car"><ListCarPage /> </Route>
                                                             <Route path="/list-user"><ListUserPage /></Route>
+                                                            <Route exact path="/"><ListUserPage /></Route>
                                                             <Route path="/list-dealer"><ListDealerPage /></Route>
                                                             <Route path="/create-user"><CreateUserPage /></Route>
                                                             <Route path="/edit-user/:code"><EditUserPage /></Route>
                                                             <Route path="/list-model"><ListModelPage /></Route>
-                                                            <Route path="/create-model"> <CreateModelPage /></Route>
-                                                            <Route path="/edit-model/:name"> <EditModelPage /></Route>
-                                                            <Route path="/create-car"><CreateCarPage /> </Route>
-                                                            <Route path="/edit-car/:id"><EditCarPage /> </Route>
                                                             <Route path="/list-customer"><CustomerPage /></Route>
                                                             <Route path="/list-booking"><ListBookingPage /> </Route>
+                                                            <Route path="/list-bookws"><ListBookingWSPage /></Route>
                                                         </> : (currentUser.role === 'Staff' ?
                                                             <>
-                                                                <Route path="/list-car"><ListCarPage /> </Route>
+                                                                <Route path="/list-dealer"><ListDealerPage /></Route>
+                                                                <Route exact path="/list-car"><ListCarPage /> </Route>
                                                                 <Route path="/create-car"><CreateCarPage /> </Route>
                                                                 <Route path="/edit-car/:id"><EditCarPage /> </Route>
-                                                                <Route path="/list-customer"><CustomerPage /></Route>
                                                                 <Route path="/list-booking"><ListBookingPage /> </Route>
+                                                                <Route path="/list-bookws"><ListBookingWSPage /></Route>
                                                             </>
                                                             : <Login />))
                                                 }
                                             </>
                                         }
                                     </> :
-                                    <SlideProject />
+                                    <>
+                                        <Route exact path="/">
+                                            <SlideProject />
+                                            <ListModelCustomerPage />
+                                            <SideBar />
+                                        </Route>
+                                        <Route path="/list-car-customer/:model?"><ListCarCustomerPage /></Route>
+                                        <Route path="/check-customer/:modelId?/:service?"><CheckCustomer /></Route>
+                                        <Route path="/create-test-drive/:modelId?/:service?/:check"><CreateTestDrivePage /></Route>
+                                        <Route path="/car-infor/:id"><CarInfor /></Route>
+                                        <Route path="/list-dealer-customer"><ListDealerCustomerPage /></Route>
+                                        <Route path="/create-bookws/:check?"><CreateBookingWSPage /></Route>
+                                        <Route path="/check-customerws"><CheckCustomerWS /></Route>
+                                    </>
                                 }
+                                <FooterProject />
                             </Layout>
                         </Switch>
                     </LastLocationProvider>

@@ -243,12 +243,14 @@ const EditUser = () => {
                                 <Option value={1}>Admin</Option>
                                 <Option value={2}>Staff</Option>
                             </>
-                            :
-                            <>
-                                <Option value={0}>Master</Option>
-                                <Option value={1}>Admin</Option>
+                            : (currentUser.role === 'Staff' ? <>
                                 <Option value={2}>Staff</Option>
-                            </>}
+                            </> :
+                                <>
+                                    <Option value={0}>Master</Option>
+                                    <Option value={1}>Admin</Option>
+                                    <Option value={2}>Staff</Option>
+                                </>)}
                     </Select>
                 </Form.Item>
                 <Form.Item

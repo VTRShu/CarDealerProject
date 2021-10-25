@@ -3,7 +3,7 @@ import "antd/dist/antd.css";
 import { useState, useEffect } from 'react'
 import { useHistory, useParams } from "react-router-dom";
 import { EditDealerService, GetDealerService } from '../../../../Services/DealerService'
-import { Layout, Form, Button, Select, Input, DatePicker, Radio, Upload, Space, Modal, Divider, InputNumber } from "antd";
+import { Layout, Form, Button, Select, Input, DatePicker, Radio, Upload, Space, Modal, Divider, InputNumber, Checkbox } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import { Row, Col } from "antd";
 const { Option } = Select;
@@ -26,6 +26,7 @@ const EditDealer = () => {
     const { id } = useParams();
     const [form] = Form.useForm();
     const [dealer, setDealer] = useState([]);
+    const [defaultCheckedList, setDefaultCheckedList] = useState([]);
     const onFinishFailed = () => {
         console.log("Failed:");
     };
@@ -39,6 +40,9 @@ const EditDealer = () => {
             description: value.description,
             longtitude: value.longtitude,
             latitude: value.latitude,
+            serviceId1: value.services[0] === undefined ? 5 : value.services[0],
+            serviceId2: value.services[1] === undefined ? 5 : value.services[1],
+            serviceId3: value.services[2] === undefined ? 5 : value.services[2]
         }).then(function (response) {
             console.log(response);
             history.push(`/list-dealer/ok/${response.data.id}`);
@@ -46,10 +50,12 @@ const EditDealer = () => {
             console.log(error)
         })
     }
+    const [defaultValue, setDefaultValue] = useState([]);
     useEffect(() => {
         (async () => {
             GetDealerService({ id }).then(function (response) {
-                setDealer(response.data)
+                setDealer(response.data);
+                setDefaultValue(dealer.services)
             }).catch(function (error) {
                 console.log(error)
             });
@@ -170,6 +176,28 @@ const EditDealer = () => {
                 ]}
             >
                 <Input.TextArea />
+            </Form.Item>
+            <Form.Item name="services" label="Services">
+                <Checkbox.Group>
+                    <Row>
+                        <Col span={10}>
+                            <Checkbox value={2} style={{ lineHeight: '32px' }}>
+                                New car sales
+                            </Checkbox>
+                        </Col>
+                        <Col span={10}>
+                            <Checkbox value={3} style={{ lineHeight: '32px' }} >
+                                Services Workshop
+                            </Checkbox>
+                        </Col>
+                        <Col span={10}>
+                            <Checkbox value={4} style={{ lineHeight: '32px' }}>
+                                Used car sales
+                            </Checkbox>
+                        </Col>
+
+                    </Row>
+                </Checkbox.Group>
             </Form.Item>
             <Row>
                 <Col span={18}>

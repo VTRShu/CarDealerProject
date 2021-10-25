@@ -34,7 +34,7 @@ const ListDealer = () => {
         dealerService: null,
         dealerPhone: null,
         dealerWebsite: null,
-        services: [{ name: null }]
+        services: []
     })
 
     const selectProps = {
@@ -171,12 +171,11 @@ const ListDealer = () => {
                     {dealer !== null ?
 
                         <Modal width={700} title="Dealer Information" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
-                            <div style={{ height: '50vh', width: '100%' }}>
+                            <div key={dealer.id} style={{ height: '50vh', width: '100%' }}>
                                 <GoogleMapReact
                                     bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
-                                    defaultCenter={{ lat: 16.466393028698914, lng: 107.5614913406225 }}
-                                    //defaultCenter={{ lat: dealer.latitude, lng: dealer.longtitude }}
-                                    defaultZoom={5}
+                                    defaultCenter={{ lat: dealer.latitude, lng: dealer.longtitude }}
+                                    defaultZoom={10}
                                     yesIWantToUseGoogleMapApiInternals={true}
                                 >
                                     <AnyReactComponent
@@ -208,7 +207,11 @@ const ListDealer = () => {
                                 </tr>
                                 <tr>
                                     <td>Services </td>
-                                    <td>{dealer.services}</td>
+                                    <td>{dealer.services.map(serv => {
+                                        return (
+                                            <p>{serv.name}</p>
+                                        )
+                                    })}</td>
                                 </tr>
                             </table>
                         </Modal> : ''
@@ -241,7 +244,9 @@ const ListDealer = () => {
                                             <td></td>
                                             <td className={styles.borderRow} onClick={showModal} id={dealer.id}>{dealer.dealerWebsite}</td>
                                             <td></td>
-                                            <td className={styles.borderRow} onClick={showModal} id={dealer.id}>{dealer.services}</td>
+                                            <td className={styles.borderRow} onClick={showModal} id={dealer.id}>{dealer.services.map(serv => {
+                                                return (<p>{serv.name}</p>)
+                                            })}</td>
                                             <td></td>
                                             <td>
 

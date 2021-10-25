@@ -8,7 +8,7 @@ export function GetDealerService({ id }) {
     return axios.get(`${DealerConstant.GetDealerURL}${id}`);
 };
 
-export function CreateDealerService({ name, dealerEmail, dealerWebsite, dealerPhone, description, latitude, longtitude }) {
+export function CreateDealerService({ name, dealerEmail, dealerWebsite, dealerPhone, description, latitude, longtitude, serviceId1, serviceId2, serviceId3 }) {
     return axios.post(DealerConstant.CreateDealerURL, {
         name: name,
         longtitude: longtitude,
@@ -16,11 +16,14 @@ export function CreateDealerService({ name, dealerEmail, dealerWebsite, dealerPh
         dealerEmail: dealerEmail,
         dealerWebsite: dealerWebsite,
         dealerPhone: dealerPhone,
-        description: description
+        description: description,
+        serviceId1: serviceId1,
+        serviceId2: serviceId2,
+        serviceId3: serviceId3
     })
 }
 
-export function EditDealerService({ id, name, dealerEmail, dealerWebsite, dealerPhone, description, longtitude, latitude }) {
+export function EditDealerService({ id, name, dealerEmail, dealerWebsite, dealerPhone, description, longtitude, latitude, serviceId1, serviceId2, serviceId3 }) {
     return axios.put(`${DealerConstant.UpdateDealerURL}${id}`, {
         name: name,
         longtitude: longtitude,
@@ -29,6 +32,9 @@ export function EditDealerService({ id, name, dealerEmail, dealerWebsite, dealer
         dealerEmail: dealerEmail,
         dealerWebsite: dealerWebsite,
         dealerPhone: dealerPhone,
-        description: description
+        description: description,
+        serviceId1: serviceId1,
+        serviceId2: serviceId2,
+        serviceId3: serviceId3
     })
 }
