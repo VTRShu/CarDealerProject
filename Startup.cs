@@ -139,6 +139,7 @@ namespace CarDealerProject
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
+       
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

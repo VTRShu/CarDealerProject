@@ -109,7 +109,6 @@ namespace CarDealerProject.Services.DealerService.Implement
                 {
                     return null;
                 }
-                return result;
             }
             catch (Exception)
             {
