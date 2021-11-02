@@ -22,5 +22,6 @@ namespace CarDealerProject.Repositories.Entities
         public string DealerPhone { get; set; }
         public string DealerWebsite { get; set; }
         public List<ServiceEntity> Services { get; set; }
+        public List<CarEntity> Cars { get; set; }
     }
 }

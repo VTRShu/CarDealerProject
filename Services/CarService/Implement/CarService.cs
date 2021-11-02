@@ -45,6 +45,7 @@ namespace CarDealerProject.Services.CarService.Implement
             imageList.Add(image4);
             imageList.Add(image5);
             imageList.Add(image6);
+            List<CarEntity> carList = new List<CarEntity>();
             using var transaction = _carDealerDBContext.Database.BeginTransaction();
             try
             {
@@ -53,6 +54,7 @@ namespace CarDealerProject.Services.CarService.Implement
                     Images = imageList,
                     Name = car.Name,
                     Type = type,
+                    ModelName = model.Name,
                     Model = model,
                     Color = car.Color,
                     FuelType = car.FuelType,
@@ -74,6 +76,9 @@ namespace CarDealerProject.Services.CarService.Implement
                     IsAvailable = true,
                 };
                 _carDealerDBContext.CarEntity.Add(newCar);
+                dealer.Cars = carList;
+                carList.Add(newCar);
+                dealer.Cars = carList;
                 await _carDealerDBContext.SaveChangesAsync();
                 await transaction.CommitAsync();
                 result = new CarEntityDTO()
@@ -121,7 +126,18 @@ namespace CarDealerProject.Services.CarService.Implement
             }
             return false;
         }
-        
+        public async Task<bool> EnableCar(int id)
+        {
+            var car = GetCarById(id);
+            if (car != null)
+            {
+                car.IsAvailable = true;
+                await _carDealerDBContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
         public async Task<CarEntity> GetCarInfoById(int id)
         {
             var car = await _carDealerDBContext.CarEntity
@@ -136,6 +152,7 @@ namespace CarDealerProject.Services.CarService.Implement
                 result = new CarEntity
                 {  
                     Id = car.Id,
+                    ModelName = car.ModelName,
                     Name = car.Name,
                     Type = car.Type,
                     Model = car.Model,
@@ -208,6 +225,7 @@ namespace CarDealerProject.Services.CarService.Implement
                     Name = existCar.Name,
                     Type = existCar.Type,
                     Model = existCar.Model,
+                    ModelName = existCar.ModelName,
                     Color = existCar.Color,
                     FuelType = existCar.FuelType,
                     Power = existCar.Power,
@@ -251,6 +269,7 @@ namespace CarDealerProject.Services.CarService.Implement
                     Model = car.Model,
                     Color = car.Color,
                     Date = car.Date,
+                    ModelName = car.ModelName,
                     FuelType = car.FuelType,
                     Power = car.Power,
                     MaximumSpeed = car.MaximumSpeed,
@@ -280,6 +299,7 @@ namespace CarDealerProject.Services.CarService.Implement
                     Model = car.Model,
                     Color = car.Color,
                     Date = car.Date,
+                    ModelName = car.ModelName,
                     FuelType = car.FuelType,
                     Power = car.Power,
                     MaximumSpeed = car.MaximumSpeed,
@@ -322,6 +342,7 @@ namespace CarDealerProject.Services.CarService.Implement
                     Name = car.Name,
                     Type = car.Type,
                     Model = car.Model,
+                    ModelName = car.ModelName,
                     Color = car.Color,
                     FuelType = car.FuelType,
                     Power = car.Power,
@@ -351,6 +372,7 @@ namespace CarDealerProject.Services.CarService.Implement
                     Name = car.Name,
                     Type = car.Type,
                     Model = car.Model,
+                    ModelName = car.ModelName,
                     Color = car.Color,
                     FuelType = car.FuelType,
                     Power = car.Power,
@@ -383,12 +405,13 @@ namespace CarDealerProject.Services.CarService.Implement
         }
         public async Task<List<CarEntity>> GetAllCarMaster()
         {
-            var listCar = await _carDealerDBContext.CarEntity.Where(x => x.IsAvailable == true).Select(x => new CarEntity
+            var listCar = await _carDealerDBContext.CarEntity.Select(x => new CarEntity
             {
                 Id = x.Id,
                 Name = x.Name,
                 Type = x.Type,
                 Model = x.Model,
+                ModelName = x.ModelName,
                 Color = x.Color,
                 FuelType = x.FuelType,
                 Power = x.Power,
@@ -414,7 +437,7 @@ namespace CarDealerProject.Services.CarService.Implement
         }
         public async Task<List<CarEntity>> GetAllCarAdmin(string dealer)
         {
-            var listCar = await _carDealerDBContext.CarEntity.Where(x => x.IsAvailable == true && x.Dealer.Name == dealer).Select(x => new CarEntity
+            var listCar = await _carDealerDBContext.CarEntity.Where(x => x.Dealer.Name == dealer).Select(x => new CarEntity
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -422,6 +445,7 @@ namespace CarDealerProject.Services.CarService.Implement
                 Model = x.Model,
                 Color = x.Color,
                 FuelType = x.FuelType,
+                ModelName = x.ModelName,
                 Date = x.Date,
                 Power = x.Power,
                 MaximumSpeed = x.MaximumSpeed,

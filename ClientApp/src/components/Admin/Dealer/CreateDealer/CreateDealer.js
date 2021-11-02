@@ -40,9 +40,9 @@ const CreateDealer = () => {
             description: value.description,
             longtitude: value.longtitude,
             latitude: value.latitude,
-            serviceId1: value.services[0] === undefined ? 5 : value.services[0],
-            serviceId2: value.services[1] === undefined ? 5 : value.services[1],
-            serviceId3: value.services[2] === undefined ? 5 : value.services[2],
+            serviceId1: value.services[0] === undefined ? 7 : value.services[0],
+            serviceId2: value.services[1] === undefined ? 7 : value.services[1],
+            serviceId3: value.services[2] === undefined ? 7 : value.services[2],
         }).then(function (response) {
             console.log(response);
             history.push(`/list-dealer/ok/${response.data.id}`);

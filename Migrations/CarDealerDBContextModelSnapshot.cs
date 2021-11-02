@@ -280,6 +280,9 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("CarIdentification")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CustomerFeedBack")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("DealerId")
                         .HasColumnType("int");
 
@@ -316,11 +319,16 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DealerId");
 
                     b.HasIndex("ServiceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("BookWorkshopEntity");
                 });
@@ -344,6 +352,9 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("FileRecordId")
+                        .HasColumnType("int");
+
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
@@ -362,6 +373,12 @@ namespace CarDealerProject.Migrations
                     b.Property<int?>("ServiceId")
                         .HasColumnType("int");
 
+                    b.Property<string>("SpecificRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StaffAnswer")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
@@ -371,15 +388,22 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");
 
                     b.HasIndex("DealerId");
 
+                    b.HasIndex("FileRecordId");
+
                     b.HasIndex("ModelId");
 
                     b.HasIndex("ServiceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("BookingEntity");
                 });
@@ -426,6 +450,9 @@ namespace CarDealerProject.Migrations
 
                     b.Property<int?>("ModelId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ModelName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -487,6 +514,9 @@ namespace CarDealerProject.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("EditorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -500,6 +530,8 @@ namespace CarDealerProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EditorId");
 
                     b.ToTable("CustomerEntity");
                 });
@@ -566,7 +598,12 @@ namespace CarDealerProject.Migrations
                     b.Property<DateTime>("InsertedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ModelEntityId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ModelEntityId");
 
                     b.ToTable("ImageEntity");
 
@@ -584,6 +621,13 @@ namespace CarDealerProject.Migrations
                             ImageName = "35418253_636770120013959_511352286501404672_n.jpg",
                             ImageSrc = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg",
                             InsertedOn = new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ImageName = "interactions.attachments.0.Mobile price list September 2021.pdf",
+                            ImageSrc = "https://localhost:5001/Images/interactions.attachments.0.Mobile price list September 2021.pdf",
+                            InsertedOn = new DateTime(2021, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -597,6 +641,9 @@ namespace CarDealerProject.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("FileInforId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -607,6 +654,8 @@ namespace CarDealerProject.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FileInforId");
 
                     b.HasIndex("TypeId");
 
@@ -664,8 +713,8 @@ namespace CarDealerProject.Migrations
                         new
                         {
                             Id = 6,
-                            Description = "Quote",
-                            Name = "RequestQuote"
+                            Description = "Quote...",
+                            Name = "Request for quote"
                         });
                 });
 
@@ -756,21 +805,6 @@ namespace CarDealerProject.Migrations
                     b.HasIndex("ServicesId");
 
                     b.ToTable("DealerEntityServiceEntity");
-                });
-
-            modelBuilder.Entity("ImageEntityModelEntity", b =>
-                {
-                    b.Property<int>("ImagesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ModelsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ImagesId", "ModelsId");
-
-                    b.HasIndex("ModelsId");
-
-                    b.ToTable("ImageEntityModelEntity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -937,9 +971,15 @@ namespace CarDealerProject.Migrations
                         .WithMany()
                         .HasForeignKey("ServiceId");
 
+                    b.HasOne("CarDealerProject.Repositories.Entities.AppUser", "User")
+                        .WithMany("SolvedBookWS")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Dealer");
 
                     b.Navigation("Service");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.BookingEntity", b =>
@@ -952,6 +992,10 @@ namespace CarDealerProject.Migrations
                         .WithMany()
                         .HasForeignKey("DealerId");
 
+                    b.HasOne("CarDealerProject.Repositories.Entities.ImageEntity", "FileRecord")
+                        .WithMany()
+                        .HasForeignKey("FileRecordId");
+
                     b.HasOne("CarDealerProject.Repositories.Entities.ModelEntity", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId");
@@ -960,19 +1004,27 @@ namespace CarDealerProject.Migrations
                         .WithMany()
                         .HasForeignKey("ServiceId");
 
+                    b.HasOne("CarDealerProject.Repositories.Entities.AppUser", "User")
+                        .WithMany("SolvedBooking")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Car");
 
                     b.Navigation("Dealer");
 
+                    b.Navigation("FileRecord");
+
                     b.Navigation("Model");
 
                     b.Navigation("Service");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.CarEntity", b =>
                 {
                     b.HasOne("CarDealerProject.Repositories.Entities.DealerEntity", "Dealer")
-                        .WithMany()
+                        .WithMany("Cars")
                         .HasForeignKey("DealerId");
 
                     b.HasOne("CarDealerProject.Repositories.Entities.ModelEntity", "Model")
@@ -990,11 +1042,33 @@ namespace CarDealerProject.Migrations
                     b.Navigation("Type");
                 });
 
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.CustomerEntity", b =>
+                {
+                    b.HasOne("CarDealerProject.Repositories.Entities.AppUser", "Editor")
+                        .WithMany()
+                        .HasForeignKey("EditorId");
+
+                    b.Navigation("Editor");
+                });
+
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.ImageEntity", b =>
+                {
+                    b.HasOne("CarDealerProject.Repositories.Entities.ModelEntity", null)
+                        .WithMany("Images")
+                        .HasForeignKey("ModelEntityId");
+                });
+
             modelBuilder.Entity("CarDealerProject.Repositories.Entities.ModelEntity", b =>
                 {
+                    b.HasOne("CarDealerProject.Repositories.Entities.ImageEntity", "FileInfor")
+                        .WithMany("Models")
+                        .HasForeignKey("FileInforId");
+
                     b.HasOne("CarDealerProject.Repositories.Entities.TypeEntity", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId");
+
+                    b.Navigation("FileInfor");
 
                     b.Navigation("Type");
                 });
@@ -1044,19 +1118,26 @@ namespace CarDealerProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ImageEntityModelEntity", b =>
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.AppUser", b =>
                 {
-                    b.HasOne("CarDealerProject.Repositories.Entities.ImageEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ImagesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("SolvedBooking");
 
-                    b.HasOne("CarDealerProject.Repositories.Entities.ModelEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ModelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("SolvedBookWS");
+                });
+
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.DealerEntity", b =>
+                {
+                    b.Navigation("Cars");
+                });
+
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.ImageEntity", b =>
+                {
+                    b.Navigation("Models");
+                });
+
+            modelBuilder.Entity("CarDealerProject.Repositories.Entities.ModelEntity", b =>
+                {
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

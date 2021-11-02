@@ -1,18 +1,20 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Row, Col, Input, Button, Layout, Pagination, Modal } from 'antd';
+import { Row, Col, Input, Button, Layout, Pagination, Modal, Form } from 'antd';
 import { FilterFilled, InfoCircleFilled } from '@ant-design/icons';
 import styles from './ListBooking.module.css'
 import {
     GetAllBookingWSService, GetListBookingWSService,
-    CompleteBookingWS
+    UpdateBookWSService, GetBookWSService
 } from '../../../../Services/BookingService';
 import './ListBookingAntStyle.css'
+import 'font-awesome/css/font-awesome.min.css';
 import BookingConstant from '../../../../Share/Constant/BookingConstant'
 import { Link } from "react-router-dom";
 import CurrentUserContext from '../../../../Share/Context/CurrentUserContext'
 import { Select } from 'antd';
 import { SiCheckmarx } from 'react-icons/si'
-const { Search } = Input;
+import { GiCheckMark } from 'react-icons/gi'
+const { Search, TextArea } = Input;
 const { Content } = Layout;
 function itemRender(current, type, originalElement) {
     if (type === 'prev') {
@@ -25,6 +27,8 @@ function itemRender(current, type, originalElement) {
 }
 const options = [{ label: 'Completed', value: true }, { label: 'Processing...', value: false }]
 const ListBookingWS = () => {
+    const { form } = Form.useForm();
+    const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
     const [value, setValue] = useState([]);
     const [searchBooking, setSearchBooking] = useState();
     const [pageIndex, setPageIndex] = useState(BookingConstant.PageIndexDefault);
@@ -51,7 +55,7 @@ const ListBookingWS = () => {
         onChange: (newValue) => {
             setValue(newValue);
         },
-        placeholder: 'Customer response',
+        placeholder: 'Status',
         maxTagCount: 'responsive',
         showArrow: true,
         optionFilterProp: 'label'
@@ -116,38 +120,102 @@ const ListBookingWS = () => {
         setBookId(evt.target.id);
         setIsModalCompleteVisible(true);
     }
-    const handleCompleteOk = () => {
-        CompleteBookingWS({ id: bookId }).then(function (response) {
-            setIsModalCompleteVisible(false);
+
+    const onFinish = (value, evt) => {
+        UpdateBookWSService({
+            userCode: currentUser.code,
+            id: bookId,
+            customerFeedBack: value.customerFeedBack,
+
+        }).then(function (response) {
+            console.log("data", response.data);
             window.location.reload();
-        }).catch(function (error) {
-            console.log(error);
             setIsModalCompleteVisible(false);
+        }).catch((err) => {
+            console.log(err);
         })
     }
     const handleCompleteCancel = () => {
         setIsModalCompleteVisible(false);
     }
+    const [bookWs, setBookWS] = useState({
+        appointment: null,
+        licensePlate: null,
+        dealer: { name: null },
+        fullName: null,
+        email: null,
+        timePeriod: null,
+        phoneNumber: null,
+        specificRequest: null,
+        user: { userName: null },
+        customerFeedBack: null,
+    })
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const showModal = (evt) => {
+        GetBookWSService({ id: evt.currentTarget.id }).then(function (response) {
+            setBookWS(response.data);
+            console.log(bookWs)
+            setIsModalVisible(true);
+        }).catch(function (error) {
+            console.log(error);
+        })
+    }
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
     return (
         <Content className={styles.antLayoutContent}>
-            <Modal title="Complete booking" visible={isModalCompleteVisible}
-                onOk={handleCompleteOk} onCancel={handleCompleteCancel} centered={true}
+            <Modal title="Update booking" visible={isModalCompleteVisible}
+                onCancel={handleCompleteCancel} centered={true}
                 footer={null} style={{ height: '20', borderRadius: '20px', fontWeight: '30px' }} >
-                {
-                    <>
-                        <b style={{ marginLeft: '20%' }}>Do you want to mark this booking complete?</b>
-                        <br />
-                        <br />
-                        <div className={styles.buttonGroup}>
-                            <Button className={styles.create}
-                                style={{ marginLeft: '25%' }}
-                                onClick={handleCompleteOk}>Yes</Button>
-                            <Button className={styles.cancelButton}
-                                style={{ marginLeft: '20%' }}
-                                onClick={handleCompleteCancel}>No</Button>
-                        </div>
-                    </>
-                }
+                <Form
+
+                    wrapperCol={{
+                        span: '100%',
+                    }}
+                    name="validate_other"
+                    form={form}
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={onFinish}
+                >
+                    <Form.Item
+                        name="customerFeedBack"
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                                message: "Customer' Feedback is required",
+                            },
+                        ]}
+                    >
+                        <TextArea placeholder="Customer's FeedBack" />
+                    </Form.Item>
+
+
+                    <Form.Item
+                        shouldUpdate
+                        className="submit"
+                        wrapperCol={{
+                            span: 10,
+                            offset: 10,
+                        }}
+                    >
+                        {() => (
+                            <Button
+                                danger
+                                style={{ width: 73 }}
+                                type="primary"
+                                htmlType="submit"
+
+                            >
+                                Save
+                            </Button>
+                        )}
+                    </Form.Item>
+
+                </Form>
             </Modal>
             <Row>
                 <h2 className={styles.title}>Workshop booking list</h2>
@@ -163,7 +231,51 @@ const ListBookingWS = () => {
             </Row>
             <br />
             {searchBooking !== undefined ?
-                <>
+                <>{
+                    bookWs !== null ?
+                        // <>
+                        <Modal width={800} title="Booking  Workshop service Details" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
+                            <table className={styles.tableModal}>
+                                <tr>
+                                    <td>Customer Infor:</td>
+                                    <td>{bookWs.fullName} - {bookWs.email} - {bookWs.phoneNumber}</td>
+                                </tr>
+                                <tr>
+                                    <td>Appointment:</td>
+                                    <td>{new Date(bookWs.appointment).toLocaleDateString()} in the {bookWs.timePeriod} </td>
+                                </tr>
+                                <tr>
+                                    <td>Customer's License Plate:</td>
+                                    <td>{bookWs.licensePlate}</td>
+                                </tr>
+                                <tr>
+                                    <td>Customer's response:</td>
+                                    <td>{bookWs.isAccepted === true ? "Confirm to come" : "Waiting for response"}</td>
+                                </tr>
+                                <hr />
+                                <tr>
+                                    <td>Customer's specific request:</td>
+                                    <td>{bookWs.specificRequest}</td>
+                                </tr>
+                                <hr />
+                                <tr>
+                                    <td>Customer's feedback:</td>
+                                    <td><b>{bookWs.customerFeedBack}</b></td>
+                                </tr>
+                                <tr>
+                                    <td>Completed By </td>
+                                    <td>{(bookWs.user === undefined || bookWs.user === null) ? "" : bookWs.user.userName}</td>
+                                </tr>
+                                <hr />
+                                <tr>
+                                    <td>Status</td>
+                                    <td>{bookWs.status === true ? <GiCheckMark style={{ color: "green", fontSize: "30px" }} /> : <span style={{ color: "red", fontSize: "20px" }}>Processing....</span>}</td>
+                                </tr>
+                            </table>
+                        </Modal>
+
+                        : ""
+                }
                     <Row className={"ListTable"}>
                         <table style={{ width: '100%' }}>
                             <thead>
@@ -178,8 +290,6 @@ const ListBookingWS = () => {
                                     <th></th>
                                     <th className={styles.borderTable}>{BookingConstant.Appointment}</th>
                                     <th></th>
-                                    <th className={styles.borderTable}>{BookingConstant.Dealer}</th>
-                                    <th></th>
                                     <th className={styles.borderTable}>Customer's response</th>
                                     <th></th>
                                     <th className={styles.borderTable}>Status</th>
@@ -193,29 +303,37 @@ const ListBookingWS = () => {
                                     searchBooking.items.map(book => {
                                         return (
                                             <tr key={book.id}>
-                                                <td className={styles.borderRow} id={book.id}>{book.licensePlate} {(book.mileage === undefined || book.mileage === null || book.mileage === "") ? "" : (book.mileage + "Km")} {(book.carIdentification === undefined || book.carIdentification === null) ? "" : book.carIdentification}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>{book.licensePlate} {(book.mileage === undefined || book.mileage === null || book.mileage === "") ? "" : (book.mileage + "Km")} {(book.carIdentification === undefined || book.carIdentification === null) ? "" : book.carIdentification}</td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>{book.title} {book.fullName}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>{book.title} {book.fullName}</td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>{book.email}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>{book.email}</td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>{book.phoneNumber}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>{book.phoneNumber}</td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>
                                                     {book.timePeriod} {`${book.appointment.substring(8, 10)}/${book.appointment.substring(5, 7)}/${book.appointment.substring(0, 4)}`}
                                                 </td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>{book.dealer.name}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>{book.isAccepted === true ? "Confirm to come" : "Waiting for response"}</td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>{book.isAccepted === true ? "Confirm to come" : "Waiting for response"}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>{book.status === true ? "Completed" : "Processing...."}</td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>{book.status === true ? "Completed" : "Processing...."}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={book.id}>{book.specificRequest.replaceAll(",", " ; ")}</td>
                                                 <td></td>
-                                                <td className={styles.borderRow} id={book.id}>{book.specificRequest.replaceAll(",", " ; ")}</td>
-                                                <td></td>
-                                                {(book.status === true || book.isAccepted === false) ? "" :
-                                                    <td><SiCheckmarx onClick={showModalComplete} id={book.id} /></td>
-                                                }
+                                                <td>
+                                                    {currentUser.role === 'Admin' || book.isAccepted === false ? "" :
+                                                        (
+                                                            book.user !== null && book.status === false ?
+                                                                <i className={`${styles.disabledIcon} bi bi-check-square-fill`} ></i>
+                                                                :
+                                                                (
+                                                                    book.user === null && book.status === false ?
+                                                                        <i class="bi bi-check-square-fill" onClick={showModalComplete} id={book.id}></i> : ""
+                                                                )
+                                                        )
+                                                    }
+                                                </td>
                                             </tr>
                                         )
                                     })

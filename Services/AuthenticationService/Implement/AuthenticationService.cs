@@ -68,7 +68,7 @@ namespace CarDealerProject.Services.AuthenticationService.Implement
                     signingCredentials: credentials);
 
                 result[0] = new JwtSecurityTokenHandler().WriteToken(token);
-               
+
                 await _carDealerDBContext.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

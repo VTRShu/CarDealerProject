@@ -3,14 +3,14 @@ import { Layout, Form, Button, Input, Modal } from "antd";
 import { Row, Col } from "antd";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm } from 'rc-field-form';
+import { GetCustomerService } from '../../../Services/CustomerService';
 const { Content } = Layout;
 const CheckCustomerWS = () => {
     const history = useHistory();
     const onFinish = (value) => {
-        const check = value.phoneOrEmail
-
-        history.push(`/create-bookws/${check}`);
-
+        history.push(`/create-bookws`);
+        window.location.reload();
+        sessionStorage.setItem('input', value.phoneOrEmail);
     }
     const onFinishFailed = () => {
         console.log("Failed:");

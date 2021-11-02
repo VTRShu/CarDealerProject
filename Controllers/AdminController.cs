@@ -14,7 +14,7 @@ namespace CarDealerProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize(Roles = "Admin,Master")]
+    [Authorize(Roles = "Admin,Master")]
     public class AdminController : ControllerBase
     {
         protected string GetUserDealer()

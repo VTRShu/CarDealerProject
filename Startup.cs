@@ -17,6 +17,8 @@ using CarDealerProject.Services.ModelService;
 using CarDealerProject.Services.ModelService.Implement;
 using CarDealerProject.Services.TypeService;
 using CarDealerProject.Services.TypeService.Implement;
+using CarDealerProject.Services.ViewOwnSolvedBookService;
+using CarDealerProject.Services.ViewOwnSolvedBookService.Implement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +30,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.IO;
 using System.Text;
 
@@ -46,7 +49,10 @@ namespace CarDealerProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CarDealerDBContext>(options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Car_Dealer_Project", Version = "v1" });
+            });
             services.AddControllersWithViews();
 
             services.AddIdentity<AppUser, AppRole>()
@@ -85,6 +91,7 @@ namespace CarDealerProject
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<ICarEquipmentService, CarEquipmentService>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IViewOwnSolvedBookService, ViewOwnSolvedBookService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IBookWorkShopService, BookWorkshopService>();
             services.AddCors(
@@ -106,6 +113,7 @@ namespace CarDealerProject
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +122,8 @@ namespace CarDealerProject
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
             }
             else
             {
@@ -123,7 +133,7 @@ namespace CarDealerProject
             }
 
             app.UseHttpsRedirection();
-             app.UseStaticFiles(new StaticFileOptions
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
                 RequestPath = "/Images"
@@ -138,12 +148,6 @@ namespace CarDealerProject
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-            });
-       
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
             app.UseSpa(spa =>
             {

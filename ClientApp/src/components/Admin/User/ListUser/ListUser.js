@@ -24,7 +24,8 @@ function itemRender(current, type, originalElement) {
     }
     return originalElement;
 }
-const options = [{ label: 'Admin', value: 1 }, { label: 'Staff', value: 2 }];
+const options = [{ label: 'Master', value: 0 }, { label: 'Admin', value: 1 }, { label: 'Staff', value: 2 }];
+const optionsAdmin = [{ label: 'Admin', value: 1 }, { label: 'Staff', value: 2 }];
 const ListUser = () => {
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
     const [value, setValue] = useState([]);
@@ -47,6 +48,8 @@ const ListUser = () => {
         userName: null,
         type: null,
         image: { imageSrc: null },
+        solvedBooking: [],
+        solvedBookWS: []
     })
     const [total, setTotal] = useState(0);
 
@@ -66,6 +69,22 @@ const ListUser = () => {
         mode: 'multiple',
         value,
         options,
+        onChange: (newValue) => {
+            setValue(newValue);
+        },
+        placeholder: 'Type',
+        maxTagCount: 'responsive',
+        showArrow: true,
+        optionFilterProp: 'label'
+    };
+    const selectPropsAdmin = {
+        suffixIcon: <FilterFilled />,
+        style: {
+            width: '100%',
+        },
+        mode: 'multiple',
+        value,
+        options: optionsAdmin,
         onChange: (newValue) => {
             setValue(newValue);
         },
@@ -119,12 +138,18 @@ const ListUser = () => {
     }, [value])
 
     //show user detail
+    const [solvedBook, setSolvedBook] = useState(0);
+    const [solvedBookWS, setSolvedBookWS] = useState(0);
+    const [totalSolved, setTotalSolved] = useState(0);
     const showModal = (evt) => {
         GetUserService({ code: evt.currentTarget.id }).then(function (response) {
             // handle success
             response.data.dob = `${response.data.dob.substring(8, 10)}/${response.data.dob.substring(5, 7)}/${response.data.dob.substring(0, 4)}`;
             response.data.type = response.data.type === 0 ? 'Master' : (response.data.type === 1 ? 'Admin' : 'Staff');
             setUser(response.data);
+            setSolvedBookWS(response.data.solvedBookWS.filter(x => x.status === true).length)
+            setSolvedBook(response.data.solvedBooking.filter(x => x.status === true).length);
+            console.log(response.data.solvedBooking.filter(x => x.status === true).length + response.data.solvedBookWS.filter(x => x.status === true).length)
             setIsModalVisible(true);
         })
             .catch(function (error) {
@@ -317,7 +342,9 @@ const ListUser = () => {
             </Row>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} >
                 <Col span={5}>
-                    <Select {...selectProps} />
+                    {currentUser.role === "Master" ?
+                        <Select  {...selectProps} /> : <Select  {...selectPropsAdmin} />
+                    }
                 </Col>
                 <Col span={10}>
                     <Search onSearch={handleSearch} />
@@ -365,8 +392,8 @@ const ListUser = () => {
                                         <td> {`${user.firstName} ${user.lastName}`}</td>
                                     </tr>
                                     <tr>
-                                        <td>Dealer</td>
-                                        <td>{user.dealer.name}</td>
+                                        <td> {user.type === "Master" ? "" : "Dealer"}</td>
+                                        <td>{user.dealer === null || user.dealer === undefined ? "" : user.dealer.name}</td>
                                     </tr>
                                     <tr>
                                         <td>BirthDay</td>
@@ -379,6 +406,10 @@ const ListUser = () => {
                                     <tr>
                                         <td>Type</td>
                                         <td>{user.type}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{user.type === "Staff" ? "number of customer'booking solved" : ""}</td>
+                                        <td style={{ fontSize: '30px' }}>{user.type === "Staff" ? (user.solvedBooking === null || user.solvedBooking === undefined ? "" : solvedBook) + (user.solvedBookWS === null || user.solvedBookWS === undefined ? "" : solvedBookWS) : ""}</td>
                                     </tr>
                                 </table>
                             </Modal> : ''
@@ -420,7 +451,7 @@ const ListUser = () => {
                                                     {`${user.dob.substring(8, 10)}/${user.dob.substring(5, 7)}/${user.dob.substring(0, 4)}`}
                                                 </td>
                                                 <td></td>
-                                                <td className={styles.borderRow} onClick={showModal} id={user.code}>{user.dealer.name}</td>
+                                                <td className={styles.borderRow} onClick={showModal} id={user.code}>{user.dealer === null || user.dealer === undefined ? "" : user.dealer.name}</td>
                                                 <td></td>
                                                 <td className={styles.borderRow} onClick={showModal} id={user.code}>{user.type === 0 ? "Master" : (user.type === 1 ? "Admin" : "Staff")}</td>
                                                 <td></td>
@@ -452,7 +483,7 @@ const ListUser = () => {
                     </>
                     : ''
             }
-        </Content>
+        </Content >
     )
 }
 

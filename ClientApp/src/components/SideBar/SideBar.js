@@ -16,7 +16,7 @@ const SideBar = () => {
     return (
         <div className="SideMenu">
             <div className="SideItem">
-                <Link to='/check-customer'>
+                <Link to='/create-test-drive'>
                     <div > <GiSteeringWheel style={{ color: 'white', fontSize: '25px', marginBottom: '6px', marginLeft: '2px' }} /> <span style={{ color: 'white' }}>Test drive</span></div>
                 </Link>
             </div>
@@ -41,7 +41,7 @@ const SideBar = () => {
                 </Link>
             </div>
             <div className="SideItem">
-                <Link to='/check-customerws'>
+                <Link to='/create-bookws'>
                     <div> <FaRegCalendarCheck style={{ color: 'white', fontSize: '22px', marginBottom: '1px', marginLeft: '4px' }} /> <span style={{ color: 'white' }}>Book services</span></div>
                 </Link>
             </div>

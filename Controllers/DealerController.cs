@@ -1,6 +1,7 @@
 ﻿using CarDealerProject.DTO;
 using CarDealerProject.Repositories.Entities;
 using CarDealerProject.Services.DealerService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,6 +20,7 @@ namespace CarDealerProject.Controllers
         {
             _dealerService = dealerService;
         }
+        [Authorize(Roles = "Master")]
         [HttpPost("dealer/create")]
         public async Task<ActionResult<DealerEntityDTO>> Create(DealerEntityDTO dealer)
         {
@@ -29,6 +31,7 @@ namespace CarDealerProject.Controllers
             }
             return Ok(newDealer);
         }
+        [Authorize(Roles = "Master")]
         [HttpPut("dealer/update/{id}")]
         public async Task<ActionResult<DealerEntityDTO>> Update(DealerEntityDTO dealer, int id)
         {
@@ -45,7 +48,6 @@ namespace CarDealerProject.Controllers
             var dealerList = await _dealerService.GetDealerList();
             return dealerList;
         }
-
         [HttpGet("dealer/{id}")]
         public  DealerEntity GetDealerById(int id)
         {

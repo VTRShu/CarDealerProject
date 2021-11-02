@@ -182,7 +182,7 @@ const ListModel = () => {
                                                 <td className={styles.borderRow} id={model.name} >{model.startPrice} VND</td>
                                                 <td></td>
                                                 <td>
-                                                    <Link to={`/edit-model/${model.name}`}><i className="bi bi-pencil-fill"></i></Link>
+                                                    {currentUser.role === "Master" ? <Link to={`/edit-model/${model.name}`}><i className="bi bi-pencil-fill"></i></Link> : ""}
                                                 </td>
                                             </tr>
                                         )

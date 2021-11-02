@@ -4,18 +4,20 @@ import { Row, Col } from "antd";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm } from 'rc-field-form';
 import { useLastLocation } from 'react-router-last-location';
+import { GetCustomerService } from '../../../Services/CustomerService';
 const { Content } = Layout;
 const CheckCustomer = () => {
     const history = useHistory();
-    const lastLocation = useLastLocation();
-    const { modelId, service, dealerId } = useParams();
-    const onFinish = (value) => {
-        const check = value.phoneOrEmail
+    const { modelName } = useParams();
 
-        if (modelId === undefined || modelId === null && service === undefined || service === null) {
-            history.push(`/create-test-drive/${check}`);
+    const onFinish = (value) => {
+        sessionStorage.setItem('input', value.phoneOrEmail);
+        if (modelName === undefined || modelName === null) {
+            history.push(`/create-test-drive/`);
+            window.location.reload();
         } else {
-            history.push(`/create-test-drive/${modelId}/${service}/${check}`);
+            history.push(`/create-test-drive/${modelName}`);
+            window.location.reload();
         }
 
     }

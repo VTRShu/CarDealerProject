@@ -108,6 +108,7 @@ const ListDealerCustomer = () => {
     const handleCancel = () => {
         setIsModalVisible(false);
     };
+
     return (
         <Content className={styles.antLayoutContent}>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} >
@@ -127,9 +128,9 @@ const ListDealerCustomer = () => {
                             <Modal width={700} title="Dealer Information" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
                                 <div key={dealer.id} style={{ height: '50vh', width: '100%' }}>
                                     <GoogleMapReact
-                                        bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
+                                        bootstrapURLKeys={{ key: 'AIzaSyC406nqnTQhQ7nnK0NLsl49RAZADNiiQgE' }}
                                         defaultCenter={{ lat: dealer.latitude, lng: dealer.longtitude }}
-                                        defaultZoom={10}
+                                        defaultZoom={17}
                                         yesIWantToUseGoogleMapApiInternals={true}
                                     >
                                         <Location
@@ -163,10 +164,11 @@ const ListDealerCustomer = () => {
                         }
                         <div style={{ height: '90vh', width: '100%' }}>
                             <GoogleMapReact
-                                bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
+                                bootstrapURLKeys={{ key: "AIzaSyC406nqnTQhQ7nnK0NLsl49RAZADNiiQgE" }}
                                 defaultCenter={{ lat: 16.45585700602323, lng: 107.57402262179006 }}
                                 defaultZoom={6}
                                 yesIWantToUseGoogleMapApiInternals={true}
+
                             >
                                 {searchDealer.map(dealer => {
                                     const Marker = ({ text }) => <div id={dealer.id} onClick={showModal} style={{ wordWrap: 'normal' }}><img id={dealer.id} style={{ height: '22px', width: '20px' }} src="https://localhost:5001/Images/copy_492419507.png" />{text}</div>;

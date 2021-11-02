@@ -67,7 +67,7 @@ const ListDealer = () => {
             })
         } else if (value.length !== 0) {
             GetDealerListService().then(function (response) {
-                let data = response.data.filter(x => value.includes(x.description));
+                let data = response.data.filter(x => x.description.includes(value));
                 setSearchDealer(data);
             }).catch(function (error) {
                 console.log(error);
@@ -173,9 +173,9 @@ const ListDealer = () => {
                         <Modal width={700} title="Dealer Information" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
                             <div key={dealer.id} style={{ height: '50vh', width: '100%' }}>
                                 <GoogleMapReact
-                                    bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
+                                    bootstrapURLKeys={{ key: 'AIzaSyC406nqnTQhQ7nnK0NLsl49RAZADNiiQgE' }}
                                     defaultCenter={{ lat: dealer.latitude, lng: dealer.longtitude }}
-                                    defaultZoom={10}
+                                    defaultZoom={17}
                                     yesIWantToUseGoogleMapApiInternals={true}
                                 >
                                     <AnyReactComponent

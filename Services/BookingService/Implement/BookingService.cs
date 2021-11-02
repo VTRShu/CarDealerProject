@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,8 +27,8 @@ namespace CarDealerProject.Services.BookingService.Implement
             _emailService = emailService;
             _configuration = configuration;
         }
-        public DealerEntity GetDealerById(int id) => _carDealerDBContext.DealerEntity.Where(x => x.Id == id).FirstOrDefault();
-        public ModelEntity GetModelById(int id) => _carDealerDBContext.ModelEntity.Where(x => x.Id == id).FirstOrDefault();
+        public DealerEntity GetDealerByName(string name) => _carDealerDBContext.DealerEntity.Where(x => x.Name == name).FirstOrDefault();
+        public ModelEntity GetModelByName(string name) => _carDealerDBContext.ModelEntity.Where(x => x.Name == name).FirstOrDefault();
         public ServiceEntity GetServiceById(int id) => _carDealerDBContext.ServiceEntity.Where(x => x.Id == id).FirstOrDefault();
         public CarEntity GetCarById(int id) => _carDealerDBContext.CarEntity.Where(x => x.Id == id).FirstOrDefault();
         public async Task<BookingEntityDTO> CreateQuote(BookingEntityDTO book)
@@ -35,7 +36,7 @@ namespace CarDealerProject.Services.BookingService.Implement
             BookingEntity newQuote = null;
             BookingEntityDTO result = null;
             var car = GetCarById(book.CarId);
-            var dealer = GetDealerById(book.DealerId);
+            var dealer = GetDealerByName(book.Dealer);
             var service = GetServiceById(book.ServiceId);
             using var transaction = _carDealerDBContext.Database.BeginTransaction();
             try
@@ -86,7 +87,7 @@ namespace CarDealerProject.Services.BookingService.Implement
                 result = new BookingEntityDTO()
                 {
                     CarId = book.CarId,
-                    DealerId = book.DealerId,
+                    Dealer = book.Dealer,
                     Appointment = newQuote.Appointment,
                     TimePeriod = null,
                     Title = newQuote.Title,
@@ -107,8 +108,8 @@ namespace CarDealerProject.Services.BookingService.Implement
         {
             BookingEntity newBooking = null;
             BookingEntityDTO result = null;
-            var model = GetModelById(book.ModelId);
-            var dealer = GetDealerById(book.DealerId);
+            var model = GetModelByName(book.Model);
+            var dealer = GetDealerByName(book.Dealer);
             var service = GetServiceById(book.ServiceId);
             using var transaction = _carDealerDBContext.Database.BeginTransaction();
             try
@@ -155,6 +156,7 @@ namespace CarDealerProject.Services.BookingService.Implement
                     bookingList.Add(newBooking);
                     existedCustomer.bookings = bookingList;
                 }
+                var dateFormat = newBooking.Appointment.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                 string respondAccept = "Accept";
                 string respondCancel = "Cancel";
                
@@ -163,18 +165,14 @@ namespace CarDealerProject.Services.BookingService.Implement
                 string urlCancel = $"{_configuration["AppUrl"]}/api/Booking/respond/booking/{newBooking.Id}-{respondCancel}";
                 string urlAccept = $"{_configuration["AppUrl"]}/api/Booking/respond/booking/{newBooking.Id}-{respondAccept}";
                 await _emailService.SendEmailAsync(newBooking.Email, "Confirm your booking", $"<h1>Hello {book.Title} {book.FullName}</h1><h2>Thank you for booking our service</h2>" +
-                        $"<p>Please confirm your booking by <a href='{urlAccept}'>Clicking here to accept</a></p><p>If you have change your mind , pls cancel you booking by <a href='{urlCancel}'>Clicking here to cancel");
+                        $"<h4>Your booking test drive information:</h4><p>You want to test the model <b>{newBooking.Model.Name}</b> on <b>{dateFormat}</b> in the <b>{book.TimePeriod}</b> </p><p>Location: <b>{newBooking.Dealer.Description}</b></p><p>Please confirm your booking by <button><a href='{urlAccept}'>Accept</a></button></p><p>If you have change your mind , pls cancel your booking by <button><a href='{urlCancel}'>Cancel</a></button>");
                 _carDealerDBContext.BookingEntity.Add(newBooking);
                 result = new BookingEntityDTO()
                 {  
-                    ModelId = book.ModelId,
-                    DealerId = book.DealerId,
+                    Model = book.Model,
+                    Dealer = book.Dealer,
                     Appointment = newBooking.Appointment,
                     TimePeriod = newBooking.TimePeriod,
-                    Title = newBooking.Title,
-                    FullName = newBooking.FullName,
-                    Email = newBooking.Email,
-                    PhoneNumber = newBooking.PhoneNumber,
                     Note = newBooking.Note,
                     ServiceId = book.ServiceId,
                 };
@@ -193,6 +191,7 @@ namespace CarDealerProject.Services.BookingService.Implement
                 .Include(x => x.Dealer).AsSingleQuery()
                 .Include(x => x.Model).AsSingleQuery()
                 .Include(x=>x.Service).AsSingleQuery()
+                 .Include(x => x.User).AsSingleQuery()
                 .ToListAsync();
             return bookList;
         }
@@ -202,6 +201,7 @@ namespace CarDealerProject.Services.BookingService.Implement
                 .Include(x => x.Dealer).AsSingleQuery()
                 .Include(x => x.Model).AsSingleQuery()
                 .Include(x => x.Service).AsSingleQuery()
+                 .Include(x => x.User).AsSingleQuery()
                 .ToListAsync();
             return bookList;
         }
@@ -211,6 +211,7 @@ namespace CarDealerProject.Services.BookingService.Implement
                 .Include(x => x.Dealer).AsSingleQuery()
                 .Include(x => x.Car).AsSingleQuery()
                 .Include(x => x.Service).AsSingleQuery()
+                 .Include(x => x.User).AsSingleQuery()
                 .ToListAsync();
             return bookList;
         }
@@ -220,6 +221,7 @@ namespace CarDealerProject.Services.BookingService.Implement
                 .Include(x => x.Dealer).AsSingleQuery()
                 .Include(x => x.Car).AsSingleQuery()
                 .Include(x => x.Service).AsSingleQuery()
+                 .Include(x => x.User).AsSingleQuery()
                 .ToListAsync();
             return bookList;
         }
@@ -228,7 +230,8 @@ namespace CarDealerProject.Services.BookingService.Implement
             var bookList = _carDealerDBContext.BookingEntity.Where(x => x.Service.Id == 1)
                .Include(x => x.Dealer).AsSingleQuery()
                 .Include(x => x.Model).AsSingleQuery()
-                .Include(x => x.Service).AsSingleQuery();
+                .Include(x => x.Service).AsSingleQuery()
+             .Include(x => x.User).AsSingleQuery();
             int totalRow = await bookList.CountAsync();
             var data = await bookList.Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
@@ -248,7 +251,8 @@ namespace CarDealerProject.Services.BookingService.Implement
             var bookList = _carDealerDBContext.BookingEntity.Where(x => x.Dealer.Name == dealer && x.Service.Id == 1)
                .Include(x => x.Dealer).AsSingleQuery()
                 .Include(x => x.Model).AsSingleQuery()
-                .Include(x => x.Service).AsSingleQuery();
+                .Include(x => x.Service).AsSingleQuery()
+             .Include(x => x.User).AsSingleQuery();
             int totalRow = await bookList.CountAsync();
             var data = await bookList.Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
@@ -268,7 +272,8 @@ namespace CarDealerProject.Services.BookingService.Implement
             var bookList = _carDealerDBContext.BookingEntity.Where(x => x.Dealer.Name == dealer && x.Service.Id == 6)
                .Include(x => x.Dealer).AsSingleQuery()
                 .Include(x => x.Car).AsSingleQuery()
-                .Include(x => x.Service).AsSingleQuery();
+                .Include(x => x.Service).AsSingleQuery()
+             .Include(x => x.User).AsSingleQuery();
             int totalRow = await bookList.CountAsync();
             var data = await bookList.Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
@@ -285,10 +290,11 @@ namespace CarDealerProject.Services.BookingService.Implement
         }
             public async Task<PagingResult<BookingEntity>> GetListQuote(PagingRequest request)
             {
-                var bookList = _carDealerDBContext.BookingEntity.Where(x => x.Service.Id == 6)
-                   .Include(x => x.Dealer).AsSingleQuery()
-                    .Include(x => x.Car).AsSingleQuery()
-                    .Include(x => x.Service).AsSingleQuery();
+            var bookList = _carDealerDBContext.BookingEntity.Where(x => x.Service.Id == 6)
+                .Include(x => x.Dealer).AsSingleQuery()
+                .Include(x => x.Car).AsSingleQuery()
+                .Include(x => x.Service).AsSingleQuery()
+                .Include(x => x.User).AsSingleQuery();
                 int totalRow = await bookList.CountAsync();
                 var data = await bookList.Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
@@ -303,7 +309,14 @@ namespace CarDealerProject.Services.BookingService.Implement
 
                 return pagedResult;
             }
-        public BookingEntity GetBookingById(int id) => _carDealerDBContext.BookingEntity.Where(x => x.Id == id).FirstOrDefault();
+        public BookingEntity GetBookingById(int id) => _carDealerDBContext.BookingEntity.Where(x => x.Id == id)
+            .Include(x=>x.Car).AsSingleQuery()
+            .Include(x=>x.Dealer).AsSingleQuery()
+            .Include(x=>x.Model).AsSingleQuery()
+            .Include(x=>x.FileRecord).AsSingleQuery()
+            .Include(x => x.Service).AsSingleQuery()
+            .Include(x => x.User).AsSingleQuery()
+            .FirstOrDefault();
         public async Task<bool> RespondBooking(int id,string respond)
         {
             var book = GetBookingById(id);
@@ -314,30 +327,222 @@ namespace CarDealerProject.Services.BookingService.Implement
                 return true;
             }
             else if(book != null && respond == "Cancel") {
-                _carDealerDBContext.BookingEntity.Remove(book);
-                await _carDealerDBContext.SaveChangesAsync();
-                return true;
+                if (book.IsAccepted == true)
+                {
+                    return false;
+                }
+                else
+                {
+                    _carDealerDBContext.BookingEntity.Remove(book);
+                    await _carDealerDBContext.SaveChangesAsync();
+                    return true;
+                }
             }
             else
             {
                 return false;
             }
         }
-        public async Task<bool> CompleteBooking(int id)
+        public async Task<bool> CompleteBooking(int id,string respond)
         {
             var book = GetBookingById(id);
-            if (book != null)
-            {
+            if (book != null && respond == "Accept")
+            {   
                 book.Status = true;
+                var user = GetUserByCode(book.User.Code);
+                List<BookingEntity> solvedList = new List<BookingEntity>();
+                user.SolvedBooking = solvedList;
+                solvedList.Add(book);
+                user.SolvedBooking = solvedList;
                 await _carDealerDBContext.SaveChangesAsync();
                 return true;
+            }
+            else if (book != null && respond == "Cancel")
+            {
+                if (book.Status == true)
+                {
+                    return false;
+                }
+                else
+                {
+                    book.Status = false;
+                    book.SpecificRequest = null;
+                    book.StaffAnswer = null;
+                    book.User = null;
+                    book.FileRecord = null;
+                    await _carDealerDBContext.SaveChangesAsync();
+                    return true;
+                }
             }
             else
             {
                 return false;
             }
         }
+        public ImageEntity GetFileByName(string name) => _carDealerDBContext.ImageEntity.Where(x => x.ImageName == name).FirstOrDefault();
+        public AppUser GetUserByCode(string code) => _carDealerDBContext.AppUsers.Where(x => x.Code == code).FirstOrDefault();
+        public async Task<BookingEntity> UpdateBookingQuoteInfor(BookingEntityDTO updateBook,string code,int id)
+        {
+            using var transaction = _carDealerDBContext.Database.BeginTransaction();
+            
+            BookingEntity result = null;
+            try
+            {
+              
+                var existBooking = GetBookingById(id);
+                var fileRecord = GetFileByName(updateBook.FileRecordName);
+                if(existBooking != null)
+                {
+                    var user = GetUserByCode(code);
+                    existBooking.User = user;
+                    existBooking.SpecificRequest = updateBook.SpecificRequest;
+                    existBooking.StaffAnswer = updateBook.StaffAnswer;
+                    existBooking.FileRecord = fileRecord;
+                    _carDealerDBContext.Entry(existBooking).State = EntityState.Modified;
+                   
+                   
+                    string respondAccept = "Accept";
+                    string respondCancel = "Cancel";
 
-      
+                    
+                    string urlCancel = $"{_configuration["AppUrl"]}/api/Booking/complete/{existBooking.Id}-{respondCancel}";
+                    string urlAccept = $"{_configuration["AppUrl"]}/api/Booking/complete/{existBooking.Id}-{respondAccept}";
+                    await _emailService.SendEmailAsync(existBooking.Email, "Confirm your request for quote", $"<h1>Hello {existBooking.Title} {existBooking.FullName}</h1><h2>Thank you for using our service</h2>" +
+                            $"<p>Your need : {updateBook.SpecificRequest}</p><p>We answer:{updateBook.StaffAnswer}</p><p>Please confirm that information is correct by <button><a href='{urlAccept}'> Yes</a></button></p><p>If not , pls let us know by <button><a href='{urlCancel}'>No</a></button>");
+               
+                    await _carDealerDBContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    result = new BookingEntity()
+                    {
+                        Id = existBooking.Id,
+                        Car = existBooking.Car,
+                        Model = existBooking.Model,
+                        Dealer = existBooking.Dealer,
+                        Appointment = existBooking.Appointment,
+                        TimePeriod = existBooking.TimePeriod,
+                        Title = existBooking.Title,
+                        FileRecord = existBooking.FileRecord,
+                        FullName = existBooking.FullName,
+                        Email = existBooking.Email,
+                        SpecificRequest = existBooking.SpecificRequest,
+                        StaffAnswer = existBooking.StaffAnswer,
+                        PhoneNumber = existBooking.PhoneNumber,
+                        Service = existBooking.Service,
+                        IsAccepted = existBooking.IsAccepted,
+                        Status = existBooking.Status,
+                        Note = existBooking.Note,
+                        User = existBooking.User
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                _logger.LogError("Couldn't Update Booking");
+            }
+            return result;
+        }
+        public async Task<BookingEntity> UpdateBookingInfor(BookingEntityDTO updateBook, string code, int id)
+        {
+            using var transaction = _carDealerDBContext.Database.BeginTransaction();
+
+            BookingEntity result = null;
+            try
+            {
+                var existBooking = GetBookingById(id);     
+                if (existBooking != null)
+                {
+                    var user = GetUserByCode(code);
+                    existBooking.User = user;
+                    existBooking.SpecificRequest = updateBook.SpecificRequest;             
+                    _carDealerDBContext.Entry(existBooking).State = EntityState.Modified;
+                    string respondAccept = "Accept";
+                    string respondCancel = "Cancel";
+
+                    string urlCancel = $"{_configuration["AppUrl"]}/api/Booking/complete/{existBooking.Id}-{respondCancel}";
+                    string urlAccept = $"{_configuration["AppUrl"]}/api/Booking/complete/{existBooking.Id}-{respondAccept}";
+                    await _emailService.SendEmailAsync(existBooking.Email, "Confirm your test drive", $"<h1>Hello {existBooking.Title} {existBooking.FullName}</h1><h2>Thank you for using our service</h2>" +
+                            $"<p>Your FeedBack : {updateBook.SpecificRequest}</p><p>Please confirm that information is correct by <button><a href='{urlAccept}'> Yes</a></button></p><p>If not , pls let us know by <button><a href='{urlCancel}'>No</a></button>");
+
+                    await _carDealerDBContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    result = new BookingEntity()
+                    {
+                        Id = existBooking.Id,
+                        Car = existBooking.Car,
+                        Model = existBooking.Model,
+                        Dealer = existBooking.Dealer,
+                        Appointment = existBooking.Appointment,
+                        TimePeriod = existBooking.TimePeriod,
+                        Title = existBooking.Title,
+                        FileRecord = existBooking.FileRecord,
+                        FullName = existBooking.FullName,
+                        Email = existBooking.Email,
+                        SpecificRequest = existBooking.SpecificRequest, 
+                        PhoneNumber = existBooking.PhoneNumber,
+                        Service = existBooking.Service,
+                        IsAccepted = existBooking.IsAccepted,
+                        Status = existBooking.Status,
+                        Note = existBooking.Note,
+                        User = existBooking.User
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                _logger.LogError("Couldn't Update Booking");
+            }
+            return result;
+        }
+
+        public BookingEntity GetBookInfo(int id)
+        {
+            BookingEntity result = null;
+            try
+            {
+                var book = GetBookingById(id);
+                if(book != null)
+                {
+                    result = new BookingEntity()
+                    {   
+                        Id = book.Id,
+                        Car = book.Car,
+                        Model = book.Model,
+                        Dealer = book.Dealer,
+                        Appointment = book.Appointment,
+                        TimePeriod = book.TimePeriod,
+                        Title = book.Title,
+                        FullName = book.FullName,
+                        Email = book.Email,
+                        FileRecord = book.FileRecord,
+                        SpecificRequest = book.SpecificRequest,
+                        StaffAnswer = book.StaffAnswer,
+                        PhoneNumber = book.PhoneNumber,
+                        Service = book.Service,
+                        IsAccepted = book.IsAccepted,
+                        Status = book.Status,
+                        Note = book.Note,
+                        User = book.User
+                    };
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                _logger.LogError("Couldn't find booking ");
+            };
+            return result;
+        }
     }
 }

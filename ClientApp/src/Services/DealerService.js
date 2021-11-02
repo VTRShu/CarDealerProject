@@ -7,7 +7,6 @@ export function GetDealerListService() {
 export function GetDealerService({ id }) {
     return axios.get(`${DealerConstant.GetDealerURL}${id}`);
 };
-
 export function CreateDealerService({ name, dealerEmail, dealerWebsite, dealerPhone, description, latitude, longtitude, serviceId1, serviceId2, serviceId3 }) {
     return axios.post(DealerConstant.CreateDealerURL, {
         name: name,

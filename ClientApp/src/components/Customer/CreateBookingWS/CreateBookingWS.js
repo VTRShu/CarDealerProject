@@ -11,6 +11,7 @@ import { CreateBookingWSService } from '../../../Services/BookingService';
 import { GetCustomerService } from '../../../Services/CustomerService';
 import Carousel from '../../CustomCarousel/Carousel';
 import moment from 'moment-timezone';
+import { parseJwt } from '../../../Share/parseJwt/parseJwt'
 import GoogleMapReact from 'google-map-react';
 const AnyReactComponent = ({ text }) => <div style={{ wordWrap: 'normal' }}><img style={{ height: '22px', width: '20px' }} src="https://localhost:5001/Images/copy_492419507.png" />{text}</div>;
 const { Search } = Input;
@@ -28,30 +29,53 @@ const CreateBookingWS = () => {
     const handleCancel = () => {
         history.push(`/`);
     };
-    const { check } = useParams();
+    const check = sessionStorage.getItem('input')
     const [isModalErrorVisible, setIsModalErrorVisible] = useState(false);
     const [isModalSuccessVisible, setIsModalSuccessVisible] = useState(false);
     const onFinish = (value) => {
-        CreateBookingWSService({
-            dealerId: value.dealerId,
-            appointment: value.appointment,
-            timePeriod: value.timePeriod,
-            title: value.title,
-            fullName: value.fullName,
-            email: value.email,
-            phoneNumber: value.phoneNumber,
-            serviceId: 5,
-            specificRequest: value.specificRequest.toString(),
-            licensePlate: value.licensePlate,
-            mileage: value.mileage,
-            carIdentification: value.carIdentification,
-        }).then((res) => {
-            console.log("data", res.data);
-            setIsModalSuccessVisible(true);
-        }).catch((err) => {
-            console.log(err);
-            setIsModalErrorVisible(true);
-        });
+        if (customer === undefined || customer === null) {
+            CreateBookingWSService({
+                dealer: value.dealer,
+                appointment: value.appointment,
+                timePeriod: value.timePeriod,
+                title: value.title,
+                fullName: value.fullName,
+                email: value.email,
+                phoneNumber: value.phoneNumber,
+                serviceId: 5,
+                specificRequest: value.specificRequest.toString(),
+                licensePlate: value.licensePlate,
+                mileage: value.mileage,
+                carIdentification: value.carIdentification,
+            }).then((res) => {
+                console.log("data", res.data);
+                setIsModalSuccessVisible(true);
+            }).catch((err) => {
+                console.log(err);
+                setIsModalErrorVisible(true);
+            });
+        } else {
+            CreateBookingWSService({
+                dealer: value.dealer,
+                appointment: value.appointment,
+                timePeriod: value.timePeriod,
+                title: customer.title,
+                fullName: customer.fullName,
+                email: customer.email,
+                phoneNumber: customer.phoneNumber,
+                serviceId: 5,
+                specificRequest: value.specificRequest.toString(),
+                licensePlate: value.licensePlate,
+                mileage: value.mileage,
+                carIdentification: value.carIdentification,
+            }).then((res) => {
+                console.log("data", res.data);
+                setIsModalSuccessVisible(true);
+            }).catch((err) => {
+                console.log(err);
+                setIsModalErrorVisible(true);
+            });
+        }
     }
     const onFinishFailed = () => {
         console.log("Failed:");
@@ -68,7 +92,7 @@ const CreateBookingWS = () => {
             dealerWeb: null,
         }
     )
-    const [valueDealerId, setValueDealerId] = useState();
+    const [valueDealer, setValueDealer] = useState();
     const [isModalDealerVisible, setIsModalDealerVisible] = useState(false);
     const showModalDealer = () => {
         GetDealerListService({}).then(function (res) {
@@ -79,18 +103,18 @@ const CreateBookingWS = () => {
             })
     };
     const onChangeDealer = e => {
-        setValueDealerId(e.target.value);
+        setValueDealer(e.target.value);
     };
     const handleOkDealer = () => {
         setIsModalDealerVisible(false);
-        console.log('checked', valueDealerId);
-        form.setFieldsValue({ dealerId: valueDealerId });
+        console.log('checked', valueDealer);
+        form.setFieldsValue({ dealer: valueDealer });
     };
     const handleModalDealerCancel = () => {
         setIsModalDealerVisible(false);
-        setValueDealerId(null);
+        setValueDealer(null);
         form.setFieldsValue({ dealerId: null });
-        if (valueDealerId === undefined || valueDealerId !== null) {
+        if (valueDealer === undefined || valueDealer !== null) {
             form.setFields([{
                 name: 'dealerId',
                 errors: [<b style={{ color: 'red' }}>Please select dealer</b>],
@@ -101,21 +125,32 @@ const CreateBookingWS = () => {
     useEffect(() => {
         (async () => {
             GetCustomerService({ input: check }).then((res) => {
-                setCustomer(res.data);
-                console.log(customer);
+                if (res.data.token !== null || res.data.token !== undefined) {
+                    const tokenCustomerDecrypt = parseJwt(res.data.token)
+                    const initialValuesCustomer = {
+                        fullName: tokenCustomerDecrypt ? tokenCustomerDecrypt["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"].split(';')[0] : null,
+                        email: tokenCustomerDecrypt ? tokenCustomerDecrypt["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"].split(';')[1] : null,
+                        phoneNumber: tokenCustomerDecrypt ? tokenCustomerDecrypt["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"].split(';')[2] : null,
+                        title: tokenCustomerDecrypt ? tokenCustomerDecrypt["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"].split(';')[3] : null,
+                    }
+                    setCustomer(initialValuesCustomer);
+                }
             })
                 .catch((err) => console.log(err));
         })();
+        let isnum = /^\d+$/.test(check);
+        if (customer === undefined && check !== undefined && check.includes("@")) {
+            form.setFieldsValue(
+                {
+                    email: check,
+                });
+        } else if (customer === undefined && check !== undefined && isnum) {
+            form.setFieldsValue({
+                phoneNumber: check,
+            })
+        }
     }, []);
-    if (customer !== undefined) {
-        form.setFieldsValue(
-            {
-                title: customer.title,
-                fullName: customer.fullName,
-                email: customer.email,
-                phoneNumber: customer.phoneNumber
-            });
-    }
+
     const handleClose = () => {
         history.push('/')
     }
@@ -177,14 +212,14 @@ const CreateBookingWS = () => {
 
                 <Form.Item
                     label="Dealer"
-                    name="dealerId"
-                    value={setValueDealerId}
+                    name="dealer"
+                    value={setValueDealer}
                     hasFeedback
                 >
                     <Input
                         style={{ width: "100%" }}
                         onClick={showModalDealer}
-                        value={valueDealerId}
+                        value={valueDealer}
                     />
                     <Modal width={'80%'} visible={isModalDealerVisible}
                         closable={false}
@@ -207,7 +242,7 @@ const CreateBookingWS = () => {
                             {<>
                                 <div style={{ height: '50vh', width: '100%' }}>
                                     <GoogleMapReact
-                                        bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
+                                        bootstrapURLKeys={{ key: 'AIzaSyC406nqnTQhQ7nnK0NLsl49RAZADNiiQgE' }}
                                         defaultCenter={{ lat: 16.45585700602323, lng: 107.55977472676392 }}
                                         defaultZoom={5}
                                         yesIWantToUseGoogleMapApiInternals={true}
@@ -231,17 +266,17 @@ const CreateBookingWS = () => {
                                             <br />
                                             <div style={{ display: 'flex' }} className={radio}>
 
-                                                <Radio.Group className={styles.radio} value={valueDealerId} onChange={onChangeDealer} >
-                                                    <Radio className={styles.radio} style={{ marginTop: 5 }} value={deal.id}>
+                                                <Radio.Group className={styles.radio} value={valueDealer} onChange={onChangeDealer} >
+                                                    <Radio className={styles.radio} style={{ marginTop: 5 }} value={deal.name}>
                                                     </Radio>
                                                 </Radio.Group>
                                                 <div style={{ width: '100%' }}>
 
-                                                    <div className={styles.boxModel} key={deal.id}>
-                                                        <div id={deal.id}>{deal.name}</div>
-                                                        <div id={deal.id}>{deal.description}</div>
-                                                        <div id={deal.id}>{deal.dealerEmail}</div>
-                                                        <div id={deal.id}>{deal.dealerPhone}</div>
+                                                    <div className={styles.boxModel} key={deal.name}>
+                                                        <div id={deal.name}>{deal.name}</div>
+                                                        <div id={deal.name}>{deal.description}</div>
+                                                        <div id={deal.name}>{deal.dealerEmail}</div>
+                                                        <div id={deal.name}>{deal.dealerPhone}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -281,65 +316,67 @@ const CreateBookingWS = () => {
                     ]}
                 >
                     <Select placeholder="select time period">
-                        <Option value="Morning">Morning</Option>
-                        <Option value="Afternoon">Afternoon</Option>
+                        <Option value="Morning (8h-12h)">Morning (8h-12h)</Option>
+                        <Option value="Afternoon (13h-17h)">Afternoon (13h-17h)</Option>
                     </Select>
                 </Form.Item>
-
-                <Form.Item
-                    name="title"
-                    label="Title"
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select>
-                        <Option value="Mr">Mr</Option>
-                        <Option value="Ms">Ms</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="fullName"
-                    label="Full name"
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                            message: "Full name is required",
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="email"
-                    label="Email"
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                            message: "Email is required",
-                        },
-                    ]}
-                >
-                    <Input type="email" />
-                </Form.Item>
-                <Form.Item
-                    name="phoneNumber"
-                    label="Phone Number"
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                            message: "Phone Number is required",
-                        },
-                    ]}
-                >
-                    <Input type="number" />
-                </Form.Item>
+                {(customer === undefined || customer === null) ?
+                    <>
+                        <Form.Item
+                            name="title"
+                            label="Title"
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                        >
+                            <Select>
+                                <Option value="Mr">Mr</Option>
+                                <Option value="Ms">Ms</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            name="fullName"
+                            label="Full name"
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Full name is required",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="email"
+                            label="Email"
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Email is required",
+                                },
+                            ]}
+                        >
+                            <Input type="email" />
+                        </Form.Item>
+                        <Form.Item
+                            name="phoneNumber"
+                            label="Phone Number"
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Phone Number is required",
+                                },
+                            ]}
+                        >
+                            <Input type="number" />
+                        </Form.Item></> : ""
+                }
                 <Form.Item name="specificRequest" label="Select Services(One or more)">
                     <Checkbox.Group>
                         <Row>

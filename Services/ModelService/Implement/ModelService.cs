@@ -24,10 +24,12 @@ namespace CarDealerProject.Services.ModelService.Implement
             .Where(x => x.Name == name)
             .Include(x=>x.Images)
             .Include(x=>x.Type)
+            .Include(x => x.FileInfor)
             .FirstOrDefault();
         public ModelEntity GetModelById(int id) => _carDealerDBContext.ModelEntity.Where(x => x.Id == id)
             .Include(x => x.Images)
             .Include(x => x.Type)
+            .Include(x=>x.FileInfor)
             .FirstOrDefault();
         public ImageEntity GetImageByName(string name) => _carDealerDBContext.ImageEntity.Where(x => x.ImageName == name).FirstOrDefault();
         public async Task<ModelEntityDTO> CreateModel(ModelEntityDTO model)
@@ -43,6 +45,7 @@ namespace CarDealerProject.Services.ModelService.Implement
             imageList.Add(image1);
             imageList.Add(image2);
             imageList.Add(image3);
+            var fileInfor = GetImageByName(model.FileInforName);
             using var transaction = _carDealerDBContext.Database.BeginTransaction();
             try
             {
@@ -53,6 +56,7 @@ namespace CarDealerProject.Services.ModelService.Implement
                     Description = model.Description,
                     Images = imageList,
                     Type = type,
+                    FileInfor = fileInfor
                 };
                 if (duplicateModel == null)
                 {
@@ -65,6 +69,7 @@ namespace CarDealerProject.Services.ModelService.Implement
                         StartPrice = newModel.StartPrice,
                         Description = newModel.Description,
                         TypeId = model.TypeId,
+                        FileInforName = model.FileInforName,
                         ImageName1 = model.ImageName1,
                         ImageName2 = model.ImageName2,
                         ImageName3 = model.ImageName3,
@@ -102,6 +107,10 @@ namespace CarDealerProject.Services.ModelService.Implement
                 {
                     model.ImageName3 = existedModel.Images[2].ImageName;
                 }
+                if(model.FileInforName == null)
+                {
+                    model.FileInforName = existedModel.FileInfor.ImageName;
+                }    
                 var image1 = GetImageByName(model.ImageName1);
                 var image2 = GetImageByName(model.ImageName2);
                 var image3 = GetImageByName(model.ImageName3);
@@ -109,13 +118,14 @@ namespace CarDealerProject.Services.ModelService.Implement
                 imageList.Add(image1);
                 imageList.Add(image2);
                 imageList.Add(image3);
-                
+                var fileInfor = GetImageByName(model.FileInforName);
                 if (existedModel!= null)
                 {
                     existedModel.StartPrice = model.StartPrice;
                     existedModel.Name = model.Name;
                     existedModel.Description = model.Description;
                     existedModel.Images = imageList;
+                    existedModel.FileInfor = fileInfor;
                     _carDealerDBContext.Entry(existedModel).State = EntityState.Modified;
                     await _carDealerDBContext.SaveChangesAsync();
                     await transaction.CommitAsync();
@@ -124,6 +134,7 @@ namespace CarDealerProject.Services.ModelService.Implement
                          Name = existedModel.Name,
                          StartPrice = existedModel.StartPrice,
                          Description = existedModel.Description,
+                         FileInforName = existedModel.FileInfor.ImageName,
                          ImageName1 = existedModel.Images[0].ImageName,
                          ImageName2 = existedModel.Images[1].ImageName,
                          ImageName3 = existedModel.Images[2].ImageName,
@@ -156,6 +167,7 @@ namespace CarDealerProject.Services.ModelService.Implement
                         StartPrice = model.StartPrice,
                         Images = model.Images,
                         Description = model.Description,
+                        FileInfor = model.FileInfor,
                     };
                     return result;
                 }
@@ -175,6 +187,7 @@ namespace CarDealerProject.Services.ModelService.Implement
             var modelList = await _carDealerDBContext.ModelEntity
                 .Include(x => x.Images).AsSingleQuery()
                 .Include(x => x.Type).AsSingleQuery()
+                .Include(x => x.FileInfor).AsSingleQuery()
                 .ToListAsync();
             return modelList;
         }

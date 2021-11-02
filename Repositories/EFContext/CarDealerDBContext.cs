@@ -39,6 +39,8 @@ namespace CarDealerProject.Repositories.EFContext
             modelBuilder.Entity<AppUser>().Property(c => c.Code).HasComputedColumnSql("'MB'+CAST((RIGHT('0000'+CONVERT(varchar(20),[Id]),4)) as varchar(200))");
             modelBuilder.Entity<AppUser>().HasOne(c => c.Dealer);
             modelBuilder.Entity<AppUser>().HasOne(c => c.Image);
+            modelBuilder.Entity<AppUser>().HasMany(c => c.SolvedBooking);
+            modelBuilder.Entity<AppUser>().HasMany(c => c.SolvedBookWS);
 
             modelBuilder.Entity<CarEntity>().HasMany(c => c.Images);
             modelBuilder.Entity<CarEntity>().HasOne(c => c.Dealer);
@@ -50,16 +52,20 @@ namespace CarDealerProject.Repositories.EFContext
             modelBuilder.Entity<BookingEntity>().HasOne(c => c.Service);
             modelBuilder.Entity<BookingEntity>().HasMany(c => c.customers);
             modelBuilder.Entity<BookingEntity>().HasOne(c => c.Car);
+            modelBuilder.Entity<BookingEntity>().HasOne(c => c.User);
+            modelBuilder.Entity<BookingEntity>().HasOne(c => c.FileRecord);
 
             modelBuilder.Entity<BookWorkshopEntity>().HasMany(c => c.customer);
             modelBuilder.Entity<BookWorkshopEntity>().HasOne(c => c.Dealer);
             modelBuilder.Entity<BookWorkshopEntity>().HasOne(c => c.Service);
+            modelBuilder.Entity<BookWorkshopEntity>().HasOne(c => c.User);
 
             modelBuilder.Entity<CustomerEntity>().HasMany(c => c.bookings);
             modelBuilder.Entity<CustomerEntity>().HasMany(c => c.bookWorkshops);
+            modelBuilder.Entity<CustomerEntity>().HasOne(c => c.Editor);
 
             modelBuilder.Entity<DealerEntity>().HasMany(c => c.Services);
-
+            modelBuilder.Entity<DealerEntity>().HasMany(c => c.Cars);
             modelBuilder.Entity<ServiceEntity>().HasMany(c => c.Dealers);
 
             modelBuilder.Entity<ImageEntity>().HasMany(c => c.Cars);
@@ -67,6 +73,7 @@ namespace CarDealerProject.Repositories.EFContext
 
 
             modelBuilder.Entity<ModelEntity>().HasMany(c => c.Images);
+            modelBuilder.Entity<ModelEntity>().HasOne(c => c.FileInfor);
             modelBuilder.Entity<CarEquipmentEntity>().HasMany(c => c.Cars);
             modelBuilder.Entity<ServiceEntity>().HasData(
                 new ServiceEntity
@@ -102,8 +109,8 @@ namespace CarDealerProject.Repositories.EFContext
                 }, new ServiceEntity
                 {
                     Id = 6,
-                    Name = "RequestQuote",
-                    Description = "Quote",
+                    Name = "Request for quote",
+                    Description = "Quote...",
                     Dealers = null,
                 });
             modelBuilder.Entity<AppRole>().HasData(
@@ -140,6 +147,12 @@ namespace CarDealerProject.Repositories.EFContext
                 Id = 2,
                 ImageName = "35418253_636770120013959_511352286501404672_n.jpg",
                 ImageSrc = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg",
+                InsertedOn = new DateTime(2021, 10, 05),
+            },new ImageEntity
+            { 
+                Id = 3,
+                ImageName = "interactions.attachments.0.Mobile price list September 2021.pdf",
+                ImageSrc = "https://localhost:5001/Images/interactions.attachments.0.Mobile price list September 2021.pdf",
                 InsertedOn = new DateTime(2021, 10, 05),
             });
             modelBuilder.Entity<DealerEntity>().HasData(new DealerEntity

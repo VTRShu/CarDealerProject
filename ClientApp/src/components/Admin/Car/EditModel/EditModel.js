@@ -39,6 +39,13 @@ const EditModel = () => {
         return e && e.fileList;
 
     };
+    const normFilePDF = (e) => {
+        console.log('Upload event:', e);
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.fileList;
+    };
     const history = useHistory();
 
     const [form] = Form.useForm();
@@ -59,6 +66,7 @@ const EditModel = () => {
             description: value.description,
             typeId: value.type,
             startPrice: value.startPrice,
+            fileInforName: (value.uploadFile === null || value.uploadFile === undefined) ? model.fileInfor.imageName : value.uploadFile[0].name,
             imageName1: value.upload[0].name,
             imageName2: value.upload[1].name,
             imageName3: value.upload[2].name,
@@ -75,6 +83,7 @@ const EditModel = () => {
         url: null,
         thumbnail: null,
     }]);
+    const [file, setFile] = useState([]);
     useEffect(() => {
         (async () => {
             GetModelService({ name })
@@ -98,19 +107,26 @@ const EditModel = () => {
                         url: res.data.images[2].imageSrc,
                         thumbnail: res.data.images[2].imageSrc,
                     }]);
+                    setFile(res.data.fileInfor);
                 })
                 .catch((err) => console.log(err));
         })();
     }, [name]);
 
-
+    const pdfFile = [{
+        uid: '1',
+        name: file.imageName,
+        url: file.imageSrc,
+        thumbnail: file.imageSrc
+    }]
     form.setFieldsValue(
         {
             name: model.name,
             startPrice: model.startPrice,
             description: model.description,
             type: type.id,
-            upload: files
+            upload: files,
+            uploadFile: pdfFile
         });
 
     return (
@@ -179,6 +195,18 @@ const EditModel = () => {
                     extra="Upload Model Image"
                 >
                     <Upload action="https://localhost:5001/api/Image" multiple listType="picture">
+                        <Button icon={<UploadOutlined />}>Click to upload</Button>
+                    </Upload>
+                </Form.Item>
+                <Form.Item
+                    name="uploadFile"
+                    label="Upload"
+                    valuePropName="fileList"
+                    getValueFromEvent={normFilePDF}
+                    extra="Upload new PDF file"
+
+                >
+                    <Upload name="logo" action="https://localhost:5001/api/Image" listType="picture">
                         <Button icon={<UploadOutlined />}>Click to upload</Button>
                     </Upload>
                 </Form.Item>

@@ -16,6 +16,7 @@ namespace CarDealerProject.Repositories.Entities
         public string Price { get; set; }
         public string Date { get; set; }
         public TypeEntity Type { get; set; }
+        public string ModelName { get; set; }
         public ModelEntity Model { get; set; }
         public string Color { get; set; }
         public string FuelType { get; set; }

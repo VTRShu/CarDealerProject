@@ -2,11 +2,13 @@ import React from 'react';
 import {
     Switch,
     Route,
+    Redirect,
     HashRouter,
 } from "react-router-dom";
 import "antd/dist/antd.css";
 import "./App.css";
-import { Layout } from 'antd';
+import { UnlockOutlined } from "@ant-design/icons";
+import { Layout, Form, Input, Button, Modal } from 'antd';
 import { parseJwt } from './Share/parseJwt/parseJwt'
 import { Content } from "antd/lib/layout/layout";
 import { useLastLocation } from 'react-router-last-location';
@@ -44,10 +46,15 @@ import CreateBookingWSPage from './Pages/CustomerPage/CreateBookingWSPage'
 import CheckCustomerWS from './components/Customer/CreateBookingWS/checkCustomerWS'
 import ListBookingWSPage from './Pages/BookingPage/ListBookingWSPage'
 import FooterProject from './components/FooterProject/FooterProject'
+import ViewOwnSolvedBookPage from './Pages/BookingPage/ViewOwnSolvedBookPage';
+import { ChangePasswordService } from './Services/AuthenticationService'
 const { Header, Footer, Sider } = Layout;
 const App = () => {
+    const [currentCustomer, setCurrentCustomer] = useState()
     const cookies = new Cookies();
     const tokenDecryption = parseJwt(cookies.get('token'))
+
+
     const initialValues = {
         token: cookies.get('token'),
         role: tokenDecryption ? tokenDecryption["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] : null,
@@ -57,11 +64,73 @@ const App = () => {
         user: tokenDecryption ? tokenDecryption["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"].split(';')[2] : null,
         profile: tokenDecryption ? tokenDecryption["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"].split(';')[3] : null,
     }
+
+
     console.log(tokenDecryption ? tokenDecryption[["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]] : null)
     const [currentUser, setCurrentUser] = useState(initialValues)
     console.log(currentUser);
+
     var url = window.location.href;
     var check = "manager";
+    if (!url.includes("/create-test-drive") && !url.includes("/create-bookws")) {
+        sessionStorage.clear();
+    }
+    const [isModal1stVisible, setIsModal1stVisible] = useState(false);
+    const [isModalSuccessVisible, setIsModalSuccesVisible] = useState(false);
+    const [form] = Form.useForm();
+    const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+    const handleOkFor1st = (values) => {
+
+        if (currentUser.role === 'Master') {
+            ChangePasswordService({
+                userCode: currentUser.code,
+                oldPassword: 'Master123@123',
+                newPassword: values.NewPassword
+            })
+                .then(function (response) {
+                    setIsModalSuccesVisible(true);
+                    setIsModal1stVisible(false);
+
+                }).catch(function (error) {
+                    console.log(error);
+                })
+        } else if (currentUser.role === 'Admin') {
+            ChangePasswordService({
+                userCode: currentUser.code,
+                oldPassword: 'Admin123@123',
+                newPassword: values.NewPassword
+            })
+                .then(function (response) {
+                    setIsModalSuccesVisible(true);
+                    setIsModal1stVisible(false);
+
+                }).catch(function (error) {
+                    console.log(error);
+                })
+        } else if (currentUser.role === 'Staff') {
+            ChangePasswordService({
+                userCode: currentUser.code,
+                oldPassword: 'Staff123@123',
+                newPassword: values.NewPassword
+            })
+                .then(function (response) {
+                    setIsModalSuccesVisible(true);
+                    setIsModal1stVisible(false);
+
+                }).catch(function (error) {
+                    console.log(error);
+                })
+        }
+    };
+    const handleCancel1stTime = () => {
+        setIsModal1stVisible(false);
+    };
+    const handleClose = () => {
+        window.location.reload();
+        setIsModalSuccesVisible(false);
+        cookies.remove('token');
+    }
+
     return (
         <HashRouter>
 
@@ -71,6 +140,91 @@ const App = () => {
                         <Switch>
                             <Layout>
                                 <HeaderProject />
+                                <Modal title="Change Password" visible={isModal1stVisible || currentUser.firstLogin === 'True'} closable={null} footer={null} centered={true}>
+
+                                    <Form
+                                        onFinish={handleOkFor1st}
+                                        onFinishFailed={handleCancel1stTime}
+                                        form={form}
+                                    >
+                                        <p style={{ textAlign: "left", marginLeft: '15%', fontWeight: '600' }}>This is the first time you logged in.<br />You have to change your password to continue.</p>
+                                        <p></p>
+
+                                        <Form.Item
+                                            name="NewPassword"
+                                            values="NewPassword"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "Please input your New Password",
+                                                },
+                                                () => ({
+                                                    validator(_, value) {
+                                                        if (value === 'Admin123@123' || value === 'Staff123@123' || value === 'Master123@123') {
+
+                                                            return Promise.reject(
+                                                                new Error(
+                                                                    "You can't change your password to the same password as default"
+                                                                )
+                                                            )
+                                                        } else {
+                                                            return Promise.resolve();
+                                                        }
+                                                    }
+                                                }),
+                                                () => ({
+                                                    validator(_, value) {
+                                                        if (strongRegex.test(value)) {
+                                                            return Promise.resolve();
+                                                        } else {
+                                                            return Promise.reject(
+                                                                new Error(
+                                                                    "Require lowercase , uppercase , numeric and special Character and at least 8 characters "
+                                                                )
+                                                            );
+                                                        }
+                                                    },
+                                                }),
+                                            ]}
+                                        >
+                                            <Input.Password
+                                                style={{ width: "70%", marginLeft: '15%' }}
+                                                placeholder="Enter your new password"
+                                                prefix={<UnlockOutlined />}
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            shouldUpdate
+                                            className="submit"
+                                        >
+                                            {() => (
+                                                <Button
+                                                    style={{ borderRadius: '7px', marginLeft: '40%', backgroundColor: "red", color: "white" }}
+                                                    danger
+                                                    type="primary"
+                                                    htmlType="submit"
+                                                    disabled={
+                                                        !form.isFieldsTouched(true) ||
+                                                        form.getFieldsError().filter(({ errors }) => errors.length)
+                                                            .length > 0
+                                                    }
+                                                >
+                                                    Save
+                                                </Button>
+                                            )}
+                                        </Form.Item>
+                                    </Form>
+                                </Modal>
+                                <Modal centered={true} title="Change Password" visible={isModalSuccessVisible} onCancel={handleClose} footer={null}>
+                                    <>
+                                        <b>Your password has been changed successfully,Please login again!</b>
+                                        <br />
+                                        <br />
+                                        <div style={{ padding: '10px', display: 'flex' }}>
+                                            <Button style={{ marginLeft: "42%", borderRadius: '7px' }} onClick={handleClose}>Close</Button>
+                                        </div>
+                                    </>
+                                </Modal>
                                 {url.includes(check) ?
 
                                     <>
@@ -82,10 +236,8 @@ const App = () => {
                                                     <>
                                                         <Route path="/list-user"><ListUserPage /></Route>
                                                         <Route path="/create-user"><CreateUserPage /></Route>
-                                                        <Route path="/edit-user/:code"><EditUserPage /></Route>
                                                         <Route path="/list-model"><ListModelPage /></Route>
                                                         <Route path="/create-model"> <CreateModelPage /></Route>
-                                                        <Route path="/edit-model/:name"> <EditModelPage /></Route>
                                                         <Route path="/list-dealer"><ListDealerPage /></Route>
                                                         <Route path="/create-dealer"> <CreateDealerPage /> </Route>
                                                         <Route path="/edit-dealer/:id"> <EditDealerPage /> </Route>
@@ -93,8 +245,10 @@ const App = () => {
                                                         <Route path="/list-booking"><ListBookingPage /> </Route>
                                                         <Route path="/list-customer"><CustomerPage /></Route>
                                                         <Route exact path="/"><CustomerPage /></Route>
+                                                        <Route path="/edit-model/:name"> <EditModelPage /></Route>
                                                     </> : (currentUser.role === 'Admin' ?
                                                         <>
+
                                                             <Route path="/list-car"><ListCarPage /> </Route>
                                                             <Route path="/list-user"><ListUserPage /></Route>
                                                             <Route exact path="/"><ListUserPage /></Route>
@@ -108,11 +262,13 @@ const App = () => {
                                                         </> : (currentUser.role === 'Staff' ?
                                                             <>
                                                                 <Route path="/list-dealer"><ListDealerPage /></Route>
-                                                                <Route exact path="/list-car"><ListCarPage /> </Route>
+                                                                <Route exact path="/"><ListCarPage /> </Route>
+                                                                <Route path="/list-car"><ListCarPage /> </Route>
                                                                 <Route path="/create-car"><CreateCarPage /> </Route>
                                                                 <Route path="/edit-car/:id"><EditCarPage /> </Route>
                                                                 <Route path="/list-booking"><ListBookingPage /> </Route>
                                                                 <Route path="/list-bookws"><ListBookingWSPage /></Route>
+                                                                <Route path="/own-solved-book"><ViewOwnSolvedBookPage /></Route>
                                                             </>
                                                             : <Login />))
                                                 }
@@ -126,12 +282,12 @@ const App = () => {
                                             <SideBar />
                                         </Route>
                                         <Route path="/list-car-customer/:model?"><ListCarCustomerPage /></Route>
-                                        <Route path="/check-customer/:modelId?/:service?"><CheckCustomer /></Route>
-                                        <Route path="/create-test-drive/:modelId?/:service?/:check"><CreateTestDrivePage /></Route>
+                                        {sessionStorage.getItem('input') === undefined || sessionStorage.getItem('input') === null ? <Route path="/create-test-drive/:modelName?"> <CheckCustomer /></Route> : <Route path="/create-test-drive/:modelName?"><CreateTestDrivePage /></Route>}
+
                                         <Route path="/car-infor/:id"><CarInfor /></Route>
                                         <Route path="/list-dealer-customer"><ListDealerCustomerPage /></Route>
-                                        <Route path="/create-bookws/:check?"><CreateBookingWSPage /></Route>
-                                        <Route path="/check-customerws"><CheckCustomerWS /></Route>
+                                        {sessionStorage.getItem('input') === undefined || sessionStorage.getItem('input') === null ? <Route path="/create-bookws"><CheckCustomerWS /></Route> : <Route path="/create-bookws/"><CreateBookingWSPage /></Route>}
+                                        ư
                                     </>
                                 }
                                 <FooterProject />

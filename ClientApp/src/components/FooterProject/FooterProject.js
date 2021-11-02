@@ -24,8 +24,8 @@ const FooterProject = () => {
                 </div>
                 :
                 <div className="menuService">
-                    <div className="item"><Link to='/check-customer'><button className="btn-footer" title="Test Drive"><GiSteeringWheel style={{ fontSize: "50px" }} /> </button></Link></div>
-                    <div className="item"><Link to='/check-customerws'><button className="btn-footer" title="Book Workshop service"><FaRegCalendarCheck style={{ fontSize: "50px" }} /></button></Link></div>
+                    <div className="item"><Link to='/create-test-drive'><button className="btn-footer" title="Test Drive"><GiSteeringWheel style={{ fontSize: "50px" }} /> </button></Link></div>
+                    <div className="item"><Link to='/create-bookws'><button className="btn-footer" title="Book Workshop service"><FaRegCalendarCheck style={{ fontSize: "50px" }} /></button></Link></div>
                     <div className="item"><Link to='/'><button className="btn-footer" title="Car Configurator"><BsGearWideConnected style={{ fontSize: "50px" }} /></button></Link></div>
                     <div className="item"><Link to='/list-dealer-customer'><button className="btn-footer" title="Find Dealer"><SiOpenstreetmap style={{ fontSize: "50px" }} />  </button></Link></div>
                     <div className="item"> <Link to='/list-car-customer'><button className="btn-footer" title="Search available car"><MdShoppingCart style={{ fontSize: "50px" }} />  </button></Link></div>

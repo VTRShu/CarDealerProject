@@ -11,6 +11,7 @@ namespace CarDealerProject.DTO
         public string Description { get; set; }
         public string StartPrice { get; set; }
         public int TypeId { get; set; }
+        public string FileInforName { get; set; }
         public string ImageName1 { get; set; }
         public string ImageName2 { get; set; }
         public string ImageName3 { get; set; }

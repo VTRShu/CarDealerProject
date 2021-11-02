@@ -29,8 +29,12 @@
   }
   .bi.bi-pencil-fill{
     padding-left: 20px;
+    color:black;
   }
   .bi.bi-eye-slash{
+    padding-left: 20px;
+  }
+  .bi.bi-eye{
     padding-left: 20px;
   }
   .ant-modal-header{

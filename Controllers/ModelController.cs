@@ -1,6 +1,7 @@
 ﻿using CarDealerProject.DTO;
 using CarDealerProject.Repositories.Entities;
 using CarDealerProject.Services.ModelService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,6 +21,7 @@ namespace CarDealerProject.Controllers
         {
             _modelService = modelService;
         }
+        [Authorize(Roles = "Master")]
         [HttpPost("model/create")]
         public async Task<ActionResult<ModelEntityDTO>> Create(ModelEntityDTO model)
         {
@@ -30,6 +32,7 @@ namespace CarDealerProject.Controllers
             }
             return Ok(newModel);
         }
+        [Authorize(Roles = "Master")]
         [HttpPut("model/update/{name}")]
         public async Task<ActionResult<ModelEntityDTO>> Update(ModelEntityDTO model, string name)
         {

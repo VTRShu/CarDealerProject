@@ -28,7 +28,8 @@ const CarConstant = {
     GetAllCarAdminURL: `${CommonConstant.Server}/api/Car/car/admin/listAll`,
     GetCarURL: `${CommonConstant.Server}/api/Car/car/get/`,
     CreateCarURL: `${CommonConstant.Server}/api/Car/api/car/create`,
-    EditCarURL: `${CommonConstant.Server}/api/Car/api/car/edit/`,
+    EditCarURL: `${CommonConstant.Server}/api/Car/car/edit/`,
     DisableCarURL: `${CommonConstant.Server}/api/Car/car/disable/`,
+    EnableCarURL: `${CommonConstant.Server}/api/Car/car/enable/`,
 }
 export default CarConstant;

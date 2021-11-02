@@ -39,6 +39,25 @@ const CreateModel = () => {
         return e && e.fileList;
 
     };
+    const normFilePDF = (e) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        console.log(e.file.name.slice(-4))
+        if (e.file.name.slice(-4) !== '.pdf') {
+            form.setFields([{
+                name: 'uploadFile',
+                errors: [<b style={{ color: 'red' }}>Select PDF file only!</b>],
+            }])
+        } else {
+            form.setFields([{
+                name: 'uploadFile',
+                errors: null,
+            }])
+        }
+        return e && e.fileList;
+
+    };
     let history = useHistory();
     const [form] = Form.useForm();
     const onFinishFailed = () => {
@@ -51,6 +70,7 @@ const CreateModel = () => {
     };
     const onFinish = (value) => {
         CreateModelService({
+            fileInforName: value.uploadFile[0].name,
             name: value.name,
             description: value.description,
             typeId: value.type,
@@ -140,6 +160,17 @@ const CreateModel = () => {
                     extra="Upload Model Image"
                 >
                     <Upload action="https://localhost:5001/api/Image" maxCount={3} multiple listType="picture">
+                        <Button icon={<UploadOutlined />}>Click to upload</Button>
+                    </Upload>
+                </Form.Item>
+                <Form.Item
+                    name="uploadFile"
+                    label="Upload"
+                    valuePropName="fileList"
+                    getValueFromEvent={normFilePDF}
+                    extra="Upload model PDF file for description"
+                >
+                    <Upload name="logo" action="https://localhost:5001/api/Image" maxCount={1} listType="picture">
                         <Button icon={<UploadOutlined />}>Click to upload</Button>
                     </Upload>
                 </Form.Item>

@@ -4,7 +4,7 @@ import { FilterFilled, InfoCircleFilled } from '@ant-design/icons';
 import styles from './CarInfor.module.css'
 import 'font-awesome/css/font-awesome.min.css';
 import CarouselForModal from '../../../CustomCarousel/CarouselForModal'
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { GetCarService } from '../../../../Services/CarService'
 import { CreateQuoteService } from '../../../../Services/BookingService';
 import { Select } from 'antd';
@@ -17,7 +17,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 const AnyReactComponent = ({ text }) => <div style={{ wordWrap: 'normal' }}><img style={{ height: '22px', width: '20px' }} src="https://localhost:5001/Images/copy_492419507.png" /><b style={{ color: 'red' }}>{text}</b></div>;
 const CarInfor = () => {
-    const [image, setImage] = useState();
+    const history = useHistory();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [car, setCar] = useState({
         name: null,
@@ -54,7 +54,7 @@ const CarInfor = () => {
     const onFinish = (value) => {
         CreateQuoteService({
             carId: id,
-            dealerId: car.dealer.id,
+            dealer: car.dealer.name,
             title: value.title,
             fullName: value.fullName,
             email: value.email,
@@ -183,6 +183,7 @@ const CarInfor = () => {
 
                 </Form>
             </Modal>
+
             {car !== null ?
                 <>
 
@@ -208,26 +209,8 @@ const CarInfor = () => {
                                 <div style={{ alignItems: 'end' }}>
                                     <Button style={{ width: '100%', marginTop: '10%' }} onClick={showRequestQuoteModal}>Request for quote</Button>
                                 </div>
+
                             </div>
-                        </div>
-                    </div>
-
-                    <div >
-                        <div style={{ width: '100%', height: '60vh' }} >
-                            <GoogleMapReact
-
-                                bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
-                                defaultCenter={{ lat: 16.45585700602323, lng: 107.57402262179006 }}
-                                defaultZoom={5}
-                                yesIWantToUseGoogleMapApiInternals={true}
-                            >
-                                <AnyReactComponent
-                                    lat={car.dealer.latitude}
-                                    lng={car.dealer.longtitude}
-                                    text={car.dealer.name}
-                                />
-                            </GoogleMapReact>
-                            <p>{car.dealer.description}</p>
                         </div>
                     </div>
                     <br />
@@ -296,6 +279,26 @@ const CarInfor = () => {
                                 </tr>
                             </table>
                         </div>
+                    </div>
+                    <div >
+                        <div style={{ width: '100%', height: '60vh' }} >
+                            <GoogleMapReact
+                                key={car.id}
+                                bootstrapURLKeys={{ key: `AIzaSyC406nqnTQhQ7nnK0NLsl49RAZADNiiQgE`, language: 'en' }}
+                                defaultCenter={{ lat: car.dealer.latitude, lng: car.dealer.longtitude }}
+                                defaultZoom={15}
+                                yesIWantToUseGoogleMapApiInternals
+                            >
+                                <AnyReactComponent
+                                    lat={car.dealer.latitude}
+                                    lng={car.dealer.longtitude}
+                                    text={car.dealer.name}
+                                />
+                            </GoogleMapReact>
+
+
+                        </div>
+                        <p>{car.dealer.description} <br /> {car.dealer.dealerEmail}<br />{car.dealer.dealerPhone}<br /><a style={{ color: 'blue' }} href={car.dealer.dealerWebsite}>{car.dealer.dealerWebsite}</a></p>
                     </div>
                 </>
                 : ""}

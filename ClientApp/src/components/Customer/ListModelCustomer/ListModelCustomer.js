@@ -75,8 +75,6 @@ const ListModelCustomer = () => {
             console.log(error);
         })
     }, [])
-
-    const service = 1;
     return (
         <Content className={styles.antLayoutContent}>
 
@@ -107,9 +105,10 @@ const ListModelCustomer = () => {
                                 return (
                                     <Dropdown overlay={<Menu>
                                         <Menu.Item ><FaBook style={{ fontSize: '18px' }} /> Learn More</Menu.Item>
-                                        <Menu.Item> <Link to={`/check-customer/${model.id}/${service}`}><GiSteeringWheel style={{ fontSize: '18px' }} /> Book a test drive</Link></Menu.Item>
+                                        <Menu.Item> <Link to={`/create-test-drive/${model.name}`}><GiSteeringWheel style={{ fontSize: '18px' }} /> Book a test drive</Link></Menu.Item>
                                         <Menu.Item><BsGearWideConnected style={{ fontSize: '18px' }} /> Configure</Menu.Item>
                                         <Menu.Item><Link to={`/list-car-customer/${model.name}`}><MdShoppingCart style={{ fontSize: '18px' }} /> Search available car</Link></Menu.Item>
+                                        <Menu.Item><a href={model.fileInfor.imageSrc}><FaBook /> brochures</a></Menu.Item>
                                     </Menu>} key={model.name}>
                                         <div className={styles.boxModel} key={model.name}>
                                             <div id={model.name}>{model.name}</div>

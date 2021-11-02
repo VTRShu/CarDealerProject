@@ -8,12 +8,13 @@ import 'font-awesome/css/font-awesome.min.css';
 import Carousel from '../../CustomCarousel/Carousel'
 import CarouselForModal from '../../CustomCarousel/CarouselForModal';
 import CarConstant from '../../../Share/Constant/CarConstant'
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { Select } from 'antd';
 import GoogleMapReact from 'google-map-react';
 import { FaGasPump, FaMapMarkerAlt } from 'react-icons/fa';
 import { FcEngineering } from 'react-icons/fc';
 import { GiGears } from 'react-icons/gi';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 const { Content } = Layout;
 function itemRender(current, type, originalElement) {
     if (type === 'prev') {
@@ -179,8 +180,15 @@ const ListCarCustomer = () => {
             })
         }
     }, [pageSizeOld, pageIndex])
+    const history = useHistory();
     return (
         <Content className={styles.antLayoutContent}>
+
+            <Row> <Button onClick={() => history.goBack()} className={styles.create}>
+                <IoMdArrowRoundBack style={{ fontSize: '20px' }} />
+            </Button>
+            </Row>
+            <br />
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} >
                 <Col span={4}>
                     <Select {...selectTypeProps} />
@@ -188,6 +196,7 @@ const ListCarCustomer = () => {
                 <Col span={4}>
                     <Select {...selectModelProps} />
                 </Col>
+                <Col span={4} offset={2}> <a href="https://localhost:5001/Images/interactions.attachments.0.Mobile price list September 2021.pdf"> <Button>View Price list</Button></a> </Col>
             </Row>
             <br />
             {

@@ -19,6 +19,7 @@ namespace CarDealerProject.Services.CarService
         Task<bool> DisableCar(int id);
         Task<List<CarEntity>> GetAllCarAdmin(string dealer);
         Task<List<CarEntity>> GetAllCarMaster();
+        Task<bool> EnableCar(int id);
 
     }
 }

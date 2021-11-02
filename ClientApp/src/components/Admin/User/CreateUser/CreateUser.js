@@ -27,22 +27,6 @@ const CreateUser = () => {
     const onFinishFailed = () => {
         console.log("Failed:");
     };
-    const onFileRemove = (file) => {
-        const { confirm } = Modal
-        return new Promise((resolve, reject) => {
-            confirm({
-
-                title: 'Are you sure you want to Delete ?',
-                onOk: () => {
-                    resolve(true)
-                    console.log(`${file.name}`)
-                },
-                onCancel: () => {
-                    reject(true)
-                }
-            })
-        })
-    }
 
     const handleCancel = () => {
         history.push(`/list-user`);
@@ -110,6 +94,17 @@ const CreateUser = () => {
                 .catch((err) => console.log(err));
         })();
     }, [visible]);
+    // const [valueSelect, setValueSelect] = useState();
+    // const onChangeSelect = (value) => {
+    //     setValueSelect(value)
+    //     console.log(value)
+    // }
+    // useEffect(() => {
+    //     if (valueSelect === 0) {
+    //         form.setFieldsValue({ dealerName: null })
+
+    //     } console.log(form.getFieldValue("dealerName"))
+    // }, [valueSelect])
     return (
         <Content>
             <Form
@@ -194,7 +189,10 @@ const CreateUser = () => {
                         <Radio value="Female">Female</Radio>
                     </Radio.Group>
                 </Form.Item>
-                {currentUser.role === 'Master' ?
+                {currentUser.role !== 'Master'
+                    // || valueSelect === 0 
+                    ? "" :
+
                     <Form.Item
                         name="dealerName"
                         label="Dealer"
@@ -223,7 +221,8 @@ const CreateUser = () => {
                                     </Option>
                                 ))}
                         </Select>
-                    </Form.Item> : ""}
+                    </Form.Item>
+                }
                 <Form.Item
                     label="Email"
                     name="email"
@@ -248,10 +247,11 @@ const CreateUser = () => {
                         },
                     ]}
                 >
-                    <Select placeholder="Please select a Type">
+                    <Select placeholder="Please select a Type"
+                    // onChange={onChangeSelect} 
+                    >
                         {currentUser.role === 'Admin' ?
                             <>
-                                <Option value={1}>Admin</Option>
                                 <Option value={2}>Staff</Option>
                             </>
                             :

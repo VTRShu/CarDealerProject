@@ -242,7 +242,11 @@ const HeaderProject = () => {
                                                 <Menu.Item key="5"><Link to="/list-car">List Cars</Link></Menu.Item>
                                                 <Menu.Item key="6"><Link to="/create-car">Create new car</Link></Menu.Item>
                                             </SubMenu>
-                                            <Menu.Item><Link to="/list-booking">List booking</Link></Menu.Item>
+                                            <SubMenu key="sub6" title="Booking">
+                                                <Menu.Item><Link to="/list-booking">research booking list</Link></Menu.Item>
+                                                <Menu.Item><Link to="/list-bookws">Workshop services booking list</Link></Menu.Item>
+                                                <Menu.Item><Link to="/own-solved-book">Your work</Link></Menu.Item>
+                                            </SubMenu>
                                             <SubMenu key="sub4" style={{ marginLeft: '55%' }} title={`Welcome ${currentUser.user}`}>
                                                 <Menu.Item key="3" onClick={showModalChangePassword}>Change Password </Menu.Item>
                                                 <Menu.Item key="4" onClick={showLogOutModal}>Logout</Menu.Item>

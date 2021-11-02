@@ -27,10 +27,10 @@ export function GetAllBookingDealerService() {
 }
 
 
-export function CreateBookingService({ modelId, dealerId, appointment, timePeriod, title, fullName, email, phoneNumber, note, serviceId }) {
+export function CreateBookingService({ model, dealer, appointment, timePeriod, title, fullName, email, phoneNumber, note, serviceId }) {
     return axios.post(BookingConstant.CreateBookingURL, {
-        modelId: modelId,
-        dealerId: dealerId,
+        model: model,
+        dealer: dealer,
         appointment: appointment,
         timePeriod: timePeriod,
         title: title,
@@ -42,9 +42,6 @@ export function CreateBookingService({ modelId, dealerId, appointment, timePerio
     })
 }
 
-export function CompleteBookingService({ id }) {
-    return axios.put(`${BookingConstant.CompleteBookingURL}${id}`)
-}
 
 
 export function GetListQuoteService({ index, size }) {
@@ -71,10 +68,10 @@ export function GetAllQuoteService() {
 export function GetAllQuoteDealerService() {
     return axios.get(BookingConstant.GetAllQuoteDealerURL);
 }
-export function CreateQuoteService({ carId, dealerId, title, fullName, email, phoneNumber, note, serviceId }) {
+export function CreateQuoteService({ carId, dealer, title, fullName, email, phoneNumber, note, serviceId }) {
     return axios.post(BookingConstant.CreateQuoteURL, {
         carId: carId,
-        dealerId: dealerId,
+        dealer: dealer,
         title: title,
         fullName: fullName,
         email: email,
@@ -84,9 +81,27 @@ export function CreateQuoteService({ carId, dealerId, title, fullName, email, ph
     })
 }
 
-export function CreateBookingWSService({ dealerId, title, fullName, email, phoneNumber, serviceId, appointment, timePeriod, specificRequest, licensePlate, mileage, carIdentification }) {
+
+export function UpdateBookingService({ userCode, id, specificRequest }) {
+    return axios.put(`${BookingConstant.UpdateBookURL}${id}-${userCode}`, {
+        specificRequest: specificRequest,
+        userCode: userCode,
+        id: id,
+    })
+}
+
+export function UpdateBookingQuoteService({ userCode, id, specificRequest, staffAnswer, fileRecordName }) {
+    return axios.put(`${BookingConstant.UpdateBookQuoteURL}${id}-${userCode}`, {
+        specificRequest: specificRequest,
+        userCode: userCode,
+        fileRecordName: fileRecordName,
+        id: id,
+        staffAnswer: staffAnswer,
+    })
+}
+export function CreateBookingWSService({ dealer, title, fullName, email, phoneNumber, serviceId, appointment, timePeriod, specificRequest, licensePlate, mileage, carIdentification }) {
     return axios.post(BookingConstant.CreateBookWSURL, {
-        dealerId: dealerId,
+        dealer: dealer,
         title: title,
         fullName: fullName,
         email: email,
@@ -98,6 +113,14 @@ export function CreateBookingWSService({ dealerId, title, fullName, email, phone
         licensePlate: licensePlate,
         mileage: mileage,
         carIdentification: carIdentification,
+    })
+}
+
+export function UpdateBookWSService({ userCode, id, customerFeedBack }) {
+    return axios.put(`${BookingConstant.UpdateBookWSURL}${id}-${userCode}`, {
+        userCode: userCode,
+        id: id,
+        customerFeedBack: customerFeedBack
     })
 }
 export function GetAllBookingWSService() {
@@ -112,6 +135,50 @@ export function GetListBookingWSService({ index, size }) {
     })
 }
 
-export function CompleteBookingWS({ id }) {
-    return axios.put(`${BookingConstant.CompleteBookWSURL}${id}`)
+export function GetBookWSService({ id }) {
+    return axios.get(`${BookingConstant.GetBookWSURL}${id}`);
 }
+
+
+export function GetBookingService({ id }) {
+    return axios.get(`${BookingConstant.GetBookingURL}${id}`)
+}
+
+export function ViewOwnListTestService({ index, size, code }) {
+    return axios.get(BookingConstant.ViewOwnListTestURL, {
+        params: {
+            pageSize: size,
+            code: code,
+            pageIndex: index
+        }
+    })
+}
+export function ViewOwnListQuoteService({ index, size, code }) {
+    return axios.get(BookingConstant.ViewOwnListQuoteURL, {
+        params: {
+            pageSize: size,
+            code: code,
+            pageIndex: index
+        }
+    })
+}
+export function ViewOwnListBookwsService({ index, size, code }) {
+    return axios.get(BookingConstant.ViewOwnListBookwsURL, {
+        params: {
+            pageSize: size,
+            code: code,
+            pageIndex: index
+        }
+    })
+}
+
+export function ViewOwnAllTestService({ code }) {
+    return axios.get(`${BookingConstant.ViewOwnAllTestURL}${code}`)
+}
+export function ViewOwnAllQuoteService({ code }) {
+    return axios.get(`${BookingConstant.ViewOwnAllQuoteURL}${code}`)
+}
+export function ViewOwnAllBookwsService({ code }) {
+    return axios.get(`${BookingConstant.ViewOwnAllBookwsURL}${code}`)
+}
+

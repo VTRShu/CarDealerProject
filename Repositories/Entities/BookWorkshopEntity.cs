@@ -26,6 +26,10 @@ namespace CarDealerProject.Repositories.Entities
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        [AllowNull]
+        public AppUser User { get; set; }
+        [AllowNull]
+        public string CustomerFeedBack { get; set; }
         public ServiceEntity Service { get; set; }
         public bool IsAccepted { get; set; }
         public bool Status { get; set; }

@@ -16,6 +16,7 @@ namespace CarDealerProject.Repositories.Entities
         public string StartPrice { get; set; }
         public string Description { get; set; }
         public TypeEntity Type { get; set; }
+        public ImageEntity FileInfor { get; set; }
         public List<ImageEntity> Images { get; set; }
     }
 }

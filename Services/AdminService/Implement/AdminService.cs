@@ -125,6 +125,12 @@ namespace CarDealerProject.Services.AdminService
         public AppUser GetByCode(string code) => _carDealerDBContext.AppUsers
             .Include(x => x.Dealer)
             .Include(x => x.Image)
+            .Include(x=>x.SolvedBooking).ThenInclude(x=>x.Model)
+            .Include(x=>x.SolvedBooking).ThenInclude(x=>x.Car)
+            .Include(x=>x.SolvedBooking).ThenInclude(x=>x.Service)
+            .Include(x=>x.SolvedBooking).ThenInclude(x=>x.User)
+            .Include(x => x.SolvedBookWS).ThenInclude(x => x.Service)
+            .Include(x => x.SolvedBookWS).ThenInclude(x => x.User)
             .Where(u => u.Code == code && u.IsDisabled == true)
             .FirstOrDefault();
 
@@ -166,7 +172,9 @@ namespace CarDealerProject.Services.AdminService
                         Type = user.Type,
                         IsDisabled = user.IsDisabled,
                         Image = user.Image,
-                        Email = user.Email
+                        Email = user.Email,
+                        SolvedBooking = user.SolvedBooking,
+                        SolvedBookWS = user.SolvedBookWS
                     };
                     return result;
                 }
@@ -343,6 +351,7 @@ namespace CarDealerProject.Services.AdminService
                 UserName = x.UserName,
                 Type = x.Type,
                 IsDisabled = x.IsDisabled,
+                SolvedBooking = x.SolvedBooking
             }).ToListAsync();
             return listUser;
         }
@@ -360,6 +369,7 @@ namespace CarDealerProject.Services.AdminService
                 UserName = x.UserName,
                 Type = x.Type,
                 IsDisabled = x.IsDisabled,
+                SolvedBooking = x.SolvedBooking
             }).ToListAsync();
             return listUser;
         }

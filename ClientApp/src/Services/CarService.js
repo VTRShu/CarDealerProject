@@ -29,6 +29,11 @@ export function GetAllCarAdminService() {
 export function DisableCarService({ id }) {
     return axios.put(`${CarConstant.DisableCarURL}${id}`)
 }
+export function EnableCarService({ id }) {
+    return axios.put(`${CarConstant.EnableCarURL}${id}`)
+}
+
+
 export function CreateCarService({ name, price, fuelConsumption, typeId, modelId, color, fuelType, power, maximumSpeed, length, width, torque, upholstery, transmission, acceleration, weight, height, displacement, dealer, imageName1, imageName2, imageName3, imageName4, imageName5, imageName6 }) {
     return axios.post(CarConstant.CreateCarURL, {
         name: name,
@@ -60,6 +65,7 @@ export function CreateCarService({ name, price, fuelConsumption, typeId, modelId
 }
 export function EditCarService({ id, name, price, fuelConsumption, typeId, modelId, color, fuelType, power, maximumSpeed, length, width, torque, upholstery, transmission, acceleration, weight, height, displacement, dealer, imageName1, imageName2, imageName3, imageName4, imageName5, imageName6 }) {
     return axios.put(`${CarConstant.EditCarURL}${id}`, {
+        id: id,
         name: name,
         price: price,
         typeId: typeId,

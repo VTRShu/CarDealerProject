@@ -27,17 +27,37 @@ namespace CarDealerProject.Services.BookingService.Implement
             _emailService = emailService;
             _configuration = configuration;
         }
-        public BookWorkshopEntity GetBookWSById(int id) => _carDealerDBContext.BookWorkshopEntity.Where(x => x.Id == id).FirstOrDefault();
-        public DealerEntity GetDealerById(int id) => _carDealerDBContext.DealerEntity.Where(x => x.Id == id).FirstOrDefault();
+        public BookWorkshopEntity GetBookWSById(int id) => _carDealerDBContext.BookWorkshopEntity.Where(x => x.Id == id)
+            .Include(x=>x.Dealer).AsSingleQuery()
+            .Include(x=>x.Service).AsSingleQuery()
+             .Include(x => x.User).AsSingleQuery()
+            .FirstOrDefault();
+        public DealerEntity GetDealerByName(string name) => _carDealerDBContext.DealerEntity.Where(x => x.Name == name).FirstOrDefault();
         public ServiceEntity GetServiceById(int id) => _carDealerDBContext.ServiceEntity.Where(x => x.Id == id).FirstOrDefault();
-        public async Task<bool> CompleteBookWS(int id)
+        public async Task<bool> CompleteBookWS(int id,string respond)
         {
             var book = GetBookWSById(id);
-            if (book != null)
+            if(book!= null && respond == "Accept")
             {
-                book.Status = true;
-                await _carDealerDBContext.SaveChangesAsync();
-                return true;
+               
+                    book.Status = true;
+                    await _carDealerDBContext.SaveChangesAsync();
+                    return true;
+                
+            }else if(book!=null && respond == "Cancel")
+            {
+                if (book.Status == true)
+                {
+                    return false;
+                }
+                else
+                {
+                    book.Status = false;
+                    book.User = null;
+                    book.CustomerFeedBack = null;
+                    await _carDealerDBContext.SaveChangesAsync();
+                    return true;
+                }
             }
             else
             {
@@ -49,7 +69,7 @@ namespace CarDealerProject.Services.BookingService.Implement
         {
             BookWorkshopEntity newBook = null;
             BookWorkshopEntityDTO result = null;
-            var dealer = GetDealerById(book.DealerId);
+            var dealer = GetDealerByName(book.Dealer);
             var service = GetServiceById(book.ServiceId);
             using var transaction = _carDealerDBContext.Database.BeginTransaction();
             try
@@ -102,18 +122,14 @@ namespace CarDealerProject.Services.BookingService.Implement
                 string urlCancel = $"{_configuration["AppUrl"]}/api/BookWorkshop/respond/book/{newBook.Id}-{respondCancel}";
                 string urlAccept = $"{_configuration["AppUrl"]}/api/BookWorkshop/respond/book/{newBook.Id}-{respondAccept}";
                 await _emailService.SendEmailAsync(newBook.Email, "Confirm your booking", $"<h1>Hello {book.Title} {book.FullName}</h1><h2>Thank you for booking our WorkShop Service</h2>" +
-                        $"<p>You set up an appointment in <b>{dateFormat}</b> in the <b>{newBook.TimePeriod}</b></p><p>Your car License Plate : <b>{newBook.LicensePlate}</b></p><p>Work Shop services Booked: <b>{newBook.SpecificRequest}</b></p><p>Please confirm your booking by <button><a href='{urlAccept}'>Accept</a></button></p><p>If you have change your mind , pls cancel you booking by <button><a href='{urlCancel}'>Cancel</a></button>");
+                        $"<p>You set up an appointment on <b>{dateFormat}</b> in the <b>{newBook.TimePeriod}</b></p><p>Your car License Plate : <b>{newBook.LicensePlate}</b></p><p>Work Shop services Booked: <b>{newBook.SpecificRequest}</b></p><p>Please confirm your booking by <button><a href='{urlAccept}'>Accept</a></button></p><p>If you have change your mind , pls cancel you booking by <button><a href='{urlCancel}'>Cancel</a></button>");
                 _carDealerDBContext.BookWorkshopEntity.Add(newBook);
                 result = new BookWorkshopEntityDTO()
                 {
-                    DealerId = book.DealerId,
+                    Dealer = book.Dealer,
                     ServiceId = book.ServiceId,
                     Appointment = newBook.Appointment,
                     TimePeriod = newBook.TimePeriod,
-                    Title = newBook.Title,
-                    FullName = newBook.FullName,
-                    Email = newBook.Email,
-                    PhoneNumber = newBook.PhoneNumber,
                     SpecificRequest = newBook.SpecificRequest,
                     LicensePlate = newBook.LicensePlate,
                     Mileage = newBook.Mileage,
@@ -132,6 +148,7 @@ namespace CarDealerProject.Services.BookingService.Implement
         {
             var bookWSList = await _carDealerDBContext.BookWorkshopEntity
             .Include(x => x.Dealer).AsSingleQuery()
+             .Include(x => x.User).AsSingleQuery()
             .Include(x => x.Service).AsSingleQuery()
             .ToListAsync();
             return bookWSList;
@@ -141,6 +158,7 @@ namespace CarDealerProject.Services.BookingService.Implement
         {
             var bookWSList = await _carDealerDBContext.BookWorkshopEntity.Where(x => x.Dealer.Name == dealer)
             .Include(x => x.Dealer).AsSingleQuery()
+             .Include(x => x.User).AsSingleQuery()
             .Include(x => x.Service).AsSingleQuery()
             .ToListAsync();
             return bookWSList;
@@ -150,6 +168,7 @@ namespace CarDealerProject.Services.BookingService.Implement
         {
             var bookWSList = _carDealerDBContext.BookWorkshopEntity
             .Include(x => x.Dealer).AsSingleQuery()
+             .Include(x => x.User).AsSingleQuery()
             .Include(x => x.Service).AsSingleQuery();
             int totalRow = await bookWSList.CountAsync();
             var data = await bookWSList.Skip((request.PageIndex - 1) * request.PageSize)
@@ -169,6 +188,7 @@ namespace CarDealerProject.Services.BookingService.Implement
         {
             var bookWSList = _carDealerDBContext.BookWorkshopEntity.Where(x => x.Dealer.Name == dealer)
            .Include(x => x.Dealer).AsSingleQuery()
+            .Include(x => x.User).AsSingleQuery()
            .Include(x => x.Service).AsSingleQuery();
             int totalRow = await bookWSList.CountAsync();
             var data = await bookWSList.Skip((request.PageIndex - 1) * request.PageSize)
@@ -195,14 +215,123 @@ namespace CarDealerProject.Services.BookingService.Implement
             }
             else if (book != null && respond == "Cancel")
             {
-                _carDealerDBContext.BookWorkshopEntity.Remove(book);
-                await _carDealerDBContext.SaveChangesAsync();
-                return true;
+                if (book.IsAccepted == true)
+                {
+                    return false;
+                }
+                else
+                {
+                    _carDealerDBContext.BookWorkshopEntity.Remove(book);
+                    await _carDealerDBContext.SaveChangesAsync();
+                    return true;
+                }
             }
             else
             {
                 return false;
             }
+        }
+        public BookWorkshopEntity GetBookWSInfo(int id)
+        {
+            BookWorkshopEntity result = null;
+            try
+            {
+                var book = GetBookWSById(id);
+                if (book != null)
+                {
+                    result = new BookWorkshopEntity()
+                    {   
+                        Id=book.Id,
+                        LicensePlate=book.LicensePlate,
+                        Mileage = book.Mileage,
+                        CarIdentification =book.CarIdentification,
+                        Dealer = book.Dealer,
+                        Appointment = book.Appointment,
+                        TimePeriod = book.TimePeriod,
+                        Title = book.Title,
+                        FullName = book.FullName,
+                        Email = book.Email,
+                        PhoneNumber = book.PhoneNumber,
+                        Service = book.Service,
+                        IsAccepted = book.IsAccepted,
+                        CustomerFeedBack = book.CustomerFeedBack,
+                        Status = book.Status,
+                        SpecificRequest = book.SpecificRequest,
+                        User = book.User
+                    };
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                _logger.LogError("Couldn't find booking ");
+            };
+            return result;
+        }
+        public AppUser GetUserByCode(string code) => _carDealerDBContext.AppUsers.Where(x => x.Code == code).FirstOrDefault();
+        public async Task<BookWorkshopEntity> UpdateBookingWSInfor(BookWorkshopEntityDTO updateBook, string code, int id)
+        {
+            using var transaction = _carDealerDBContext.Database.BeginTransaction();
+            BookWorkshopEntity result = null;
+            try
+            {
+                var existBookWS = GetBookWSById(id);
+                if (existBookWS != null)
+                {
+                    var user = GetUserByCode(code);
+                    existBookWS.User = user;
+                    existBookWS.CustomerFeedBack = updateBook.CustomerFeedBack;
+                    _carDealerDBContext.Entry(existBookWS).State = EntityState.Modified;
+                    List<BookWorkshopEntity> solvedList = new List<BookWorkshopEntity>();
+                    user.SolvedBookWS = solvedList;
+                    solvedList.Add(existBookWS);
+                    user.SolvedBookWS = solvedList;
+                    string respondAccept = "Accept";
+                    string respondCancel = "Cancel";
+
+
+                    string urlCancel = $"{_configuration["AppUrl"]}/api/BookWorkshop/complete/{existBookWS.Id}-{respondCancel}";
+                    string urlAccept = $"{_configuration["AppUrl"]}/api/BookWorkshop/complete/{existBookWS.Id}-{respondAccept}";
+                    await _emailService.SendEmailAsync(existBookWS.Email, "Confirm your booking workshop service", $"<h1>Hello {existBookWS.Title} {existBookWS.FullName}</h1><h2>Thank you for using our service</h2>" +
+                           $"<p>Your book list workshop service in our dealer: {existBookWS.SpecificRequest}</p><p>We have done for you</p><p>Your feedback :{updateBook.CustomerFeedBack} </p><p>Please confirm that information is correct by <button><a href='{urlAccept}'> Yes</a></button></p><p>If not , pls let us know by <button><a href='{urlCancel}'>No</a></button>");
+
+                    await _carDealerDBContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    result = new BookWorkshopEntity()
+                    {
+                        Id = existBookWS.Id,
+                        LicensePlate = existBookWS.LicensePlate,
+                        Mileage = existBookWS.Mileage,
+                        CarIdentification = existBookWS.CarIdentification,
+                        Dealer = existBookWS.Dealer,
+                        Appointment = existBookWS.Appointment,
+                        TimePeriod = existBookWS.TimePeriod,
+                        Title = existBookWS.Title,
+                        FullName = existBookWS.FullName,
+                        Email = existBookWS.Email,
+                        PhoneNumber = existBookWS.PhoneNumber,
+                        Service = existBookWS.Service,
+                        IsAccepted = existBookWS.IsAccepted,
+                        CustomerFeedBack = existBookWS.CustomerFeedBack,
+                        Status = existBookWS.Status,
+                        SpecificRequest = existBookWS.SpecificRequest,
+                        User = existBookWS.User
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                _logger.LogError("Couldn't Update Booking");
+            }
+            return result;
         }
     }
 }

@@ -85,15 +85,35 @@ namespace CarDealerProject.Controllers
             }
            return BadRequest("Error !!!");
         }
-        [HttpPut("complete/{id}")]
-        public async Task<ActionResult<BookingEntity>> CompleteBooking(int id)
+        [HttpGet("complete/{id}-{respond}")]
+        public async Task<ActionResult<BookingEntity>> CompleteBooking(int id,string respond)
         {
-            var completeBook = await _bookingService.CompleteBooking(id);
+            var completeBook = await _bookingService.CompleteBooking(id,respond);
             if(completeBook)
             {
                 return Ok(completeBook);
             }
             return BadRequest("Error !!!");
+        }
+        [HttpPut("update/{id}-{code}")]
+        public async Task<ActionResult<BookingEntity>> UpdateBook(BookingEntityDTO book, int id,string code)
+        {
+            var updateBook = await _bookingService.UpdateBookingInfor(book, code, id);
+            if (updateBook == null)
+            {
+                return BadRequest("Error!!");
+            }
+            return Ok(updateBook);
+        }
+        [HttpPut("update/quote/{id}-{code}")]
+        public async Task<ActionResult<BookingEntity>> UpdateBookQuote(BookingEntityDTO book, int id, string code)
+        {
+            var updateBook = await _bookingService.UpdateBookingQuoteInfor(book, code, id);
+            if (updateBook == null)
+            {
+                return BadRequest("Error!!");
+            }
+            return Ok(updateBook);
         }
         [HttpGet("list/dealer/")]
         public async Task<ActionResult<PagingResult<BookingEntity>>> GetListBookingInDealer(
@@ -150,6 +170,11 @@ namespace CarDealerProject.Controllers
             };
 
             return Ok(await _bookingService.GetListQuote(request));
+        }
+        [HttpGet("get/{id}")]
+        public  BookingEntity GetBooking(int id)
+        {   
+            return _bookingService.GetBookInfo(id);
         }
     }
 }

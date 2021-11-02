@@ -36,6 +36,18 @@ namespace CarDealerProject.Controllers
             }
             return Ok(newBook);
         }
+
+        [HttpPut("update/{id}-{code}")]
+        public async Task<ActionResult<BookWorkshopEntity>> UpdateBookWS(BookWorkshopEntityDTO book, int id, string code)
+        {
+            var updateBook = await _bookWorkshopService.UpdateBookingWSInfor(book, code, id);
+            if (updateBook == null)
+            {
+                return BadRequest("Error!!");
+            }
+            return Ok(updateBook);
+        }
+
         [HttpGet("all")]
         public async Task<List<BookWorkshopEntity>> GetAllBookWS()
         {
@@ -63,10 +75,10 @@ namespace CarDealerProject.Controllers
             }
         }
 
-        [HttpPut("complete/{id}")]
-        public async Task<ActionResult<BookWorkshopEntity>> CompleteBookWS(int id)
+        [HttpGet("complete/{id}-{respond}")]
+        public async Task<ActionResult<BookWorkshopEntity>> CompleteBookWS(int id,string respond)
         {
-            var completeBookWS = await _bookWorkshopService.CompleteBookWS(id);
+            var completeBookWS = await _bookWorkshopService.CompleteBookWS(id, respond);
             if (completeBookWS)
             {
                 return Ok(completeBookWS);
@@ -77,6 +89,11 @@ namespace CarDealerProject.Controllers
             }
         }
 
+        [HttpGet("get/{id}")]
+        public BookWorkshopEntity GetBookWS(int id)
+        {
+            return _bookWorkshopService.GetBookWSInfo(id);
+        }
         [HttpGet("list/dealer")]
         public async Task<ActionResult<PagingResult<BookWorkshopEntity>>> GetListBookWSInDealer(
         [FromQuery(Name = "pageSize")] int pageSize,
@@ -102,6 +119,5 @@ namespace CarDealerProject.Controllers
             };
             return Ok(await _bookWorkshopService.GetListBookWS(request));
         }
-
     }
 }

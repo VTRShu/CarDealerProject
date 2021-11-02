@@ -2,6 +2,7 @@
 using CarDealerProject.DTO.Request;
 using CarDealerProject.Repositories.Entities;
 using CarDealerProject.Services.CarService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace CarDealerProject.Controllers
             var claimsIdentity = User.Identity as ClaimsIdentity;
             return claimsIdentity.FindFirst(ClaimTypes.Locality).Value;
         }
-
+        [Authorize(Roles = "Staff")]
         [HttpPost("api/car/create")]
         public async Task<ActionResult<CarEntityDTO>> Create(CarEntityDTO car)
         {
@@ -49,6 +50,7 @@ namespace CarDealerProject.Controllers
             }
             return Ok(result);
         }
+        [Authorize(Roles = "Staff")]
         [HttpPut("car/edit/{id}")]
         public async Task<ActionResult<CarEntity>> UpdateCar(CarEntityDTO car,int id)
         {
@@ -107,6 +109,15 @@ namespace CarDealerProject.Controllers
             }
             return BadRequest("Error!");
         }
-
+        [HttpPut("car/enable/{id}")]
+        public async Task<ActionResult> Enable(int id)
+        {
+            var result = await _carService.EnableCar(id);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest("Error!");
+        }
     }
 }

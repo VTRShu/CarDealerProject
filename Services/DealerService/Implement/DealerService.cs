@@ -81,7 +81,8 @@ namespace CarDealerProject.Services.DealerService.Implement
             return result;
         }
         public DealerEntity GetDealerById(int id) => _carDealerDBContext.DealerEntity
-            .Where(x => x.Id == id).Include(x => x.Services.Where(x => x.Id != 5))
+            .Where(x => x.Id == id).Include(x => x.Services.Where(x => x.Id != 7))
+            .Include(x=>x.Cars).ThenInclude(x => x.Model).AsSingleQuery()
             .FirstOrDefault();
         public DealerEntity GetDealerInfor(int id)
         {
@@ -102,6 +103,7 @@ namespace CarDealerProject.Services.DealerService.Implement
                         DealerWebsite = existedDealer.DealerWebsite,
                         Description = existedDealer.Description,
                         Services = existedDealer.Services,
+                        Cars = existedDealer.Cars
                     };
                     return result;
                 }
@@ -173,8 +175,11 @@ namespace CarDealerProject.Services.DealerService.Implement
 
         public async Task<List<DealerEntity>> GetDealerList()
         {
-            var listDealer = await _carDealerDBContext.DealerEntity.Include(x => x.Services.Where(x => x.Id != 5)).ToListAsync();
+            var listDealer = await _carDealerDBContext.DealerEntity
+                .Include(x => x.Services.Where(x => x.Id != 7))
+                .Include(x => x.Cars).ThenInclude(x=>x.Model).AsSingleQuery()
+                .ToListAsync();
             return listDealer;
         }
-    }
+    } 
 }

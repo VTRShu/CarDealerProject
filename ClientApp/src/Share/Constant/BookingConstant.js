@@ -34,6 +34,20 @@ const BookingConstant = {
     CreateBookWSURL: `${CommonConstant.Server}/bookws/create`,
     GetAllBookWSDealerURL: `${CommonConstant.Server}/api/BookWorkshop/all/dealer`,
     CompleteBookWSURL: `${CommonConstant.Server}/api/BookWorkshop/complete/`,
-    GetListBookWSDealerURL: `${CommonConstant.Server}/api/BookWorkshop/list/dealer`
+    GetListBookWSDealerURL: `${CommonConstant.Server}/api/BookWorkshop/list/dealer`,
+    UpdateBookWSURL: `${CommonConstant.Server}/api/BookWorkshop/update/`,
+    GetBookWSURL: `${CommonConstant.Server}/api/BookWorkshop/get/`,
+
+    UpdateBookQuoteURL: `${CommonConstant.Server}/api/Booking/update/quote/`,
+    UpdateBookURL: `${CommonConstant.Server}/api/Booking/update/`,
+    GetBookingURL: `${CommonConstant.Server}/api/Booking/get/`,
+
+    ViewOwnAllTestURL: `${CommonConstant.Server}/api/ViewOwnSolvedBook/test/all?code=`,
+    ViewOwnAllQuoteURL: `${CommonConstant.Server}/api/ViewOwnSolvedBook/quote/all?code=`,
+    ViewOwnAllBookwsURL: `${CommonConstant.Server}/api/ViewOwnSolvedBook/bookws/all?code=`,
+    ViewOwnListTestURL: `${CommonConstant.Server}/api/ViewOwnSolvedBook/test/list`,
+    ViewOwnListQuoteURL: `${CommonConstant.Server}/api/ViewOwnSolvedBook/quote/list`,
+    ViewOwnListBookwsURL: `${CommonConstant.Server}/api/ViewOwnSolvedBook/bookws/list`,
+
 }
 export default BookingConstant;

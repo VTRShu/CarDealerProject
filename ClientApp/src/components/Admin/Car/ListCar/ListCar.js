@@ -5,7 +5,7 @@ import styles from './ListCar.module.css'
 import {
     GetAllCarAdminService, GetAllCarMasterService,
     GetCarListAdminService, GetCarListMasterService,
-    GetCarService, DisableCarService
+    GetCarService, DisableCarService, EnableCarService
 } from '../../../../Services/CarService';
 import './ListCarAntStyle.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -31,7 +31,7 @@ function itemRender(current, type, originalElement) {
     }
     return originalElement;
 }
-
+const optionsStatus = [{ label: 'Available', value: true }, { label: 'Unavailable', value: false }]
 const optionsType = [{ label: 'Sedan', value: 'Sedan' }, { label: 'SUV', value: 'SUV' }, { label: 'Coupe', value: 'Coupe' }, { label: 'Van/MPV', value: 'Van/MPV' }];
 const optionsModel = [
     { label: 'C-CLASS', value: 'C-Class' },
@@ -125,7 +125,7 @@ const ListCar = () => {
                 }).catch(function (error) {
                     console.error(error);
                 })
-            } else if (currentUser.role === 'Admin') {
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
                 GetCarListAdminService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
                     setSearchCars(response.data);
                 }).catch(function (error) {
@@ -176,7 +176,7 @@ const ListCar = () => {
                 }).catch(function (error) {
                     console.error(error);
                 })
-            } else if (currentUser.role === 'Admin') {
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
                 GetCarListAdminService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
                     setSearchCars(response.data);
                 }).catch(function (error) {
@@ -203,6 +203,60 @@ const ListCar = () => {
             }
         }
     }, [valueModel]);
+    const [valueStatus, setValueStatus] = useState([]);
+    const selectStatusProps = {
+        suffixIcon: <FilterFilled />,
+        style: {
+            width: '100%',
+        },
+        mode: 'multiple',
+        value: valueStatus,
+        options: optionsStatus,
+        onChange: (newValue) => {
+            setValueStatus(newValue);
+        },
+        placeholder: 'Status',
+        maxTagCount: 'responsive',
+        showArrow: true,
+        optionFilterProp: 'label'
+    }
+    useEffect(() => {
+        if (valueStatus.length === 0 && total !== 0) {
+            if (currentUser.role === 'Master') {
+                GetCarListMasterService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
+                    setSearchCars(response.data);
+                }).catch(function (error) {
+                    console.error(error);
+                })
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
+                GetCarListAdminService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
+                    setSearchCars(response.data);
+                }).catch(function (error) {
+                    console.error(error);
+                })
+            }
+        } else if (valueStatus.length !== 0) {
+            if (currentUser.role === 'Master') {
+                GetAllCarMasterService().then(function (response) {
+                    let data = response.data.filter(x => valueStatus.includes(x.isAvailable));
+                    setSearchCars({ ...searchCars, items: data.slice((pageIndex - 1) * pageSizeOld, pageIndex * pageSizeOld) });
+                    setTotal(data);
+                }).catch(function (error) {
+                    console.log(error);
+                })
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
+                GetAllCarAdminService().then(function (response) {
+                    let data = response.data.filter(x => valueStatus.includes(x.isAvailable));
+                    setSearchCars({ ...searchCars, items: data.slice((pageIndex - 1) * pageSizeOld, pageIndex * pageSizeOld) });
+                    setTotal(data);
+                }).catch(function (error) {
+                    console.log(error);
+                })
+            }
+        }
+    }, [valueStatus]);
+
+
     //show car detail
     const showModal = (evt) => {
         GetCarService({ id: evt.target.id }).then(function (response) {
@@ -247,7 +301,6 @@ const ListCar = () => {
             console.log(error);
         })
     }
-
     const handleDisableOk = () => {
         DisableCarService({ id: car.id }).then(function (response) {
             if (response.status === 200) {
@@ -263,7 +316,30 @@ const ListCar = () => {
     const handleDisableCancel = () => {
         setIsModalDisableVisible(false);
     };
+    const [isModalEnableVisible, setIsModalEnableVisible] = useState(false);
+    const showModalEnable = evt => {
+        GetCarService({ id: evt.currentTarget.id }).then(function (response) {
+            setCar(response.data);
+            setIsModalEnableVisible(true);
+        }).catch(function (error) {
+            console.log(error);
+        })
+    }
+    const handleEnableOk = () => {
+        EnableCarService({ id: car.id }).then(function (response) {
+            if (response.status === 200) {
+                setSearchCars({ ...searchCars, items: searchCars.items.filter(x => x.id !== car.id) });
+                setIsModalEnableVisible(false);
+            }
+        }).catch(function (error) {
+            console.log(error);
+            setIsModalEnableVisible(false);
+        })
+    }
 
+    const handleEnableCancel = () => {
+        setIsModalEnableVisible(false);
+    };
     const handleCancel = () => {
         setIsModalVisible(false);
     };
@@ -301,7 +377,7 @@ const ListCar = () => {
                 }).catch(function (error) {
                     console.error(error);
                 })
-            } else if (currentUser.role === 'Admin') {
+            } else if (currentUser.role === 'Admin' || currentUser.role === 'Staff') {
                 GetCarListAdminService({ index: pageIndex, size: pageSizeOld }).then(function (response) {
                     setSearchCars(response.data);
                 }).catch(function (error) {
@@ -312,7 +388,7 @@ const ListCar = () => {
     }
     useEffect(() => {
         let didCancel = false;
-        if (valueType.length !== 0 || valueModel.length !== 0 || searchValue !== '') {
+        if (valueType.length !== 0 || valueModel.length !== 0 || valueStatus.length !== 0 || searchValue !== '') {
             setSearchCars({ ...searchCars, items: total.slice((pageIndex - 1) * pageSizeOld, pageIndex * pageSizeOld) })
         } else {
             if (currentUser.role === 'Master') {
@@ -393,13 +469,16 @@ const ListCar = () => {
                 <h2 className={styles.title}>Car List</h2>
             </Row>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} >
+                <Col span={3}>
+                    <Select {...selectStatusProps} />
+                </Col>
                 <Col span={4}>
                     <Select {...selectTypeProps} />
                 </Col>
                 <Col span={4}>
                     <Select {...selectModelProps} />
                 </Col>
-                <Col span={10}>
+                <Col span={6}>
                     <Search onSearch={handleSearch} />
                 </Col>
                 <Col span={2}>
@@ -424,10 +503,29 @@ const ListCar = () => {
                         <div className={styles.buttonGroup}>
                             <Button className={styles.create}
                                 style={{ marginLeft: '22%' }}
-                                onClick={handleDisableOk}>Disable</Button>
+                                onClick={handleDisableOk}>Yes</Button>
                             <Button className={styles.cancelButton}
                                 style={{ marginLeft: '20%' }}
-                                onClick={handleDisableCancel}>Cancel</Button>
+                                onClick={handleDisableCancel}>No</Button>
+                        </div>
+                    </>
+                }
+            </Modal>
+            <Modal title={car !== null ? "Are you sure?" : "Can not Enable car"} visible={isModalEnableVisible}
+                onOk={handleEnableOk} onCancel={handleEnableCancel} centered={true} closable={car !== null ? false : true}
+                footer={null} style={{ height: '20', borderRadius: '20px', fontWeight: '30px' }} maskClosable={car !== null ? false : true}>
+                {
+                    <>
+                        <b style={{ marginLeft: '25%' }}>Do you want to mark this car  Available?</b>
+                        <br />
+                        <br />
+                        <div className={styles.buttonGroup}>
+                            <Button className={styles.create}
+                                style={{ marginLeft: '22%' }}
+                                onClick={handleEnableOk}>Yes</Button>
+                            <Button className={styles.cancelButton}
+                                style={{ marginLeft: '20%' }}
+                                onClick={handleEnableCancel}>No</Button>
                         </div>
                     </>
                 }
@@ -456,9 +554,9 @@ const ListCar = () => {
                                 <div >
                                     <div style={{ width: '100%', height: '60vh' }}>
                                         <GoogleMapReact
-                                            bootstrapURLKeys={{ key: 'AIzaSyD6whTP5DIVEj4asLVRm0Wyjef8vXlIIpY' }}
+                                            bootstrapURLKeys={{ key: 'AIzaSyC406nqnTQhQ7nnK0NLsl49RAZADNiiQgE' }}
                                             defaultCenter={{ lat: car.dealer.latitude, lng: car.dealer.longtitude }}
-                                            defaultZoom={10}
+                                            defaultZoom={17}
                                             yesIWantToUseGoogleMapApiInternals={true}
                                         >
                                             <AnyReactComponent
@@ -605,9 +703,14 @@ const ListCar = () => {
                                                     <td className={styles.borderRow} onClick={showModal} id={car.id}>{car.dealer.name}</td>
                                                     <td></td>
                                                     <td>
-                                                        {currentUser.role === 'Master' ? "" : <>
+                                                        {currentUser.role === 'Master' || currentUser.role === 'Admin' ? "" : <>
                                                             <Link to={`/edit-car/${car.id}`}><i className="bi bi-pencil-fill"></i></Link>
-                                                            <i className="bi bi-eye-slash" onClick={showModalDisable} id={car.id}></i>
+                                                            {car.isAvailable === true
+                                                                ?
+                                                                <i className="bi bi-eye-slash" onClick={showModalDisable} id={car.id}></i>
+                                                                :
+                                                                <i className="bi bi-eye" onClick={showModalEnable} id={car.id}></i>
+                                                            }
                                                         </>
                                                         }
                                                     </td>
@@ -623,7 +726,7 @@ const ListCar = () => {
                         </Row>
                         <Row style={{ marginRight: '7%' }} justify="end">
                             <Col>
-                                {valueType.length !== 0 || valueModel.length !== 0 || searchValue !== ''
+                                {valueType.length !== 0 || valueModel.length !== 0 || valueStatus.length !== 0 || searchValue !== ''
                                     ? <Pagination size={'small'} total={total.length} defaultCurrent={1} itemRender={itemRender} showSizeChanger={true} onChange={handleChangePage} />
                                     : <Pagination size={'small'} total={searchCars.totalRecords} defaultCurrent={1} itemRender={itemRender} showSizeChanger={true} onChange={handleChangePage} />
                                 }

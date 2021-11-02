@@ -10,6 +10,7 @@ const CustomerConstant = {
     GetAllCustomerURL: `${CommonConstant.Server}/api/Customer/All/Customer`,
     GetListCustomerURL: `${CommonConstant.Server}/api/Customer/list`,
     GetCustomerURL: `${CommonConstant.Server}/api/Customer/customer/get/`,
-    GetCustomerByIdURL: `${CommonConstant.Server}/api/Customer/customer/getById/`
+    GetCustomerByIdURL: `${CommonConstant.Server}/api/Customer/customer/getById/`,
+    UpdateCustomerURL: `${CommonConstant.Server}/api/Customer/update/`,
 }
 export default CustomerConstant;

@@ -1,7 +1,9 @@
-﻿using CarDealerProject.DTO.Request;
+﻿using CarDealerProject.DTO;
+using CarDealerProject.DTO.Request;
 using CarDealerProject.Repositories.Entities;
 using CarDealerProject.Services.CustomerService;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,7 +28,7 @@ namespace CarDealerProject.Controllers
         {
             _customerService = customerService;
         }
-
+        [Authorize(Roles = "Admin,Master")]
         [HttpGet("All/Customer")]
         public async Task<List<CustomerEntity>> GetAllCustomerMaster()
         {
@@ -40,8 +42,13 @@ namespace CarDealerProject.Controllers
             {
                 return BadRequest("Not found customer!");
             }
-            return Ok(result);
+            return Ok(new
+            {
+                token = result[0],
+
+            });
         }
+        [Authorize(Roles = "Admin,Master")]
         [HttpGet("customer/getById/{id}")]
         public async Task<ActionResult<CustomerEntity>> GetCustomerById(int id)
         {
@@ -52,6 +59,7 @@ namespace CarDealerProject.Controllers
             }
             return Ok(result);
         }
+        [Authorize(Roles = "Admin,Master")]
         [HttpGet("list")]
         public async Task<ActionResult<PagingResult<CustomerEntity>>> GetListCustomer(
         [FromQuery(Name = "pageSize")] int pageSize,
@@ -63,6 +71,17 @@ namespace CarDealerProject.Controllers
                 PageIndex = pageIndex
             };
             return Ok(await _customerService.GetListCustomer(request));
+        }
+        [Authorize(Roles = "Admin,Master")]
+        [HttpPut("update/{id}-{code}")]
+        public async Task<ActionResult<CustomerEntity>> UpdateCustomer(CustomerEntityDTO user, int id, string code)
+        {
+            var updateCustomer = await _customerService.UpdateCustomer(user, id, code);
+            if (updateCustomer == null)
+            {
+                return BadRequest("Error!!");
+            }
+            return Ok(updateCustomer);
         }
     }
 }

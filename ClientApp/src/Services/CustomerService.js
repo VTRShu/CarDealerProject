@@ -20,3 +20,12 @@ export function GetCustomerService({ input }) {
 export function GetCustomerByIdService({ id }) {
     return axios.get(`${CustomerConstant.GetCustomerByIdURL}${id}`)
 }
+
+export function UpdateCustomerService({ userCode, id, email, phoneNumber }) {
+    return axios.put(`${CustomerConstant.UpdateCustomerURL}${id}-${userCode}`, {
+        userCode: userCode,
+        id: id,
+        email: email,
+        phoneNumber: phoneNumber
+    })
+}

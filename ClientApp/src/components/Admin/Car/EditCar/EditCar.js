@@ -54,73 +54,41 @@ const EditCar = () => {
         history.push(`/list-car`);
     };
     const onFinish = (value) => {
-        if (currentUser.role === 'Master') {
-            EditCarService({
-                name: value.name,
-                price: value.price,
-                typeId: value.type,
-                modelId: value.model,
-                color: value.color,
-                fuelType: "Petrol",
-                power: value.power,
-                maximumSpeed: value.maximumSpeed,
-                length: value.length,
-                width: value.width,
-                torque: value.torque,
-                fuelConsumption: value.fuelConsumption,
-                upholstery: value.upholstery,
-                transmission: value.transmission,
-                acceleration: value.acceleration,
-                weight: value.weight,
-                height: value.height,
-                displacement: value.displacement,
-                dealer: value.dealer,
-                imageName1: value.upload[0].name,
-                imageName2: value.upload[1].name,
-                imageName3: value.upload[2].name,
-                imageName4: value.upload[3].name,
-                imageName5: value.upload[4].name,
-                imageName6: value.upload[5].name,
-            }).then(function (response) {
-                console.log(response);
-                history.push(`/list-car/ok/${response.data.id}`);
-            }).catch(function (error) {
-                console.log(error);
-            })
-        } else {
-            EditCarService({
-                name: value.name,
-                price: value.price,
-                typeId: value.type,
-                modelId: value.model,
-                color: value.color,
-                fuelType: "Petrol",
-                power: value.power,
-                maximumSpeed: value.maximumSpeed,
-                length: value.length,
-                width: value.width,
-                torque: value.torque,
-                fuelConsumption: value.fuelConsumption,
-                upholstery: value.upholstery,
-                transmission: value.transmission,
-                acceleration: value.acceleration,
-                weight: value.weight,
-                height: value.height,
-                displacement: value.displacement,
-                dealer: currentUser.dealer,
-                imageName1: value.upload[0].name,
-                imageName2: value.upload[1].name,
-                imageName3: value.upload[2].name,
-                imageName4: value.upload[3].name,
-                imageName5: value.upload[4].name,
-                imageName6: value.upload[5].name,
-            }).then(function (response) {
-                console.log(response);
-                history.push(`/list-car/ok/${response.data.id}`);
-            }).catch(function (error) {
-                console.log(error);
-            })
-        }
+
+        EditCarService({
+            id: id,
+            name: value.name,
+            price: value.price,
+            typeId: value.type,
+            modelId: value.model,
+            color: value.color,
+            fuelType: "Petrol",
+            power: value.power,
+            maximumSpeed: value.maximumSpeed,
+            length: value.length,
+            width: value.width,
+            torque: value.torque,
+            fuelConsumption: value.fuelConsumption,
+            upholstery: value.upholstery,
+            transmission: value.transmission,
+            acceleration: value.acceleration,
+            weight: value.weight,
+            height: value.height,
+            displacement: value.displacement,
+            dealer: currentUser.dealer,
+            imageName1: value.upload[0].name,
+            imageName2: value.upload[1].name,
+            imageName3: value.upload[2].name,
+            imageName4: value.upload[3].name,
+            imageName5: value.upload[4].name,
+            imageName6: value.upload[5].name,
+        }).then(function (response) {
+            console.log(response);
+            history.push(`/list-car/ok/${response.data.id}`);
+        }).catch(function (error) {
+            console.log(error);
+        })
+
     }
     const [dealerData, setDealerData] = useState();
     const [visible, setVisible] = useState(false);

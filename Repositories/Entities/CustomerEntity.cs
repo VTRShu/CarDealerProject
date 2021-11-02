@@ -16,6 +16,7 @@ namespace CarDealerProject.Repositories.Entities
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public AppUser Editor { get; set; }
         public List<BookingEntity> bookings { get; set; }
         public List<BookWorkshopEntity> bookWorkshops { get; set; }
     }
