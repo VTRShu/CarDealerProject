@@ -148,8 +148,8 @@ namespace CarDealerProject.Repositories.EFContext
                 ImageName = "35418253_636770120013959_511352286501404672_n.jpg",
                 ImageSrc = "https://localhost:5001/Images/35418253_636770120013959_511352286501404672_n.jpg",
                 InsertedOn = new DateTime(2021, 10, 05),
-            },new ImageEntity
-            { 
+            }, new ImageEntity
+            {
                 Id = 3,
                 ImageName = "interactions.attachments.0.Mobile price list September 2021.pdf",
                 ImageSrc = "https://localhost:5001/Images/interactions.attachments.0.Mobile price list September 2021.pdf",
@@ -184,7 +184,7 @@ namespace CarDealerProject.Repositories.EFContext
                 Email = "aaaa@gmail.com",
                 NormalizedEmail = "AAAA@GMAIL.COM",
                 IsDisabled = true,
-                PasswordHash = "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==",
+                PasswordHash = "AQAAAAEAACcQAAAAEPeJI3J013pStOuJdF/Iazyz7WiCbLf+kffOKtf3tbu5Ge0L+952rEYtwaUyJvQKvA==",
                 SecurityStamp = "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD",
                 ConcurrencyStamp = "f99461ee-4644-4148-8874-b4ab37562be3",
                 Image = null,

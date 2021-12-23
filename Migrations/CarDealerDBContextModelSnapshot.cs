@@ -229,7 +229,7 @@ namespace CarDealerProject.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "AAAA@GMAIL.COM",
                             NormalizedUserName = "NGHIALT",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBq/+hPonu3IIEDQw94Cins2vgQcOYU4S+EOGT9HiCg1BF/HV1EBcfbb34AIP0xS5Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPeJI3J013pStOuJdF/Iazyz7WiCbLf+kffOKtf3tbu5Ge0L+952rEYtwaUyJvQKvA==",
                             PhoneNumberConfirmed = false,
                             Profile = "https://localhost:5001/Images/Capture.PNG",
                             SecurityStamp = "VR77OGQ2ABQ5VRWTTDEMHBLJEKS57OYD",

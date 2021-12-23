@@ -184,7 +184,7 @@ const ListCarCustomer = () => {
     return (
         <Content className={styles.antLayoutContent}>
 
-            <Row> <Button onClick={() => history.goBack()} className={styles.create}>
+            <Row> <Button onClick={() => history.push('/')} className={styles.create}>
                 <IoMdArrowRoundBack style={{ fontSize: '20px' }} />
             </Button>
             </Row>
@@ -235,17 +235,14 @@ const ListCarCustomer = () => {
                                     return (
 
                                         <div key={carInfo.id} className={styles.boxCar}>
-                                            <div><Carousel images={images} pxs={150}></Carousel></div>
+                                            <div style={{ background: 'linear-gradient(0deg, white 30%, rgb(105,105,105) 70%)' }}><Carousel images={images} pxs={200}></Carousel></div>
                                             <div style={{ marginLeft: '9%' }} id={carInfo.id} ><h3>{carInfo.name}</h3></div>
                                             <div style={{ marginLeft: '9%' }} id={carInfo.id}><h4>{carInfo.price} VND</h4></div>
                                             <div style={{ marginLeft: '9%' }} id={carInfo.id}>{carInfo.power},{carInfo.fuelType},{carInfo.transmission}</div>
-
-                                            <div style={{ marginLeft: '9%' }} id={carInfo.id} >{carInfo.equipment}</div>
-
+                                            <br />
                                             <div id={carInfo.id} style={{ marginLeft: '9%', display: 'flex', flexDirection: 'row' }}>
-                                                <div ><FaMapMarkerAlt style={{ fontSize: '20px' }} /></div>
                                                 <div>
-                                                    <p>{carInfo.dealer.name}</p>
+                                                    <p> <FaMapMarkerAlt style={{ fontSize: '20px' }} />{carInfo.dealer.name}</p>
                                                     <p>{carInfo.dealer.description}</p>
                                                 </div>
                                             </div>

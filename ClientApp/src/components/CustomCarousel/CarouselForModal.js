@@ -72,8 +72,8 @@ class CarouselForModal extends Component {
                                 className="fa fa-arrow-circle-left"
                                 style={
                                     isPrevImageVisible === true
-                                        ? { color: '#0088a9', fontSize: '18px' }
-                                        : { color: color, fontSize: '18px' }
+                                        ? { color: '#0088a9', fontSize: '30px' }
+                                        : { color: color, fontSize: '30px' }
                                 }
                                 aria-hidden="true"
                                 onClick={this.onPrevImgClick}
@@ -103,8 +103,8 @@ class CarouselForModal extends Component {
                                 className="fa fa-arrow-circle-right"
                                 style={
                                     isNextImageVisible === true
-                                        ? { color: '#0088a9', fontSize: '18px' }
-                                        : { color: color, fontSize: '18px' }
+                                        ? { color: '#0088a9', fontSize: '30px' }
+                                        : { color: color, fontSize: '30px' }
                                 }
                                 aria-hidden="true"
                                 onClick={this.onNextImgClick}

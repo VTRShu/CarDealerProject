@@ -9,6 +9,7 @@ import { Row, Col } from "antd";
 const { Option } = Select;
 const { Content } = Layout;
 const CreateDealer = () => {
+    const EmailRegex = new RegExp("^[a-z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1}([a-z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1})*[a-z0-9]@[a-z0-9][-\.]{0,1}([a-z][-\.]{0,1})*[a-z0-9]\.[a-z0-9]{1,}([\.\-]{0,1}[a-z]){0,}[a-z0-9]{0,}$");
     const selectBefore = (
         <Select defaultValue="https://" className="select-before">
             <Option value="http://">http://</Option>
@@ -113,6 +114,17 @@ const CreateDealer = () => {
                             message: "The input is not valid E-mail!",
                             whitespace: true,
                         },
+                        () => ({
+                            validator(_, value) {
+                                if (EmailRegex.test(value)) {
+                                    return Promise.resolve();
+                                } else {
+                                    return Promise.reject(
+                                        new Error("Please enter a valid email address!")
+                                    )
+                                }
+                            },
+                        }),
                     ]}
                 >
                     <Input placeholder="Input email" />

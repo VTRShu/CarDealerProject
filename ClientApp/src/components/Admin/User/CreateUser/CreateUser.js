@@ -19,6 +19,7 @@ const CreateUser = () => {
         }
         return e && e.fileList;
     };
+    const EmailRegex = new RegExp("^[a-z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1}([a-z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1})*[a-z0-9]@[a-z0-9][-\.]{0,1}([a-z][-\.]{0,1})*[a-z0-9]\.[a-z0-9]{1,}([\.\-]{0,1}[a-z]){0,}[a-z0-9]{0,}$");
     const [visible, setVisible] = useState(false);
     const [dealerData, setDealerData] = useState();
     const dateFormat = "DD/MM/YYYY";
@@ -232,6 +233,17 @@ const CreateUser = () => {
                             message: " Email is required. Please input email!",
                             whitespace: true,
                         },
+                        () => ({
+                            validator(_, value) {
+                                if (EmailRegex.test(value)) {
+                                    return Promise.resolve();
+                                } else {
+                                    return Promise.reject(
+                                        new Error("Please enter a valid email address!")
+                                    )
+                                }
+                            },
+                        }),
                     ]}
                 >
                     <Input />

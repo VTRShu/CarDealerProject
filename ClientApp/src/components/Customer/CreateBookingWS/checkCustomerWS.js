@@ -4,6 +4,7 @@ import { Row, Col } from "antd";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm } from 'rc-field-form';
 import { GetCustomerService } from '../../../Services/CustomerService';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 const { Content } = Layout;
 const CheckCustomerWS = () => {
     const history = useHistory();
@@ -21,6 +22,10 @@ const CheckCustomerWS = () => {
     const { form } = useForm()
     return (
         <Content >
+            <Row> <Button onClick={() => history.push('/')} style={{ backgroundColor: 'black', color: 'white', borderRadius: '7px' }}>
+                <IoMdArrowRoundBack style={{ fontSize: '20px' }} />
+            </Button>
+            </Row>
             <Form
                 labelCol={{
                     span: 4,

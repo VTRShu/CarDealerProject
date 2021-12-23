@@ -456,7 +456,7 @@ const ListUser = () => {
                                                 <td className={styles.borderRow} onClick={showModal} id={user.code}>{user.type === 0 ? "Master" : (user.type === 1 ? "Admin" : "Staff")}</td>
                                                 <td></td>
                                                 <td>
-                                                    <Link to={`/edit-user/${user.code}`}><i className="bi bi-pencil-fill"></i></Link>
+                                                    {currentUser.role === "Admin" ? <Link to={`/edit-user/${user.code}`}><i className="bi bi-pencil-fill"></i></Link> : ""}
                                                     {currentUser.code !== user.code ?
                                                         <i className="bi bi-x-circle" onClick={showModalDisable} id={user.code}></i>
                                                         : ""

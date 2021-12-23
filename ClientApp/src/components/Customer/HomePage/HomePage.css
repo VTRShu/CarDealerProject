@@ -1,0 +1,145 @@
+
+.News{
+  display: grid;
+  width:100%;
+  height:100%;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-rows: auto auto auto auto auto auto auto auto;
+  grid-template-areas: 
+  "item1 item1 item2 item3"
+  "item1 item1 item4 item5"
+  "item6 item7 item8 item9"
+  "item10 item10 item11 item12"
+  "item10 item10 item13 item14"
+  "item15 item16 item17 item18"
+  "item19 item19 item20 item21"
+  "item19 item19 item22 item23"
+  ;
+}
+.News img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.item1{
+  position: relative;
+  grid-area: item1;
+}
+.item2{
+  position: relative;
+  grid-area: item2;
+}
+.item3{
+  position: relative;
+  grid-area: item3;
+}
+.item4{
+  position: relative;
+  grid-area: item4;
+}
+.item5{
+  position: relative;
+  grid-area: item5;
+}
+.item6{
+  position: relative;
+  grid-area: item6;
+}
+.item7{
+  position: relative;
+  grid-area: item7;
+}
+.item8{
+  position: relative;
+  grid-area: item8;
+}
+.item9{
+  position: relative;
+  grid-area: item9;
+}
+.item10{
+  position: relative;
+  grid-area: item10;
+}
+.item11{
+  position: relative;
+  grid-area: item11;
+}
+.item12{
+  position: relative;
+  grid-area: item12;
+}
+.item13{
+  position: relative;
+  grid-area: item13;
+}
+.item14{
+  position: relative;
+  grid-area: item14;
+}
+.item15{
+  position: relative;
+  grid-area: item15;
+}
+.item16{
+  position: relative;
+  grid-area: item16;
+}
+.item17{
+  position: relative;
+  grid-area: item17;
+}
+.item18{
+  position: relative;
+  grid-area: item18;
+}
+.item18{
+  position: relative;
+  grid-area: item18;
+}
+.item19{
+  position: relative;
+  grid-area: item19;
+}
+.item20{
+  position: relative;
+  grid-area: item20;
+}
+.item21{
+  position: relative;
+  grid-area: item21;
+}
+.item22{
+  position: relative;
+  grid-area: item22;
+}
+.item23{
+  position: relative;
+  grid-area: item23;
+}
+ .item1 .content,.item2 .content,.item3 .content,.item4 .content,
+ .item5 .content,.item6 .content,.item7 .content,.item8 .content,
+ .item9 .content,.item10 .content,.item11 .content,.item12 .content,
+ .item13 .content,.item14 .content
+ ,.item15 .content,.item16 .content,
+ .item17 .content,.item18 .content,.item19 .content,.item20 .content,
+ .item21 .content,.item22 .content,.item23 .content
+ {
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  overflow: hidden;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  width: 100%;
+  transition: all 0.4s ease 0s;
+}
+.item1 .content:hover,.item2 .content:hover,.item3 .content:hover,.item4 .content:hover,.item5 .content:hover,.item6 .content:hover
+,.item7 .content:hover,.item8 .content:hover,.item9 .content:hover,.item10 .content:hover,.item11 .content:hover,.item12 .content:hover
+,.item13 .content:hover,.item14 .content:hover
+,.item15 .content:hover,.item16 .content:hover,.item17 .content:hover,.item18 .content:hover
+,.item19 .content:hover,.item20 .content:hover,.item21 .content:hover,.item22 .content:hover,.item23 .content:hover
+{
+  transform: translateY(-0px);
+  height:140px;
+}

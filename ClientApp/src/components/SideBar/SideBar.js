@@ -46,9 +46,9 @@ const SideBar = () => {
                 </Link>
             </div>
             <div className="SideItem">
-                <Link to='/'>
+                <a href="tel:+84946696302">
                     <div> <HiOutlinePhone style={{ color: 'white', fontSize: '22px', marginBottom: '1px', marginLeft: '4px' }} /> <span style={{ color: 'white' }}>Contact us</span></div>
-                </Link>
+                </a>
             </div>
         </div>
     )

@@ -48,6 +48,7 @@ import ListBookingWSPage from './Pages/BookingPage/ListBookingWSPage'
 import FooterProject from './components/FooterProject/FooterProject'
 import ViewOwnSolvedBookPage from './Pages/BookingPage/ViewOwnSolvedBookPage';
 import { ChangePasswordService } from './Services/AuthenticationService'
+import HomePage from './components/Customer/HomePage/HomePage';
 const { Header, Footer, Sider } = Layout;
 const App = () => {
     const [currentCustomer, setCurrentCustomer] = useState()
@@ -278,16 +279,17 @@ const App = () => {
                                     <>
                                         <Route exact path="/">
                                             <SlideProject />
-                                            <ListModelCustomerPage />
+                                            <HomePage />
                                             <SideBar />
                                         </Route>
+                                        <Route path="/list-model-customer"><ListModelCustomerPage /></Route>
                                         <Route path="/list-car-customer/:model?"><ListCarCustomerPage /></Route>
                                         {sessionStorage.getItem('input') === undefined || sessionStorage.getItem('input') === null ? <Route path="/create-test-drive/:modelName?"> <CheckCustomer /></Route> : <Route path="/create-test-drive/:modelName?"><CreateTestDrivePage /></Route>}
 
                                         <Route path="/car-infor/:id"><CarInfor /></Route>
                                         <Route path="/list-dealer-customer"><ListDealerCustomerPage /></Route>
                                         {sessionStorage.getItem('input') === undefined || sessionStorage.getItem('input') === null ? <Route path="/create-bookws"><CheckCustomerWS /></Route> : <Route path="/create-bookws/"><CreateBookingWSPage /></Route>}
-                                        ư
+
                                     </>
                                 }
                                 <FooterProject />

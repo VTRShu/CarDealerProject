@@ -153,9 +153,13 @@ const ListBookingWS = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const showModal = (evt) => {
         GetBookWSService({ id: evt.currentTarget.id }).then(function (response) {
-            setBookWS(response.data);
-            console.log(bookWs)
-            setIsModalVisible(true);
+            if (currentUser.role === 'Admin' || currentUser.user === response.data.user.userName) {
+                setBookWS(response.data);
+                console.log(bookWs)
+                setIsModalVisible(true);
+            } else {
+                alert("You don't have permission to view detail of this booking")
+            }
         }).catch(function (error) {
             console.log(error);
         })

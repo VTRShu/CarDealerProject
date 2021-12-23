@@ -4,12 +4,14 @@ import { Row, Col } from "antd";
 import { useHistory, useParams } from "react-router-dom";
 import styles from './CreateBookingWS.module.css'
 import radio from './CreateBookingWS.css';
+import "./CreateBookingWS.css"
 import React, { useState, useEffect } from "react";
 import { GetDealerListService } from '../../../Services/DealerService'
 import { GetModelListService } from '../../../Services/ModelService';
 import { CreateBookingWSService } from '../../../Services/BookingService';
 import { GetCustomerService } from '../../../Services/CustomerService';
 import Carousel from '../../CustomCarousel/Carousel';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 import moment from 'moment-timezone';
 import { parseJwt } from '../../../Share/parseJwt/parseJwt'
 import GoogleMapReact from 'google-map-react';
@@ -20,6 +22,7 @@ const { Option } = Select;
 const { Content } = Layout;
 const CreateBookingWS = () => {
     moment.tz.setDefault("Asian/Vientine");
+    const EmailRegex = new RegExp("^[a-z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1}([a-z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1})*[a-z0-9]@[a-z0-9][-\.]{0,1}([a-z][-\.]{0,1})*[a-z0-9]\.[a-z0-9]{1,}([\.\-]{0,1}[a-z]){0,}[a-z0-9]{0,}$");
     function disabledDate(current) {
         return moment.tz(current, "Asia/Ho_Chi_Minh").format("YYYY/MM/DD") < moment().tz("Asia/Ho_Chi_Minh").format("YYYY/MM/DD");
     }
@@ -134,9 +137,13 @@ const CreateBookingWS = () => {
                         title: tokenCustomerDecrypt ? tokenCustomerDecrypt["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"].split(';')[3] : null,
                     }
                     setCustomer(initialValuesCustomer);
+                    setIsModalRecognizeSuccess(true);
                 }
             })
-                .catch((err) => console.log(err));
+                .catch(function (error) {
+                    console.log(error);
+                    setIsModalRecognizeFail(true);
+                });
         })();
         let isnum = /^\d+$/.test(check);
         if (customer === undefined && check !== undefined && check.includes("@")) {
@@ -154,8 +161,47 @@ const CreateBookingWS = () => {
     const handleClose = () => {
         history.push('/')
     }
+    const [isModalRecognizeFail, setIsModalRecognizeFail] = useState(false);
+    const [isModalRecognizeSuccess, setIsModalRecognizeSuccess] = useState(false);
+    const handleRecSClose = () => {
+        setIsModalRecognizeSuccess(false);
+    }
+    const handleRecFClose = () => {
+        setIsModalRecognizeFail(false);
+    }
     return (
         <Content className={styles.antLayoutContent}>
+            <Modal title="WELCOME" visible={isModalRecognizeSuccess} onCancel={handleRecSClose} footer={null}>
+                <>
+                    <b style={{ marginLeft: "21%" }}>Welcome back</b>
+                    <br />
+                    <br />
+                    <div className={styles.buttonGroup}>
+                        <Button style={{ marginLeft: "42%" }} className={styles.cancelButton} onClick={handleRecSClose}>Close</Button>
+                    </div>
+                </>
+            </Modal>
+            <Modal title="WELCOME" visible={isModalRecognizeFail} onCancel={handleRecFClose} footer={null}>
+                <>
+                    <b style={{ marginLeft: "21%" }}>Welcome to Mercedes-Benz Vietnam</b>
+                    <p>Looks like this is your first time using our service</p>
+                    <p>Please fill in the correct information in the Personal Details field so that you don't have to enter it again next time</p>
+                    <br />
+                    <br />
+                    <div className={styles.buttonGroup}>
+                        <Button style={{ marginLeft: "42%" }} className={styles.cancelButton} onClick={handleRecFClose}>Close</Button>
+                    </div>
+                </>
+            </Modal>
+            <Row> <Button onClick={() => history.goBack()} style={{ backgroundColor: 'black', color: 'white', borderRadius: '7px' }}>
+                <IoMdArrowRoundBack style={{ fontSize: '20px' }} />
+            </Button>
+            </Row>
+            <div className="WSHead">
+                <h3 style={{ color: 'white', paddingTop: '5%' }}>You say when.</h3>
+                <h3 style={{ color: 'white' }}>We say yes</h3>
+                <p style={{ color: 'white' }}>Conveniently book a Service Appointment online</p>
+            </div>
             <Modal title="Success" visible={isModalSuccessVisible} onCancel={handleClose} footer={null}>
                 <>
                     <b style={{ marginLeft: "17%" }}>Booking workshop service successfully</b>
@@ -182,44 +228,46 @@ const CreateBookingWS = () => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
             >
-                <h1 style={{ color: 'black', textAlign: 'center' }}>Workshop service booking</h1>
-                <Form.Item
-                    name="licensePlate"
-                    label="My License Plate"
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                            message: "License Plate is required",
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="mileage"
-                    label="My Mileage(optional)"
-                >
-                    <Input type="number" />
-                </Form.Item>
-                <Form.Item
-                    name="carIdentification"
-                    label="My Car Identification(optional)"
-                >
-                    <Input />
-                </Form.Item>
+                <h1 style={{ color: 'black', textAlign: 'center', fontWeight: 'bold' }}>Workshop service booking</h1>
+                <h3 style={{ marginLeft: '1%' }} > My vehicle data</h3>
+                <p style={{ marginLeft: '1%' }}>For a binding service offer we need some information on your vehicle.</p>
+                <div style={{ border: '1px solid rgb(211,211,211)', borderRadius: '10px', padding: '3%', margin: '1%' }}>
+                    <Form.Item
+                        name="licensePlate"
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                                message: "License Plate is required",
+                            },
+                        ]}
+                    >
+                        <Input placeholder="My License Plate" />
+                    </Form.Item>
+                    <Form.Item
+                        name="mileage"
 
+                    >
+                        <Input type="number" placeholder="My Mileage(optional)" />
+                    </Form.Item>
+                    <Form.Item
+                        name="carIdentification"
 
+                    >
+                        <Input placeholder="My Car Identification(optional)" />
+                    </Form.Item>
+
+                </div>
                 <Form.Item
-                    label="Dealer"
                     name="dealer"
                     value={setValueDealer}
                     hasFeedback
                 >
                     <Input
-                        style={{ width: "100%" }}
+                        style={{ width: "93%", marginLeft: '5%' }}
                         onClick={showModalDealer}
                         value={valueDealer}
+                        placeholder="Authorized Mercedes-Benz dealer"
                     />
                     <Modal width={'80%'} visible={isModalDealerVisible}
                         closable={false}
@@ -288,129 +336,157 @@ const CreateBookingWS = () => {
                         </Row>
                     </Modal>
                 </Form.Item>
+                <h3 style={{ marginLeft: '1%' }} >Appointment selection</h3>
 
-                <Form.Item
-                    label="Appointment"
-                    wrapperCol={{
-                        span: 24,
-                    }}
-                    name="appointment"
-                    rules={[
-                        {
-                            required: true,
-                            message: "appointment is required",
-                        },
+                <div style={{ border: '1px solid rgb(211,211,211)', borderRadius: '10px', padding: '3%', margin: '1%' }} >
+                    <Form.Item
 
-                    ]}
-                >
-                    <DatePicker disabledDate={disabledDate} placeholder={'DD/MM/YYYY'} format={dateFormat} />
-                </Form.Item>
-                <Form.Item
-                    name="timePeriod"
-                    label="Time Period"
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select placeholder="select time period">
-                        <Option value="Morning (8h-12h)">Morning (8h-12h)</Option>
-                        <Option value="Afternoon (13h-17h)">Afternoon (13h-17h)</Option>
-                    </Select>
-                </Form.Item>
+                        wrapperCol={{
+                            span: 24,
+                        }}
+                        name="appointment"
+                        rules={[
+                            {
+                                required: true,
+                                message: "appointment is required",
+                            },
+
+                        ]}
+                    >
+                        <DatePicker disabledDate={disabledDate} placeholder={'DD/MM/YYYY'} format={dateFormat} />
+                    </Form.Item>
+                    <Form.Item
+                        name="timePeriod"
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <Select placeholder="select time period">
+                            <Option value="Morning (8h-12h)">Morning (8h-12h)</Option>
+                            <Option value="Afternoon (13h-17h)">Afternoon (13h-17h)</Option>
+                        </Select>
+                    </Form.Item>
+                </div>
+
                 {(customer === undefined || customer === null) ?
-                    <>
-                        <Form.Item
-                            name="title"
-                            label="Title"
-                            hasFeedback
-                            rules={[
-                                {
-                                    required: true,
-                                },
-                            ]}
-                        >
-                            <Select>
-                                <Option value="Mr">Mr</Option>
-                                <Option value="Ms">Ms</Option>
-                            </Select>
-                        </Form.Item>
-                        <Form.Item
-                            name="fullName"
-                            label="Full name"
-                            hasFeedback
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Full name is required",
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            name="email"
-                            label="Email"
-                            hasFeedback
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Email is required",
-                                },
-                            ]}
-                        >
-                            <Input type="email" />
-                        </Form.Item>
-                        <Form.Item
-                            name="phoneNumber"
-                            label="Phone Number"
-                            hasFeedback
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Phone Number is required",
-                                },
-                            ]}
-                        >
-                            <Input type="number" />
-                        </Form.Item></> : ""
-                }
-                <Form.Item name="specificRequest" label="Select Services(One or more)">
-                    <Checkbox.Group>
-                        <Row>
-                            <Col span={10}>
-                                <Checkbox value="Maintain" style={{ lineHeight: '32px' }}>
-                                    Maintain
-                                </Checkbox>
-                            </Col>
-                            <Col span={10}>
-                                <Checkbox value="General Repair" style={{ lineHeight: '32px' }} >
-                                    General Repair
-                                </Checkbox>
-                            </Col>
-                            <Col span={10}>
-                                <Checkbox value="Tyre Replacement" style={{ lineHeight: '32px' }} >
-                                    Tyre Replacement
-                                </Checkbox>
-                            </Col>
-                            <Col span={10}>
-                                <Checkbox value="Wheel Alignment - Balance" style={{ lineHeight: '32px' }} >
-                                    Wheel Alignment - Balance
-                                </Checkbox>
-                            </Col>
-                            <Col span={10}>
-                                <Checkbox value="Others" style={{ lineHeight: '32px' }}>
-                                    Others
-                                </Checkbox>
-                            </Col>
+                    <>  <h3 style={{ marginLeft: '1%' }} > Personal Details</h3>
+                        <div style={{ border: '1px solid rgb(211,211,211)', borderRadius: '10px', padding: '3%', margin: '1%' }}>
+                            <Form.Item
+                                name="title"
 
-                        </Row>
-                    </Checkbox.Group>
-                </Form.Item>
+                                hasFeedback
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                <Select placeholder="Title">
+                                    <Option value="Mr">Mr</Option>
+                                    <Option value="Ms">Ms</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                name="fullName"
+
+                                hasFeedback
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Full name is required",
+                                    },
+                                ]}
+                            >
+                                <Input placeholder="Full Name" />
+                            </Form.Item>
+                            <Form.Item
+                                name="email"
+
+                                hasFeedback
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Email is required",
+                                    },
+                                    () => ({
+                                        validator(_, value) {
+                                            if (EmailRegex.test(value)) {
+                                                return Promise.resolve();
+                                            } else {
+                                                return Promise.reject(
+                                                    new Error("Please enter a valid email address!")
+                                                )
+                                            }
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input type="email" placeholder="Email" />
+                            </Form.Item>
+                            <Form.Item
+                                name="phoneNumber"
+
+                                hasFeedback
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Phone Number is required",
+                                    },
+                                ]}
+                            >
+                                <Input type="number" placeholder="Phone Number" />
+                            </Form.Item></div></> : ""
+                }
+                <h3 style={{ marginLeft: '1%' }} > Select Services(One or more)</h3>
+                <div style={{ border: '1px solid rgb(211,211,211)', borderRadius: '10px', padding: '3%', margin: '1%' }}>
+                    <Form.Item name="specificRequest">
+                        <Checkbox.Group>
+                            <Row>
+                                <Col span={10}>
+                                    <Checkbox value="Maintain" style={{ lineHeight: '32px', fontSize: '20px' }}>
+                                        Maintain
+                                    </Checkbox>
+                                </Col>
+                                <Col span={10}>
+                                    <Checkbox value="General Repair" style={{ lineHeight: '32px', fontSize: '20px' }} >
+                                        General Repair
+                                    </Checkbox>
+                                </Col>
+                                <Col span={10}>
+                                    <Checkbox value="Tyre Replacement" style={{ lineHeight: '32px', fontSize: '20px' }} >
+                                        Tyre Replacement
+                                    </Checkbox>
+                                </Col>
+                                <Col span={10}>
+                                    <Checkbox value="Wheel Alignment - Balance" style={{ lineHeight: '32px', fontSize: '20px' }} >
+                                        Wheel Alignment - Balance
+                                    </Checkbox>
+                                </Col>
+                                <Col span={10}>
+                                    <Checkbox value="Service Campaign/Recall" style={{ lineHeight: '32px', fontSize: '20px' }} >
+                                        Service Campaign/Recall
+                                    </Checkbox>
+                                </Col>
+                                <Col span={10}>
+                                    <Checkbox value="Body and Paint" style={{ lineHeight: '32px', fontSize: '20px' }} >
+                                        Body & Paint
+                                    </Checkbox>
+                                </Col>
+                                <Col span={10}>
+                                    <Checkbox value="Others" style={{ lineHeight: '32px', fontSize: '20px' }}>
+                                        Others
+                                    </Checkbox>
+                                </Col>
+
+                            </Row>
+                        </Checkbox.Group>
+                    </Form.Item>
+                </div>
                 <Row>
-                    <Col span={18}>
+                    <Col span={15}>
                         <Form.Item
                             shouldUpdate
                             className="submit"
@@ -441,7 +517,7 @@ const CreateBookingWS = () => {
                     </Col>
                 </Row>
             </Form>
-        </Content>
+        </Content >
     )
 }
 export default CreateBookingWS;

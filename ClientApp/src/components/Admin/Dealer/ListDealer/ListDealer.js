@@ -16,7 +16,13 @@ import GoogleMapReact from 'google-map-react';
 const AnyReactComponent = ({ text }) => <div style={{ wordWrap: 'normal' }}><img style={{ height: '22px', width: '20px' }} src="https://localhost:5001/Images/copy_492419507.png" />{text}</div>;
 const { Search } = Input;
 const { Content } = Layout;
-const options = [{ label: 'Ha Noi', value: 'Ha Noi' }]
+const options = [{ label: 'Ha Noi', value: 'Ha Noi' },
+{ label: 'Hai Phong', value: 'Hai Phong' },
+{ label: 'Nghe An', value: 'Nghe An' },
+{ label: 'Da Nang', value: 'Da Nang' },
+{ label: 'Nha Trang', value: 'Nha Trang' },
+{ label: 'Ho Chi Minh', value: 'Ho Chi Minh' },
+{ label: 'Binh Duong', value: 'Binh Duong' }]
 const ListDealer = () => {
 
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext)

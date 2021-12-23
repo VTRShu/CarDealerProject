@@ -280,11 +280,7 @@ const EditUser = () => {
                                     danger
                                     type="primary"
                                     htmlType="submit"
-                                // disabled={
-                                //     !form.isFieldsTouched(true) ||
-                                //     form.getFieldsError().filter(({ errors }) => errors.length)
-                                //         .length > 0
-                                // }
+
                                 >
                                     Save
                                 </Button>

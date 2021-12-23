@@ -689,7 +689,7 @@ const ListCar = () => {
                                             return (
                                                 <tr key={car.id}>
                                                     <td className={styles.borderImage} id={car.id}>
-                                                        <Carousel id={car.id} autoplay images={images} pxs={150}></Carousel>
+                                                        <Carousel id={car.id} autoplay images={images} pxs={200}></Carousel>
                                                     </td>
                                                     <td></td>
                                                     <td className={styles.borderRow} onClick={showModal} id={car.id}>{car.name}</td>
