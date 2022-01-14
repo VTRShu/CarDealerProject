@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
 .contentStyle1,.contentStyle2,.contentStyle3,.contentStyle4,.contentStyle5
 {
-    height: 600px;
+    height: 700px;
     text-align: center;
 }
 .contentStyle1{
@@ -20,7 +20,7 @@
     background-size: 100% 750px;
 }
 .contentStyle4{
-    background-image: url("../../SlideImage/GLCvsCLineup.jpeg");
+    background-image: url("../../SlideImage/01-mercedes-benz-iaa-mobility-2021-3400x1440.jpeg");
     background-repeat: no-repeat;
     background-size: 100% auto;
 }

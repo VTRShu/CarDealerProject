@@ -172,7 +172,7 @@ const ListModel = () => {
                                         return (
                                             <tr key={model.name}>
                                                 <td className={styles.borderImage} id={model.name} >
-                                                    <Carousel id={model.name} images={images} pxs={150}></Carousel>
+                                                    <Carousel id={model.name} images={images} pxs={200}></Carousel>
                                                 </td>
                                                 <td></td>
                                                 <td className={styles.borderRow} id={model.name} >Mercedes-{model.name}</td>

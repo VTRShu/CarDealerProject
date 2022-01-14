@@ -14,7 +14,7 @@ namespace CarDealerProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,Master")]
+    [Authorize(Roles = "Staff,Admin,Master")]
     public class AdminController : ControllerBase
     {
         protected string GetUserDealer()
@@ -26,8 +26,8 @@ namespace CarDealerProject.Controllers
         public AdminController(IAdminService adminService)
         {
             _adminService = adminService;
-        }   
-        
+        }
+
         [HttpGet("master/list/user")]
         public async Task<ActionResult<PagingResult<AppUser>>> ViewUserListForMaster(
             [FromQuery(Name = "pageSize")] int pageSize, [FromQuery(Name = "pageIndex")] int pageIndex = 1)
@@ -52,7 +52,7 @@ namespace CarDealerProject.Controllers
             var dealer = GetUserDealer();
             return Ok(await _adminService.GetUsersListForAdmin(request, dealer));
         }
-        
+
         [HttpGet("user/Code")]
         public AppUser GetUserByCode(string code)
         {
@@ -96,9 +96,9 @@ namespace CarDealerProject.Controllers
         {
             return await _adminService.GetAllUserMaster();
         }
-         [HttpGet("user/admin/listAll")]
+        [HttpGet("user/admin/listAll")]
         public async Task<List<AppUser>> GetAllAdmin()
-        {   
+        {
             var dealer = GetUserDealer();
             return await _adminService.GetAllUserAdmin(dealer);
         }

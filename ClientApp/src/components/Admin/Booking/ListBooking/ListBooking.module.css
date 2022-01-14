@@ -44,10 +44,11 @@
     width: 50%;
     font-weight: 350;
     font-size:15px;
+   
   }
+  
   .tableModal > tr {
     width:100%;
-    text-align: left;
   }
   .tableModal > tr > td:first-child {
     font-weight: 600;
@@ -61,6 +62,14 @@
     display: block;
     overflow-y: scroll;
     height: 45vh;
+  }
+  .priceList{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .priceTable{
+    flex-basis: 50%;
   }
   .disabledIcon{
     opacity: 0.2;

@@ -20,4 +20,11 @@
   border-color: red;
   border-radius: 25px;
   }
-  
+  .WSHead{
+    height: 600px;
+    color: white;
+    text-align: center;
+    background-image: linear-gradient(to right, rgba(169,169,169,0.4), rgba(169,169,169,0.5)),url("https://www.mercedes-benz.com.vn/en/passengercars/content-pool/marketing-pool/being-an-owner/stage-moduls/service-booking/_jcr_content/par/stageelement_9724.MQ4.0.stage.20210408122243.jpeg");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }

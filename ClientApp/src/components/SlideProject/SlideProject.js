@@ -37,7 +37,7 @@ const SlideProject = () => {
             <div>
                 <a>
                     <div className="contentStyle4">
-                        <p className="titleSlide">Star Care offer for GLC and the new E-Class <br /><FaCaretRight style={{ fontSize: '15px', marginBottom: "5px" }} />Limited opportunity until 30/9/2021 to enjoy exclusive offer up to nearly 30 million VND</p>
+                        <p className="titleSlide">IAA MOBILITY 2021<br /><FaCaretRight style={{ fontSize: '15px', marginBottom: "5px" }} />Learn more</p>
                     </div>
                 </a>
             </div>

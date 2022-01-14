@@ -298,11 +298,11 @@ const HeaderProject = () => {
                             </Menu>
                             :
                             <Menu theme="dark" mode="horizontal">
-                                <Menu.Item> <FaCar style={{ fontSize: '20px', marginBottom: '5px' }} /> ALL Models</Menu.Item>
-                                <Menu.Item> Buy your mercedes</Menu.Item>
+                                <Menu.Item><Link to="/list-model-customer"><FaCar style={{ fontSize: '20px', marginBottom: '5px' }} /> ALL Models</Link></Menu.Item>
+                                <Menu.Item><Link to="/list-car-customer"> Buy your mercedes</Link></Menu.Item>
                                 <Menu.Item> Service, Parts , Accessories</Menu.Item>
                                 <Menu.Item> Mercedes World</Menu.Item>
-                                <Menu.Item> Mercedes-Benz VietNam</Menu.Item>
+                                <Menu.Item><Link to="/list-dealer-customer"> Mercedes-Benz VietNam</Link></Menu.Item>
                             </Menu>
                     }
                 </Header >

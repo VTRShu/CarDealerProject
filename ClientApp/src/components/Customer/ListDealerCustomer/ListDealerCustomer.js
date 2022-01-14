@@ -3,6 +3,7 @@ import { Row, Col, Input, Button, Layout, Modal } from 'antd';
 import { FilterFilled, InfoCircleFilled } from '@ant-design/icons';
 import styles from './ListDealerCustomer.module.css'
 import 'font-awesome/css/font-awesome.min.css';
+import { useHistory } from 'react-router';
 import {
     GetDealerListService, GetDealerService
 } from '../../../Services/DealerService';
@@ -12,11 +13,21 @@ import { Link } from "react-router-dom";
 import { Select } from 'antd';
 import GoogleMapReact from 'google-map-react';
 import { FaMapMarkerAlt } from 'react-icons/fa';
+import { AiOutlineMail, AiFillPhone } from 'react-icons/ai';
+import { CgWebsite } from 'react-icons/cg'
+import { IoMdArrowRoundBack } from 'react-icons/io';
 const { Search } = Input;
 const { Content } = Layout;
-const options = [{ label: 'Ha Noi', value: 'Ha Noi' }]
+const options = [{ label: 'Ha Noi', value: 'Ha Noi' },
+{ label: 'Hai Phong', value: 'Hai Phong' },
+{ label: 'Nghe An', value: 'Nghe An' },
+{ label: 'Da Nang', value: 'Da Nang' },
+{ label: 'Nha Trang', value: 'Nha Trang' },
+{ label: 'Ho Chi Minh', value: 'Ho Chi Minh' },
+{ label: 'Binh Duong', value: 'Binh Duong' }]
 const Location = ({ text }) => <div style={{ wordWrap: 'normal' }}><img style={{ height: '22px', width: '20px' }} src="https://localhost:5001/Images/copy_492419507.png" />{text}</div>;
 const ListDealerCustomer = () => {
+    const history = useHistory();
     const [value, setValue] = useState([]);
     const [searchDealer, setSearchDealer] = useState();
     const [searchValue, setSearchValue] = useState();
@@ -111,6 +122,10 @@ const ListDealerCustomer = () => {
 
     return (
         <Content className={styles.antLayoutContent}>
+            <Row> <Button onClick={() => history.push('/')} className={styles.create}>
+                <IoMdArrowRoundBack style={{ fontSize: '20px' }} />
+            </Button>
+            </Row>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} >
                 <Col span={5}>
                     <Select {...selectProps} />
@@ -126,6 +141,7 @@ const ListDealerCustomer = () => {
                         {dealer !== null ?
 
                             <Modal width={700} title="Dealer Information" visible={isModalVisible} footer={null} onCancel={handleCancel} centered={true}>
+                                <div><h3><b>{dealer.name}</b></h3></div>
                                 <div key={dealer.id} style={{ height: '50vh', width: '100%' }}>
                                     <GoogleMapReact
                                         bootstrapURLKeys={{ key: 'AIzaSyC406nqnTQhQ7nnK0NLsl49RAZADNiiQgE' }}
@@ -140,11 +156,6 @@ const ListDealerCustomer = () => {
                                     </GoogleMapReact>
                                 </div>
 
-                                <div><h5><b>{dealer.name}</b></h5></div>
-                                <div>{dealer.dealerEmail}</div>
-                                <div>{dealer.dealerPhone}</div>
-                                <div><a style={{ color: 'blue' }} href={dealer.dealerWebsite}>{dealer.dealerWebsite}</a></div>
-
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                                     <div ><FaMapMarkerAlt style={{ fontSize: '20px' }} /></div>
                                     <div>
@@ -152,7 +163,13 @@ const ListDealerCustomer = () => {
                                         <p>{dealer.description}</p>
                                     </div>
                                 </div>
-                                <div><h6>Services</h6></div>
+                                <br />
+                                <div style={{ fontSize: '18px' }}><a style={{ color: '#00adef' }} href={`mailto:${dealer.dealerEmail}`}><AiOutlineMail /> {dealer.dealerEmail}</a></div>
+                                <div style={{ fontSize: '18px' }}><a style={{ color: '#00adef' }} href={`tel:${dealer.dealerPhone}`}><AiFillPhone /> {dealer.dealerPhone}</a></div>
+                                <div style={{ fontSize: '18px' }}><a style={{ color: '#00adef' }} href={dealer.dealerWebsite}><CgWebsite /> {dealer.dealerWebsite}</a></div>
+
+                                <br />
+                                <div><h3>Services</h3></div>
                                 <div>{dealer.services.map(serv => {
                                     return (
                                         <p>{serv.name}</p>

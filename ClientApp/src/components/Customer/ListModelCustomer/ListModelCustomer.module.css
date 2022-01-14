@@ -82,3 +82,9 @@
     flex-wrap: wrap;
     padding:2%
   }
+  .modelCustomer1{
+    display: flex;;
+    flex-direction: row; 
+    gap: 5%; 
+    padding:2%
+  }

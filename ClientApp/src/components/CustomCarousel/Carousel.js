@@ -48,7 +48,7 @@ class Carousel extends Component {
         const imageSquare =
             images.length > 0 ? (
                 <div className="item active">
-                    <img style={{ width: '300px', height: '150px' }} src={images[currIndex].url} />
+                    <img style={{ width: '100%', height: '200px' }} src={images[currIndex].url} />
                 </div>
             ) : (
                 <div style={{ background: color }} />
@@ -63,23 +63,24 @@ class Carousel extends Component {
                                 verticalAlign: 'middle',
                                 cursor: 'pointer',
                                 position: 'relative',
-                                top: topPos
+                                top: topPos,
+                                width: '1%',
                             }}
                         >
                             <i
                                 className="fa fa-angle-left"
                                 style={
                                     isPrevImageVisible === true
-                                        ? { color: '#0088a9', fontSize: '18px' }
-                                        : { color: color, fontSize: '18px' }
+                                        ? { color: '#0088a9', fontSize: '30px' }
+                                        : { color: color, fontSize: '30px' }
                                 }
                                 aria-hidden="true"
                                 onClick={this.onPrevImgClick}
                             />
                         </td>
-                        <td style={{ width: '10px' }}>&nbsp;</td>
 
-                        <td style={{ width: squareSide }}>
+
+                        <td style={{ width: '50%' }}>
                             <div style={{ height: squareSide }}>
                                 <div className="carousel slide">
                                     <div className="carousel-inner" role="listbox">
@@ -88,21 +89,22 @@ class Carousel extends Component {
                                 </div>
                             </div>
                         </td>
-                        <td style={{ width: '10px' }}>&nbsp;</td>
+
                         <td
                             style={{
                                 verticalAlign: 'middle',
                                 cursor: 'pointer',
                                 position: 'relative',
-                                top: topPos
+                                top: topPos,
+                                width: '1%',
                             }}
                         >
                             <i
                                 className="fa fa-angle-right"
                                 style={
                                     isNextImageVisible === true
-                                        ? { color: '#0088a9', fontSize: '18px' }
-                                        : { color: color, fontSize: '18px' }
+                                        ? { color: '#0088a9', fontSize: '30px' }
+                                        : { color: color, fontSize: '30px' }
                                 }
                                 aria-hidden="true"
                                 onClick={this.onNextImgClick}

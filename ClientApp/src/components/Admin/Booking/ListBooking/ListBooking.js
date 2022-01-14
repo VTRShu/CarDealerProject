@@ -720,11 +720,18 @@ const ListBooking = () => {
                                                     {currentUser.role === 'Admin' || book.isAccepted === false ? "" :
                                                         (
                                                             book.user !== null && book.status === false ?
-                                                                <i className={`${styles.disabledIcon} bi bi-check-square-fill`} ></i>
+                                                                <>
+                                                                    <i className={`${styles.disabledIcon} bi bi-check-square-fill`} ></i>
+                                                                    <i className={`${styles.disabledIcon} bi bi-telephone-fill"`}></i>
+                                                                </>
                                                                 :
                                                                 (
                                                                     book.user === null && book.status === false ?
-                                                                        <i class="bi bi-check-square-fill" onClick={showModalComplete} id={book.id}></i> : ""
+                                                                        <>
+                                                                            <i class="bi bi-check-square-fill" onClick={showModalComplete} id={book.id}></i>
+                                                                            <a style={{ color: "black", textDecoration: "none" }} href={`tel:${book.phoneNumber}`}><i className="bi bi-telephone-fill"></i></a>
+                                                                        </>
+                                                                        : ""
                                                                 )
                                                         )
                                                     }
@@ -813,11 +820,17 @@ const ListBooking = () => {
                                                         {currentUser.role === 'Admin' || book.status === true ? "" :
                                                             (
                                                                 book.user !== null && book.status === false ?
-                                                                    <i className={`${styles.disabledIcon} bi bi-check-square-fill`} ></i>
+                                                                    <>
+                                                                        <i className={`${styles.disabledIcon} bi bi-check-square-fill`} ></i>
+                                                                        <i className={`${styles.disabledIcon} bi bi-telephone-fill"`}></i>
+                                                                    </>
                                                                     :
                                                                     (
                                                                         book.user === null && book.status === false ?
-                                                                            <i class="bi bi-check-square-fill" onClick={showModalQuoteComplete} id={book.id}></i> : ""
+                                                                            <>
+                                                                                <i class="bi bi-check-square-fill" onClick={showModalQuoteComplete} id={book.id}></i>
+                                                                                <a style={{ color: "black", textDecoration: "none" }} href={`tel:${book.phoneNumber}`}><i className="bi bi-telephone-fill"></i></a>
+                                                                            </> : ""
                                                                     )
                                                             )
                                                         }
@@ -847,24 +860,218 @@ const ListBooking = () => {
                     <Menu mode="inline">
                         <SubMenu key="sub2" icon={<FaBook />} title="Prices list">
                             <Menu.Item style={{ height: 'auto' }}>
-                                <div>
-                                    <table style={{ width: '50%' }}>
-                                        <thead>
-                                            <tr>
-                                                <th>Mercedes-Benz Sedans</th>
-                                                <th>Price</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>C 180 AMG</td>
-                                                <td>1,499,000,000 VND</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <table style={{ width: '50%' }}>
+                                <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Mercedes-Benz Sedans</th>
+                                                    <th>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Mercedes-AMG A 35 4MATIC </td>
+                                                    <td>2,259,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>C 180 AMG</td>
+                                                    <td>1,499,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>C 200 Exclusive</td>
+                                                    <td>1,699,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>C 300 AMG</td>
+                                                    <td>1,969,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E 180</td>
+                                                    <td>2,050,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Mercedes-Benz Sedans</th>
+                                                    <th>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>E 200 Exclusive</td>
+                                                    <td>2,310,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E 300 AMG</td>
+                                                    <td>2,950,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>S 450</td>
+                                                    <td>5,199,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>S 450 Luxury</td>
+                                                    <td>5,749,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mercedes-Maybach S 450 4MATIC</td>
+                                                    <td>7,469,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                    </table>
+
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Mercedes-Benz SUVs</th>
+                                                    <th style={{ paddingLeft: '5%' }}>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>GLB 200 AMG</td>
+                                                    <td style={{ paddingLeft: '5%' }}>1,999,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GLC 200</td>
+                                                    <td style={{ paddingLeft: '5%' }}>1,799,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GLC 200 4MATIC</td>
+                                                    <td style={{ paddingLeft: '5%' }}>2,099,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GLC 300 4MATIC</td>
+                                                    <td style={{ paddingLeft: '5%' }}>2,499,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GLC 300 4MATIC Coupe</td>
+                                                    <td style={{ paddingLeft: '5%' }}>3,089,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Mercedes-Benz SUVs</th>
+                                                    <th>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>GLA 250 4MATIC</td>
+                                                    <td>1,619,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GLE 450 4MATIC</td>
+                                                    <td>4,409,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GLS 450 4MATIC</td>
+                                                    <td>4,999,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mercedes-AMG G 63</td>
+                                                    <td>10,950,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mercedes-Maybach GLS 600 4MATIC</td>
+                                                    <td>11,500,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Mercedes-AMG</th>
+                                                    <th>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Mercedes-AMG A 35 4MATIC</td>
+                                                    <td>2,259,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mercedes-AMG GT 53 4MATIC+</td>
+                                                    <td>6,299,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mercedes-AMG GT R</td>
+                                                    <td>11,590,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Mercedes-AMG</th>
+                                                    <th>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Mercedes-AMG GLB 35 4MATIC</td>
+                                                    <td>2,690,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mercedes-AMG GLE 53 4MATIC+ Coupe</td>
+                                                    <td>5,349,000,000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mercedes-AMG G 63</td>
+                                                    <td>10,950,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>MPV</th>
+                                                    <th style={{ paddingLeft: '19%' }}>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>V 250 Luxury</td>
+                                                    <td style={{ paddingLeft: '19%' }}>2,662,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={{ flexBasis: '50%' }}>
+                                        <table style={{ width: '100%' }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>MPV</th>
+                                                    <th style={{ paddingLeft: '27%' }}>Price(VND)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>V 250 AMG</td>
+                                                    <td style={{ paddingLeft: '27%' }}>3,232,000,000</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div className={"ListTable"}>
                                     <table></table>
@@ -880,7 +1087,7 @@ const ListBooking = () => {
                             {
                                 modelBrochure.map(model => {
                                     return (
-                                        <a href={model.fileInfor.imageSrc}><Menu.Item><FaBook /> {model.name} brochures</Menu.Item></a>
+                                        <a style={{ color: "black" }} href={model.fileInfor.imageSrc}><Menu.Item><FaBook /> {model.name} brochures</Menu.Item></a>
                                     )
                                 })
                             }
