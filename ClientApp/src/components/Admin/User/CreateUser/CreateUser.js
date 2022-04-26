@@ -95,17 +95,7 @@ const CreateUser = () => {
                 .catch((err) => console.log(err));
         })();
     }, [visible]);
-    // const [valueSelect, setValueSelect] = useState();
-    // const onChangeSelect = (value) => {
-    //     setValueSelect(value)
-    //     console.log(value)
-    // }
-    // useEffect(() => {
-    //     if (valueSelect === 0) {
-    //         form.setFieldsValue({ dealerName: null })
-
-    //     } console.log(form.getFieldValue("dealerName"))
-    // }, [valueSelect])
+   
     return (
         <Content>
             <Form

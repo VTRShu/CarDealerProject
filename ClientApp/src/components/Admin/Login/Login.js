@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { UnlockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Button, Checkbox, Layout, Typography, Modal } from "antd";
 import { useState } from "react";
-import { parseJwt } from '../../../Share/parseJwt/parseJwt'
 import { LoginService } from '../../../Services/AuthenticationService'
 import styles from './Login.module.css';
 import './LoginAntStyle.css';
@@ -40,7 +39,7 @@ const Login = () => {
           setCookie('token', response.data.token);
         }
         window.location.replace("/manager");
-      } else if (response.data.token === null) {
+      } else if (response.data === null) {
         form.setFields([{
           name: 'Username',
           errors: [<b style={{ color: 'red' }}>Couldn't find user</b>],

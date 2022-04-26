@@ -54,10 +54,10 @@ namespace CarDealerProject.Services.AuthenticationService.Implement
                 var roles = await _userManager.GetRolesAsync(user);
                 var claims = new[]
                 {
-            new Claim(ClaimTypes.Locality, user.DealerName),
-            new Claim(ClaimTypes.Role, string.Join(";", roles)),
-            new Claim(ClaimTypes.UserData, string.Join(";",user.Code,user.IsFirstLogin,user.UserName,user.Profile)),
-        };
+                    new Claim(ClaimTypes.Locality, user.DealerName),
+                    new Claim(ClaimTypes.Role, string.Join(";", roles)),
+                    new Claim(ClaimTypes.UserData, string.Join(";",user.Code,user.IsFirstLogin,user.UserName,user.Profile)),
+                };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
                 var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

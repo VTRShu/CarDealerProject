@@ -66,6 +66,7 @@ namespace CarDealerProject.Repositories.EFContext
 
             modelBuilder.Entity<DealerEntity>().HasMany(c => c.Services);
             modelBuilder.Entity<DealerEntity>().HasMany(c => c.Cars);
+            
             modelBuilder.Entity<ServiceEntity>().HasMany(c => c.Dealers);
 
             modelBuilder.Entity<ImageEntity>().HasMany(c => c.Cars);

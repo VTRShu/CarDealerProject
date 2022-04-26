@@ -78,7 +78,7 @@ const CarInfor = () => {
             setCar(response.data);
         }).catch(function (err) {
             console.log(err);
-        })
+        });
     }, []);
 
     console.log(car.images[1].imageSrc)

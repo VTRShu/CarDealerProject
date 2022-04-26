@@ -51,7 +51,7 @@ import { ChangePasswordService } from './Services/AuthenticationService'
 import HomePage from './components/Customer/HomePage/HomePage';
 const { Header, Footer, Sider } = Layout;
 const App = () => {
-    const [currentCustomer, setCurrentCustomer] = useState()
+    const {currentCustomer, setCurrentCustomer} = useState()
     const cookies = new Cookies();
     const tokenDecryption = parseJwt(cookies.get('token'))
 
